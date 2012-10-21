@@ -1,9 +1,15 @@
-package net.minecraft.src;
+package bspkrs.worldstatecheckpoints;
 
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.GuiButton;
+import net.minecraft.src.GuiMainMenu;
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.ISaveFormat;
+import net.minecraft.src.StatCollector;
+
 import org.lwjgl.opengl.GL11;
 
 public class GuiGameOver extends GuiScreen
@@ -26,22 +32,22 @@ public class GuiGameOver extends GuiScreen
     public void initGui()
     {
 
-    	chpmgr = new CheckpointManager(mc);
-    	
+        chpmgr = new CheckpointManager(mc);
+        
         controlList.clear();
         
         GuiButton chp = new GuiButton(-1, width / 2 - 100, height / 4 + 120, "Restore from Checkpoint");
         controlList.add(chp);
             
-        if (mc.isMultiplayerWorld())
-        {        	
-        	chp.enabled = false;        	
+        if (!mc.isSingleplayer())
+        {            
+            chp.enabled = false;            
         }else{
-        	
-			chp.enabled = chpmgr.getHasCheckpoints();
+            
+            chp.enabled = chpmgr.getHasCheckpoints();
         }
-    			
-            	
+                
+                
         if (mc.theWorld.getWorldInfo().isHardcoreModeEnabled())
         {
             controlList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96, StatCollector.translateToLocal("deathScreen.deleteWorld")));
@@ -85,7 +91,8 @@ public class GuiGameOver extends GuiScreen
                 if (mc.theWorld.getWorldInfo().isHardcoreModeEnabled())
                 {
                     String s = mc.theWorld.getSaveHandler().getSaveDirectoryName();
-                    mc.exitToMainMenu("Deleting world");
+                    mc.theWorld = null;
+                    mc.loadWorld(null, "Deleting world");
                     ISaveFormat isaveformat = mc.getSaveLoader();
                     isaveformat.flushCache();
                     isaveformat.deleteWorldDirectory(s);
@@ -100,17 +107,17 @@ public class GuiGameOver extends GuiScreen
                 break;
 
             case 2:
-                if (mc.isMultiplayerWorld())
+                if (!mc.isSingleplayer())
                 {
                     mc.theWorld.sendQuittingDisconnectingPacket();
                 }
 
-                mc.changeWorld1(null);
+                mc.loadWorld(null);
                 mc.displayGuiScreen(new GuiMainMenu());
                 break;
                 
             case -1:
-            	mc.displayGuiScreen(new GuiLoadCheckpoint(true));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(true));
                 break;
         }
     }

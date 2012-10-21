@@ -1,4 +1,7 @@
-package net.minecraft.src;
+package bspkrs.worldstatecheckpoints;
+
+import net.minecraft.src.GuiButton;
+import net.minecraft.src.GuiScreen;
 
 import org.lwjgl.input.Keyboard;
 
@@ -12,7 +15,8 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     private String name, dirname;
     private int page;
     
-    public GuiDeleteCheckpointYesNo(GuiLoadCheckpoint parent, String dirname, int page){
+    public GuiDeleteCheckpointYesNo(GuiLoadCheckpoint parent, String dirname, int page)
+    {
     	parentScreen = parent;
     	this.page = page;
     	this.dirname = dirname;
@@ -29,14 +33,9 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     	chpmgr = new CheckpointManager(mc);
     	
         byte byte0 = -16;
-        
-        no = new GuiButton(-1, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, "No");
-        yes = new GuiButton(-2, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, "Yes");
-        
-        no.width = yes.width = 60;
 		
-		controlList.add(no);
-		controlList.add(yes);	
+		controlList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, 60, 20, "Yes"));
+		controlList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, 60, 20, "No"));	
     }
     
     
@@ -65,13 +64,10 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
             	return;
             	
             case -2:
-            	
-            	
             	chpmgr.deleteCheckpoint(dirname);
             	
             	mc.displayGuiScreen(parentScreen);
             	parentScreen.showPage(page);
-            	
             	
             	return;
         }
@@ -86,9 +82,6 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     {
         drawDefaultBackground();
         
-        
-
-
         drawCenteredString(fontRenderer, "Really delete checkpoint?", width / 2, 100, 0xffffff);
         drawCenteredString(fontRenderer, "\""+name+"\"", width / 2, 100+20, 0xffff00);
         super.drawScreen(par1, par2, par3);

@@ -1,40 +1,42 @@
-package net.minecraft.src;
+package bspkrs.worldstatecheckpoints;
+
+import net.minecraft.src.GuiButton;
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.GuiTextField;
 
 import org.lwjgl.input.Keyboard;
 
 public class GuiSaveCheckpoint extends GuiScreen
 {
-	
-	private GuiTextField edit;
-	private GuiButton back, save;
+    private GuiTextField edit;
+    private GuiButton back, save;
 
     private CheckpointManager chpmgr;
 
     /**
      * Adds the buttons (and other controls) to the screen in question.
      */
+    @Override
     public void initGui()
     {
-    	Keyboard.enableRepeatEvents(true);
+        Keyboard.enableRepeatEvents(true);
 
-    	chpmgr = new CheckpointManager(mc);
-    	
+        chpmgr = new CheckpointManager(mc);
+        
         byte byte0 = -16;
         
-        back = new GuiButton(-1, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, "Cancel");
-        save = new GuiButton(-2, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, "Save");
-        back.width = save.width = 60;
+        back = new GuiButton(-1, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, 60, 20, "Cancel");
+        save = new GuiButton(-2, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, 60, 20, "Save");
         
         edit = new GuiTextField(fontRenderer, width / 2 - 100, height / 4 + 24 + 24, 200, 20); 
         edit.setText("");
 
         edit.setFocused(true);
         save.enabled = false;
-		
-		controlList.add(back);
-		controlList.add(save);	
+        
+        controlList.add(back);
+        controlList.add(save);    
     }
-    
     
     @Override
     public void onGuiClosed()
@@ -42,59 +44,55 @@ public class GuiSaveCheckpoint extends GuiScreen
         Keyboard.enableRepeatEvents(false);
     }
     
-    
-
     /**
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
+    @Override
     protected void actionPerformed(GuiButton par1GuiButton)
     {
-    	if (!par1GuiButton.enabled)
-        {
+        if (!par1GuiButton.enabled)
             return;
-        }
-    	
+        
         switch (par1GuiButton.id)
         {
             case -1:
-            	mc.displayGuiScreen(new GuiIngameMenu()); 
-            	return;
-            	
+                mc.displayGuiScreen(new GuiIngameMenu()); 
+                return;
+                
             case -2:
-            	chpmgr.setCheckpoint(edit.getText());
-            	mc.displayGuiScreen(null); 
-            	mc.setIngameFocus();
-            	mc.thePlayer.addChatMessage("Saved checkpoint as \""+edit.getText()+"\".");
-            	return;
+                chpmgr.setCheckpoint(edit.getText());
+                mc.displayGuiScreen(null); 
+                mc.setIngameFocus();
+                mc.thePlayer.addChatMessage("Saved checkpoint as \""+edit.getText()+"\".");
+                return;
         }
     }
     
     @Override
     protected void keyTyped(char c, int i)
     {
-    	if (Character.isLetterOrDigit(Character.valueOf(c)) || c == ' ' || c == '!' || c == '.' || c == ',' || c == '+' || c == '_' || c == '-' || c == '+' || i == Keyboard.KEY_BACK
-				|| i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END) {
-			edit.textboxKeyTyped(c, i);
-		}
-    	
+        String validChars = " !.,+_-";
+        if (Character.isLetterOrDigit(c) || validChars.contains(String.valueOf(c)) || i == Keyboard.KEY_BACK
+                || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END) 
+            edit.textboxKeyTyped(c, i);
+        
         save.enabled = edit.getText().trim().length() > 0;
         
         if (c == '\r')
-        {
             actionPerformed((GuiButton)controlList.get(1));
-        }
     }
-    
+
+    @Override
     protected void mouseClicked(int par1, int par2, int par3)
     {
         super.mouseClicked(par1, par2, par3);
         edit.mouseClicked(par1, par2, par3);
     }
     
-
     /**
      * Called from the main game loop to update the screen.
      */
+    @Override
     public void updateScreen()
     {
         super.updateScreen();
@@ -104,12 +102,11 @@ public class GuiSaveCheckpoint extends GuiScreen
     /**
      * Draws the screen and all the components in it.
      */
+    @Override
     public void drawScreen(int par1, int par2, float par3)
     {
         drawDefaultBackground();
-        
         edit.drawTextBox();
-
 
         drawCenteredString(fontRenderer, "Set Checkpoint", width / 2, 80, 0xffffff);
         super.drawScreen(par1, par2, par3);

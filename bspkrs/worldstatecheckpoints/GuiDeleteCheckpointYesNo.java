@@ -7,7 +7,7 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiDeleteCheckpointYesNo extends GuiScreen
 {
-	private GuiButton no, yes;
+    private GuiButton no, yes;
 
     private CheckpointManager chpmgr;
     
@@ -17,10 +17,10 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     
     public GuiDeleteCheckpointYesNo(GuiLoadCheckpoint parent, String dirname, int page)
     {
-    	parentScreen = parent;
-    	this.page = page;
-    	this.dirname = dirname;
-    	name = dirname.split("!", 2)[1];
+        parentScreen = parent;
+        this.page = page;
+        this.dirname = dirname;
+        name = dirname.split("!", 2)[1];
     }
 
     /**
@@ -28,14 +28,14 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
      */
     public void initGui()
     {
-    	Keyboard.enableRepeatEvents(true);
+        Keyboard.enableRepeatEvents(true);
 
-    	chpmgr = new CheckpointManager(mc);
-    	
+        chpmgr = new CheckpointManager(mc);
+        
         byte byte0 = -16;
-		
-		controlList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, 60, 20, "Yes"));
-		controlList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, 60, 20, "No"));	
+        
+        controlList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, 60, 20, "Yes"));
+        controlList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, 60, 20, "No"));    
     }
     
     
@@ -52,24 +52,24 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
      */
     protected void actionPerformed(GuiButton par1GuiButton)
     {
-    	if (!par1GuiButton.enabled)
+        if (!par1GuiButton.enabled)
         {
             return;
         }
-    	
+        
         switch (par1GuiButton.id)
         {
             case -1:
-            	mc.displayGuiScreen(parentScreen); 
-            	return;
-            	
+                mc.displayGuiScreen(parentScreen); 
+                return;
+                
             case -2:
-            	chpmgr.deleteCheckpoint(dirname);
-            	
-            	mc.displayGuiScreen(parentScreen);
-            	parentScreen.showPage(page);
-            	
-            	return;
+                chpmgr.deleteCheckpoint(dirname);
+                
+                mc.displayGuiScreen(parentScreen);
+                parentScreen.showPage(page);
+                
+                return;
         }
     }
     

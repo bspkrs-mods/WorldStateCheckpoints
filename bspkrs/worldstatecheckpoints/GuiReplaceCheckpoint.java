@@ -24,6 +24,6 @@ public class GuiReplaceCheckpoint extends GuiLoadCheckpoint
     @Override
     protected void backButtonClicked()
     {
-        mc.displayGuiScreen(new GuiIngameMenu()); 
+        mc.displayGuiScreen(new GuiCheckpointsMenu()); 
     }
 }

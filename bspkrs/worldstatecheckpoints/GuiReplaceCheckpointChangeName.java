@@ -33,9 +33,8 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
         
         byte byte0 = -16;
         
-        back = new GuiButton(-1, width / 2 - 61, height / 4 + 24 + 24*3 + byte0, "Cancel");
-        save = new GuiButton(-2, width / 2 + 1, height / 4 + 24 + 24*3+ byte0, "Save");
-        //back.width = save.width = 60;
+        back = new GuiButton(-1, width / 2 + 1, height / 4 + 24 + 24*3+ byte0, 60, 20, "Cancel");
+        save = new GuiButton(-2, width / 2 - 61, height / 4 + 24 + 24*3 + byte0, 60, 20, "Save");
         
         edit = new GuiTextField(fontRenderer, width / 2 - 100, height / 4 + 24 + 24, 200, 20); 
         edit.setText(name);

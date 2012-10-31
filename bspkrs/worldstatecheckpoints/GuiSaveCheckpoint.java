@@ -25,8 +25,8 @@ public class GuiSaveCheckpoint extends GuiScreen
         
         byte byte0 = -16;
         
-        back = new GuiButton(-1, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, 60, 20, "Cancel");
-        save = new GuiButton(-2, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, 60, 20, "Save");
+        save = new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24*3 + byte0, 60, 20, "Save");
+        back = new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24*3+ byte0, 60, 20, "Cancel");
         
         edit = new GuiTextField(fontRenderer, width / 2 - 100, height / 4 + 24 + 24, 200, 20); 
         edit.setText("");
@@ -56,7 +56,7 @@ public class GuiSaveCheckpoint extends GuiScreen
         switch (par1GuiButton.id)
         {
             case -1:
-                mc.displayGuiScreen(new GuiIngameMenu()); 
+                mc.displayGuiScreen(new GuiCheckpointsMenu()); 
                 return;
                 
             case -2:

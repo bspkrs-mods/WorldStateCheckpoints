@@ -1,25 +1,26 @@
 package net.minecraft.src;
 
 import net.minecraft.client.Minecraft;
-
 import org.lwjgl.input.Keyboard;
-
 import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CheckpointManager;
+import bspkrs.worldstatecheckpoints.GuiCheckpointsMenu;
 import bspkrs.worldstatecheckpoints.GuiLoadCheckpoint;
-import bspkrs.worldstatecheckpoints.GuiSaveCheckpoint;
 
 public class mod_WorldStateCheckpoints extends BaseMod
 {
     @MLProp(info="Set to true to allow checking for mod updates, false to disable")
     public static boolean allowUpdateCheck = true;
     
-    public static KeyBinding saveKey = new KeyBinding("SaveCheckpoint", Keyboard.KEY_F6);
-    public static KeyBinding loadKey = new KeyBinding("LoadCheckpoint", Keyboard.KEY_F7);
+    public static String menuKeyStr = "F6";
+    
+    public static KeyBinding menuKey = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
+    public static boolean justLoaded = false;
+    public static String loadMessage = "";
     
     private boolean checkUpdate;
     private ModVersionChecker versionChecker;
-    private String versionURL = "https://dl.dropbox.com/u/20748481/Minecraft/1.3.1/worldStateCheckpoints.version";
+    private String versionURL = "https://dl.dropbox.com/u/20748481/Minecraft/1.4.2/worldStateCheckpoints.version";
     private String mcfTopic = "http://www.minecraftforum.net/topic/???-";
     
     private Minecraft mc;
@@ -34,7 +35,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.3.2.r01";
+        return "ML 1.4.2.r01";
     }
     
     public mod_WorldStateCheckpoints()
@@ -50,10 +51,11 @@ public class mod_WorldStateCheckpoints extends BaseMod
     {
         versionChecker.checkVersionWithLogging();
         
-        ModLoader.registerKey(this, saveKey, false);
-        ModLoader.registerKey(this, loadKey, false);
-        ModLoader.addLocalization(saveKey.keyDescription, "Save Checkpoint");
-        ModLoader.addLocalization(loadKey.keyDescription, "Load Checkpoint");
+        /*for(int i = 0; i < Keyboard.getKeyCount(); i++)
+        	System.out.println("Key Index " + i + " : " + Keyboard.getKeyName(i));*/
+        		
+        ModLoader.registerKey(this, menuKey, false);
+        ModLoader.addLocalization(menuKey.keyDescription, "Checkpoints Menu");
         ModLoader.setInGameHook(this, true, false);
     }
 
@@ -68,6 +70,13 @@ public class mod_WorldStateCheckpoints extends BaseMod
             checkUpdate = false;
         }
         
+        if(justLoaded)
+        {
+        	mc.thePlayer.addChatMessage(loadMessage);
+        	justLoaded = false;
+        	loadMessage = "";
+        }
+        
         if(cpm == null)
             cpm = new CheckpointManager(mc);
         
@@ -79,24 +88,16 @@ public class mod_WorldStateCheckpoints extends BaseMod
     {
         cpm = new CheckpointManager(mc);        
     }
-
-    /*@Override
-    public void clientDisconnect(NetClientHandler nch) 
-    {
-        cpm = null;
-    }*/
     
     @Override
     public void keyboardEvent(KeyBinding event)
     {
-        if(event.equals(loadKey))
+        if(event.equals(menuKey))
         {
-            if(cpm != null && cpm.getHasCheckpoints())
-                mc.displayGuiScreen(new GuiLoadCheckpoint(mc.currentScreen instanceof GuiGameOver));
-        }
-        else if(event.equals(saveKey))
-        {
-            mc.displayGuiScreen(new GuiSaveCheckpoint());
+        	if(mc.currentScreen instanceof GuiGameOver)
+        		mc.displayGuiScreen(new GuiLoadCheckpoint(true));
+        	else
+        		mc.displayGuiScreen(new GuiCheckpointsMenu());
         }
     }
 }

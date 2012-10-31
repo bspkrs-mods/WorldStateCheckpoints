@@ -3,7 +3,9 @@ package bspkrs.worldstatecheckpoints;
 import java.io.File;
 
 import net.minecraft.src.GuiButton;
+import net.minecraft.src.GuiGameOver;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.mod_WorldStateCheckpoints;
 
 public class GuiLoadCheckpoint extends GuiScreen
 {
@@ -156,7 +158,8 @@ public class GuiLoadCheckpoint extends GuiScreen
         chpmgr.loadCheckpoint(dirname);
         mc.displayGuiScreen(null);
         mc.setIngameFocus();
-        //mc.thePlayer.addChatMessage("Loaded checkpoint \""+dirname.split("!", 2)[1]+"\".");
+        mod_WorldStateCheckpoints.justLoaded = true;
+        mod_WorldStateCheckpoints.loadMessage = "Loaded checkpoint \""+dirname.split("!", 2)[1]+"\".";
     }
     
     protected void delButtonClicked(int index)
@@ -166,7 +169,7 @@ public class GuiLoadCheckpoint extends GuiScreen
     
     protected void backButtonClicked()
     {
-        mc.displayGuiScreen(gameOverScreen?new GuiGameOver():new GuiIngameMenu()); 
+        mc.displayGuiScreen(gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu()); 
     }
     
     /**

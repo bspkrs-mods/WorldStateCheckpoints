@@ -38,6 +38,7 @@ public class CheckpointManager
      */
     public void unloadWorldSilent()
     {
+        mc.theWorld.sendQuittingDisconnectingPacket();
         mc.loadWorld(null);
         try
         {
@@ -55,6 +56,7 @@ public class CheckpointManager
      */
     public void unloadWorld(String msg)
     {
+        mc.theWorld.sendQuittingDisconnectingPacket();
         mc.loadWorld(null,msg);
         try
         {
@@ -95,13 +97,12 @@ public class CheckpointManager
     public File getWorldPath()
     {
         return new File(Minecraft.getMinecraftDir() + getWorldSaveRelativePath());
-        //return new File(world.getSaveHandler().getSaveDirectoryName());
     }
     
     /**
      * Get world's name
      * 
-     * @return the folder
+     * @return the name of the world
      */
     public String getWorldName()
     {
@@ -202,7 +203,6 @@ public class CheckpointManager
         deleteDirContents(worldDir, IGNORE_DELETE);        
         copyDirectory(checkpointDir, worldDir, IGNORE_NULL);
         startWorld(worldDir.getName(), worldName);
-        
     }
     
     /**

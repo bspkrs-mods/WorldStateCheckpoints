@@ -24,7 +24,6 @@ public class mod_WorldStateCheckpoints extends BaseMod
     private String mcfTopic = "http://www.minecraftforum.net/topic/???-";
     
     private Minecraft mc;
-    private CheckpointManager cpm;
     
     @Override
     public String getName()
@@ -35,7 +34,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.4.2.r01";
+        return "ML 1.4.2.r02";
     }
     
     public mod_WorldStateCheckpoints()
@@ -50,13 +49,10 @@ public class mod_WorldStateCheckpoints extends BaseMod
     public void load()
     {
         versionChecker.checkVersionWithLogging();
-        
-        /*for(int i = 0; i < Keyboard.getKeyCount(); i++)
-        	System.out.println("Key Index " + i + " : " + Keyboard.getKeyName(i));*/
         		
         ModLoader.registerKey(this, menuKey, false);
         ModLoader.addLocalization(menuKey.keyDescription, "Checkpoints Menu");
-        ModLoader.setInGameHook(this, true, false);
+        ModLoader.setInGameHook(this, true, true);
     }
 
     @Override
@@ -77,16 +73,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
         	loadMessage = "";
         }
         
-        if(cpm == null)
-            cpm = new CheckpointManager(mc);
-        
         return true;
-    }
-
-    @Override
-    public void clientConnect(NetClientHandler nch) 
-    {
-        cpm = new CheckpointManager(mc);        
     }
     
     @Override

@@ -2,6 +2,7 @@ package bspkrs.worldstatecheckpoints;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.MinecraftException;
@@ -18,18 +20,62 @@ import net.minecraft.src.WorldServer;
 
 public class CheckpointManager 
 {
-    Minecraft mc;
-    WorldServer world;
+    private Minecraft mc;
+    private WorldServer world;
+    public Properties autoSaveConfig;
+    private static Properties autoSaveConfigDefaults = new Properties();
+    private File autoConfigFile;
+    private File autoConfigDir;
+    private OutputStream cfgOutput;
+    private InputStream cfgInput;
+    private static final String ENABLED = "enabled";
+    private static final String MAX_AUTO_SAVE_ID = "maxAutoSaveID";
     
     public static final String CHECKPOINT_DIR_NAME = "checkpoints";
+    public static final String AUTOCHECKPOINT_DIR_NAME = "autosave";
     public static final String[] IGNORE_DELETE = {CHECKPOINT_DIR_NAME};
     public static final String[] IGNORE_COPY = {CHECKPOINT_DIR_NAME,"session.lock"};
     public static final String[] IGNORE_NULL = {};
+    
 
     public CheckpointManager(Minecraft minecraft)
     {
         mc = minecraft;
         world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.thePlayer.dimension) : null;
+        
+        autoSaveConfigDefaults.put(ENABLED, Boolean.FALSE);
+        autoSaveConfigDefaults.put(MAX_AUTO_SAVE_ID, Integer.valueOf(0));
+        
+        autoConfigDir = getAutoCheckpointsPath();
+        
+        if(!autoConfigDir.exists())
+        	autoConfigDir.mkdirs();
+        
+        autoConfigFile = chainDirs(autoConfigDir.toString(), "autosave.cfg");
+        if(!autoConfigFile.exists())
+        {
+        	try 
+        	{
+				autoConfigFile.createNewFile();
+				cfgOutput = new FileOutputStream(autoConfigFile);
+				autoSaveConfigDefaults.store(cfgOutput, "");
+			} 
+        	catch (Throwable e) 
+        	{
+				e.printStackTrace();
+			}
+        }
+        
+        try 
+        {
+			cfgInput = new FileInputStream(autoConfigFile);
+			autoSaveConfig = new Properties(autoSaveConfigDefaults);
+			autoSaveConfig.load(cfgInput);
+		} 
+        catch (Throwable e) 
+        {
+			e.printStackTrace();
+		}
     }
     
     /**
@@ -109,7 +155,6 @@ public class CheckpointManager
         return world.getWorldInfo().getWorldName();
     }
     
-    
     /**
      * Get world's save directory + the checkpoint directory
      * 
@@ -120,21 +165,60 @@ public class CheckpointManager
         return chainDirs(getWorldPath().toString(), CHECKPOINT_DIR_NAME);
     }
     
+    /**
+     * Get world's save directory + the checkpoint directory + the auto-save directory
+     * 
+     * @return the folder
+     */
+    public File getAutoCheckpointsPath()
+    {
+        return chainDirs(getWorldPath().toString(), CHECKPOINT_DIR_NAME, AUTOCHECKPOINT_DIR_NAME);
+    }
+
+    /**
+     * Get this world's current max auto-save ID + 1 and update the max auto-save ID 
+     * 
+     * @return the next available auto-save ID for this world
+     */
+    public int getNextAutoSaveID()
+    {
+    	return 0;
+    }
     
     /**
-     * Create a checkpoint (snapshot) of the currently loaded world, usign the given name as suffix after current date and time.
+     * Create a checkpoint (snapshot) of the currently loaded world, using the given name as suffix after current date and time.
      * 
      * @param name user-provided name
      */
     public void setCheckpoint(String name)
     {        
+        this.setCheckpoint(name, false);
+    }
+    
+    /**
+     * Create a checkpoint (snapshot) of the currently loaded world, using the given name as suffix after current date and time.
+     * 
+     * @param name user-provided name
+     * @param isAutoSave whether or not this is an auto-saved checkpoint
+     */
+    public void setCheckpoint(String name, boolean isAutoSave)
+    {        
         try
         {
             world.saveAllChunks(true, null);
+            File targetDir;
             
             File worldDir = getWorldPath();
-            String checkpoint_name = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + "!" + name;
-            File targetDir = chainDirs(getCheckpointsPath().toString(), checkpoint_name);
+            if(isAutoSave)
+            {
+	            String checkpoint_name = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + "!" + AUTOCHECKPOINT_DIR_NAME + "_" + getNextAutoSaveID();
+	            targetDir = chainDirs(getAutoCheckpointsPath().toString(), checkpoint_name);
+            }
+            else
+            {
+	            String checkpoint_name = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + "!" + name;
+	            targetDir = chainDirs(getCheckpointsPath().toString(), checkpoint_name);
+            }
             
             copyDirectory(worldDir, targetDir, IGNORE_COPY);
         }
@@ -142,7 +226,6 @@ public class CheckpointManager
         {
             e.printStackTrace();
         }
-        
     }
     
     /**

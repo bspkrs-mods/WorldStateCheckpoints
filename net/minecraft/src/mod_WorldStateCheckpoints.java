@@ -34,7 +34,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.4.2.r02";
+        return "ML 1.4.2.r03";
     }
     
     public mod_WorldStateCheckpoints()
@@ -79,7 +79,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public void keyboardEvent(KeyBinding event)
     {
-        if(event.equals(menuKey))
+        if(event.equals(menuKey) && mc.isSingleplayer())
         {
         	if(mc.currentScreen instanceof GuiGameOver)
         		mc.displayGuiScreen(new GuiLoadCheckpoint(true));

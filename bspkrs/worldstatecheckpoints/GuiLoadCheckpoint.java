@@ -106,7 +106,6 @@ public class GuiLoadCheckpoint extends GuiScreen
         pages = page;
         currentPage = startPage;
         showPage(currentPage);
-        
     }
     
     

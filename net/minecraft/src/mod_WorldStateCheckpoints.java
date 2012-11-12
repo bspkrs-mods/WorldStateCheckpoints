@@ -15,7 +15,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     public static boolean     allowUpdateCheck     = true;
     
     public static String      menuKeyStr           = "F6";
-    public static String      saveKeyStr           = "P";
+    public static String      saveKeyStr           = "F7";
     
     public static KeyBinding  menuKey              = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
     public static KeyBinding  saveKey              = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));

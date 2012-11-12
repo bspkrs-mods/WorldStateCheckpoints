@@ -28,8 +28,9 @@ public class GuiLoadCheckpoint extends GuiScreen
     private GuiButton           back, prev, next, switchLoad;
     protected boolean           isAutoCheckpointsLoad;
     
-    public GuiLoadCheckpoint(boolean gameover, boolean isAutoCheckpointsLoad)
+    public GuiLoadCheckpoint(CheckpointManager cpm, boolean gameover, boolean isAutoCheckpointsLoad)
     {
+        this.cpm = cpm;
         gameOverScreen = gameover;
         this.isAutoCheckpointsLoad = isAutoCheckpointsLoad;
     }
@@ -47,7 +48,7 @@ public class GuiLoadCheckpoint extends GuiScreen
     public void initGui()
     {
         controlList.clear();
-        cpm = new CheckpointManager(mc);
+        // cpm = new CheckpointManager(mc);
         byte byte0 = -16;
         
         int prevX, backX, nextX, switchX;
@@ -179,7 +180,7 @@ public class GuiLoadCheckpoint extends GuiScreen
         cpm.loadCheckpoint(dirname, isAutoCheckpointsLoad);
         mc.displayGuiScreen(null);
         mc.setIngameFocus();
-        mod_WorldStateCheckpoints.justLoaded = true;
+        mod_WorldStateCheckpoints.justLoadedCheckpoint = true;
         mod_WorldStateCheckpoints.loadMessage = "Loaded checkpoint \"" + dirname.split("!", 2)[1] + "\".";
     }
     
@@ -190,12 +191,12 @@ public class GuiLoadCheckpoint extends GuiScreen
     
     protected void backButtonClicked()
     {
-        mc.displayGuiScreen(gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu());
+        mc.displayGuiScreen(gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu(cpm));
     }
     
     protected void switchButtonClicked()
     {
-        mc.displayGuiScreen(new GuiLoadCheckpoint(gameOverScreen, !isAutoCheckpointsLoad));
+        mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, gameOverScreen, !isAutoCheckpointsLoad));
     }
     
     /**

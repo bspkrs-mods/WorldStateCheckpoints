@@ -12,21 +12,22 @@ import bspkrs.worldstatecheckpoints.GuiLoadCheckpoint;
 public class mod_WorldStateCheckpoints extends BaseMod
 {
     @MLProp(info = "Set to true to allow checking for mod updates, false to disable")
-    public static boolean     allowUpdateCheck = true;
+    public static boolean     allowUpdateCheck     = true;
     
-    public static String      menuKeyStr       = "F6";
-    public static String      saveKeyStr       = "F7";
+    public static String      menuKeyStr           = "F6";
+    public static String      saveKeyStr           = "P";
     
-    public static KeyBinding  menuKey          = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
-    public static KeyBinding  saveKey          = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
-    public static boolean     justLoaded       = false;
-    public static String      loadMessage      = "";
+    public static KeyBinding  menuKey              = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
+    public static KeyBinding  saveKey              = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
+    public static boolean     justLoadedCheckpoint = false;
+    public static boolean     justLoadedWorld      = false;
+    public static String      loadMessage          = "";
     public CheckpointManager  cpm;
     
     private boolean           checkUpdate;
     private ModVersionChecker versionChecker;
-    private String            versionURL       = "https://dl.dropbox.com/u/20748481/Minecraft/1.4.2/worldStateCheckpoints.version";
-    private String            mcfTopic         = "http://www.minecraftforum.net/topic/1548243-";
+    private String            versionURL           = "https://dl.dropbox.com/u/20748481/Minecraft/1.4.2/worldStateCheckpoints.version";
+    private String            mcfTopic             = "http://www.minecraftforum.net/topic/1548243-";
     
     private Minecraft         mc;
     
@@ -70,6 +71,18 @@ public class mod_WorldStateCheckpoints extends BaseMod
     }
     
     @Override
+    public void clientConnect(NetClientHandler var1)
+    {
+        justLoadedWorld = true;
+    }
+    
+    @Override
+    public void clientDisconnect(NetClientHandler var1)
+    {   
+        
+    }
+    
+    @Override
     public boolean onTickInGame(float f, Minecraft mc)
     {
         if (checkUpdate)
@@ -80,21 +93,26 @@ public class mod_WorldStateCheckpoints extends BaseMod
             checkUpdate = false;
         }
         
-        if (justLoaded)
+        if (justLoadedWorld)
         {
-            mc.thePlayer.addChatMessage(loadMessage);
-            loadMessage = "";
             cpm = null;
+            justLoadedWorld = false;
         }
         
         if (cpm == null)
         {
             cpm = new CheckpointManager(mc);
+        }
+        
+        if (justLoadedCheckpoint)
+        {
+            mc.thePlayer.addChatMessage(loadMessage);
+            loadMessage = "";
             
-            if (justLoaded && cpm.autoSaveEnabled)
+            if (cpm.autoSaveEnabled)
                 cpm.tickCount = 0;
             
-            justLoaded = false;
+            justLoadedCheckpoint = false;
         }
         
         if (cpm.autoSaveEnabled)
@@ -109,11 +127,11 @@ public class mod_WorldStateCheckpoints extends BaseMod
         if (event.equals(menuKey) && mc.isSingleplayer())
         {
             if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(false))
-                mc.displayGuiScreen(new GuiLoadCheckpoint(true, false));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, false));
             else if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(true))
-                mc.displayGuiScreen(new GuiLoadCheckpoint(true, true));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, true));
             else
-                mc.displayGuiScreen(new GuiCheckpointsMenu());
+                mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
         }
         else if (event.equals(saveKey) && mc.isSingleplayer())
             cpm.setCheckpoint("", true);

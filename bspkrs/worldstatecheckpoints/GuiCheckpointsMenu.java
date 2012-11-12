@@ -12,8 +12,9 @@ public class GuiCheckpointsMenu extends GuiScreen
     
     private CheckpointManager cpm;
     
-    public GuiCheckpointsMenu()
+    public GuiCheckpointsMenu(CheckpointManager cpm)
     {
+        this.cpm = cpm;
         updateCounter = 0;
     }
     
@@ -23,20 +24,21 @@ public class GuiCheckpointsMenu extends GuiScreen
     @Override
     public void initGui()
     {
-        cpm = new CheckpointManager(mc);
+        // cpm = new CheckpointManager(mc);
         
         controlList.clear();
         byte byte0 = -16;
         
         controlList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, StatCollector.translateToLocal("menu.returnToGame")));
         
-        GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, "Save new");
-        GuiButton replace = new GuiButton(-3, width / 2 - 100, height / 4 + 24 * 2 + byte0, "Overwrite");
-        GuiButton load = new GuiButton(-1, width / 2 - 100, height / 4 + 24 * 3 + byte0, 99, 20, "Load Checkpoint");
-        GuiButton loadAuto = new GuiButton(-4, width / 2 + 1, height / 4 + 24 * 3 + byte0, 99, 20, "Load Auto-save");
+        GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, 99, 20, "Save new");
+        GuiButton replace = new GuiButton(-3, width / 2 + 1, height / 4 + 24 + byte0, 99, 20, "Overwrite");
+        GuiButton load = new GuiButton(-1, width / 2 - 100, height / 4 + 24 * 2 + byte0, 99, 20, "Load Checkpoint");
+        GuiButton loadAuto = new GuiButton(-4, width / 2 + 1, height / 4 + 24 * 2 + byte0, 99, 20, "Load Auto-save");
+        GuiButton configAuto = new GuiButton(-5, width / 2 - 100, height / 4 + 24 * 3 + byte0, "Configure Auto-Save: " + (cpm.autoSaveEnabled ? "On" : "Off"));
         
         if (!mc.isSingleplayer())
-            replace.enabled = load.enabled = save.enabled = false;
+            replace.enabled = load.enabled = save.enabled = loadAuto.enabled = configAuto.enabled = false;
         else
         {
             replace.enabled = load.enabled = cpm.getHasCheckpoints(false);
@@ -47,6 +49,7 @@ public class GuiCheckpointsMenu extends GuiScreen
         controlList.add(loadAuto);
         controlList.add(save);
         controlList.add(replace);
+        controlList.add(configAuto);
     }
     
     /**
@@ -64,19 +67,23 @@ public class GuiCheckpointsMenu extends GuiScreen
                 break;
             
             case -3:
-                mc.displayGuiScreen(new GuiReplaceCheckpoint());
+                mc.displayGuiScreen(new GuiReplaceCheckpoint(cpm));
                 break;
             
             case -2:
-                mc.displayGuiScreen(new GuiSaveCheckpoint());
+                mc.displayGuiScreen(new GuiSaveCheckpoint(cpm));
                 break;
             
             case -1:
-                mc.displayGuiScreen(new GuiLoadCheckpoint(false, false));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, false, false));
                 break;
             
             case -4:
-                mc.displayGuiScreen(new GuiLoadCheckpoint(false, true));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, false, true));
+                break;
+            
+            case -5:
+                mc.displayGuiScreen(new GuiConfigureAutoSave(cpm));
                 break;
         }
     }

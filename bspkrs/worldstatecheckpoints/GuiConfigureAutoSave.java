@@ -10,16 +10,17 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiConfigureAutoSave extends GuiScreen
 {
-    String                    guiTitle = "Configure Checkpoint Auto-Save";
-    
+    String                    guiTitle    = "Configure Checkpoint Auto-Save";
+    final static String       ENABLE_TEXT = "Auto-Save Checkpoints: ";
     private CheckpointManager cpm;
-    private GuiButton         back, save, enable, periodType;
+    private GuiButton         back, save, enable, periodUnit;
     private GuiTextField      periodValue;
     private Properties        localConfig;
     
     public GuiConfigureAutoSave(CheckpointManager cpm)
     {
         this.cpm = cpm;
+        localConfig = new Properties();
         localConfig.setProperty(cpm.ENABLED, cpm.autoSaveConfig.getProperty(cpm.ENABLED));
         localConfig.setProperty(cpm.AUTO_SAVE_PERIOD, cpm.autoSaveConfig.getProperty(cpm.AUTO_SAVE_PERIOD));
         localConfig.setProperty(cpm.PERIOD_UNIT, cpm.autoSaveConfig.getProperty(cpm.PERIOD_UNIT));
@@ -36,24 +37,21 @@ public class GuiConfigureAutoSave extends GuiScreen
         controlList.clear();
         byte byte0 = -16;
         
-        int row1, row2, row3, row4, row5, row6;
+        int row1, row2, row4;
         row1 = height / 4 + 24 + byte0;
         row2 = height / 4 + 24 * 2 + byte0;
-        row3 = height / 4 + 24 * 3 + byte0;
         row4 = height / 4 + 24 * 4 + byte0;
-        row5 = height / 4 + 24 * 5 + byte0;
-        row6 = height / 4 + 24 * 6 + byte0;
         
-        enable = new GuiButton(-1, width / 2 - 100, row1, "Auto-Save Checkpoints: " + (cpm.autoSaveEnabled ? "On" : "Off"));
-        periodValue = new GuiTextField(fontRenderer, width / 2 - 100, row2, 99, 20);
+        enable = new GuiButton(-1, width / 2 - 100, row1, ENABLE_TEXT + (cpm.autoSaveEnabled ? "On" : "Off"));
+        periodValue = new GuiTextField(fontRenderer, width / 2 - 62, row2, 60, 20);
         periodValue.setText(localConfig.getProperty(cpm.AUTO_SAVE_PERIOD));
-        periodType = new GuiButton(-2, width / 2 + 1, row2, 99, 20, localConfig.getProperty(cpm.PERIOD_UNIT));
-        save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, "Save");
-        back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, "Cancel");
+        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, localConfig.getProperty(cpm.PERIOD_UNIT));
+        periodUnit.enabled = cpm.autoSaveEnabled;
+        save = new GuiButton(-3, width / 2 - 62, row4, 60, 20, "Save");
+        back = new GuiButton(-4, width / 2 + 2, row4, 60, 20, "Cancel");
         
         controlList.add(enable);
-        controlList.add(periodValue);
-        
+        controlList.add(periodUnit);
         controlList.add(save);
         controlList.add(back);
     }
@@ -68,23 +66,54 @@ public class GuiConfigureAutoSave extends GuiScreen
         switch (par1GuiButton.id)
         {
             case -1:
-                mc.displayGuiScreen(new GuiReplaceCheckpoint(cpm));
+                if (localConfig.getProperty(cpm.ENABLED).equalsIgnoreCase("on"))
+                {
+                    localConfig.setProperty(cpm.ENABLED, "off");
+                    enable.displayString = ENABLE_TEXT + "Off";
+                    periodUnit.enabled = false;
+                }
+                else
+                {
+                    localConfig.setProperty(cpm.ENABLED, "on");
+                    enable.displayString = ENABLE_TEXT + "On";
+                    periodUnit.enabled = true;
+                }
                 break;
             
             case -2:
-                mc.displayGuiScreen(new GuiSaveCheckpoint(cpm));
+                if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_TICKS))
+                {
+                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_HOURS);
+                    periodUnit.displayString = cpm.UNIT_HOURS;
+                }
+                else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_HOURS))
+                {
+                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_MINUTES);
+                    periodUnit.displayString = cpm.UNIT_MINUTES;
+                }
+                else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_MINUTES))
+                {
+                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_SECONDS);
+                    periodUnit.displayString = cpm.UNIT_SECONDS;
+                }
+                else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_SECONDS))
+                {
+                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_TICKS);
+                    periodUnit.displayString = cpm.UNIT_TICKS;
+                }
                 break;
             
             case -3:
-                // save config and go back
+                cpm.autoSaveConfig.setProperty(cpm.ENABLED, localConfig.getProperty(cpm.ENABLED));
+                cpm.autoSaveConfig.setProperty(cpm.AUTO_SAVE_PERIOD, localConfig.getProperty(cpm.AUTO_SAVE_PERIOD));
+                cpm.autoSaveConfig.setProperty(cpm.PERIOD_UNIT, localConfig.getProperty(cpm.PERIOD_UNIT));
+                cpm.saveAutoConfig(cpm.autoSaveConfig);
+                cpm.loadAutoConfig();
+                mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
                 break;
             
             case -4:
-                // cancel changes and go back
-                break;
-            
-            case -5:
-                mc.displayGuiScreen(new GuiConfigureAutoSave(cpm));
+                mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
                 break;
         }
     }
@@ -96,10 +125,12 @@ public class GuiConfigureAutoSave extends GuiScreen
         if (validChars.contains(String.valueOf(c)) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END)
             periodValue.textboxKeyTyped(c, i);
         
-        save.enabled = periodValue.getText().trim().length() > 0;
+        save.enabled = periodValue.getText().trim().length() > 0 && Integer.valueOf(periodValue.getText().trim()) > 0;
         
-        if (c == '\r')
-            actionPerformed((GuiButton) controlList.get(2));
+        localConfig.setProperty(cpm.AUTO_SAVE_PERIOD, periodValue.getText().trim());
+        
+        if (c == '\r' && save.enabled)
+            actionPerformed(save);
     }
     
     @Override

@@ -51,12 +51,10 @@ public class CheckpointManager
         mc = minecraft;
         world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.thePlayer.dimension) : null;
         
-        // autoSaveConfigDefaults.setProperty(ENABLED, "off");
-        autoSaveConfigDefaults.setProperty(ENABLED, "on");
+        autoSaveConfigDefaults.setProperty(ENABLED, "off");
         autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVE_ID, "0");
-        // autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, "30");
-        autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, "5");
-        autoSaveConfigDefaults.setProperty(PERIOD_UNIT, "minutes");
+        autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, "20");
+        autoSaveConfigDefaults.setProperty(PERIOD_UNIT, UNIT_MINUTES);
         
         loadAutoConfig();
         
@@ -144,16 +142,25 @@ public class CheckpointManager
             e.printStackTrace();
         }
         
-        if (autoSaveConfig.getProperty(PERIOD_UNIT).equals(UNIT_SECONDS))
+        String unit = autoSaveConfig.getProperty(PERIOD_UNIT);
+        
+        if (unit.equals(UNIT_SECONDS))
             maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20;
-        else if (autoSaveConfig.getProperty(PERIOD_UNIT).equals(UNIT_MINUTES))
-            maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20 * 60;
-        else if (autoSaveConfig.getProperty(PERIOD_UNIT).equals(UNIT_HOURS))
+        else if (unit.equals(UNIT_TICKS))
+            maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD));
+        else if (unit.equals(UNIT_HOURS))
             maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20 * 60 * 60;
         else
-            maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD));
+        {
+            if (!autoSaveConfig.getProperty(this.PERIOD_UNIT).equalsIgnoreCase(this.UNIT_MINUTES))
+            {
+                autoSaveConfig.setProperty(PERIOD_UNIT, UNIT_MINUTES);
+                this.saveAutoConfig(autoSaveConfig);
+            }
+            maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20 * 60;
+        }
         
-        autoSaveEnabled = autoSaveConfig.getProperty(ENABLED).equals("on");
+        autoSaveEnabled = autoSaveConfig.getProperty(ENABLED).equalsIgnoreCase("on");
     }
     
     /**

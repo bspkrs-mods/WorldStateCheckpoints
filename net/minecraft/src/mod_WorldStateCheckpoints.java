@@ -40,7 +40,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.4.4.r01";
+        return "ML 1.4.4.r03";
     }
 
     public mod_WorldStateCheckpoints()
@@ -67,19 +67,23 @@ public class mod_WorldStateCheckpoints extends BaseMod
         ModLoader.registerKey(this, saveKey, false);
         ModLoader.addLocalization(menuKey.keyDescription, "Checkpoints Menu");
         ModLoader.addLocalization(saveKey.keyDescription, "Checkpoints Quick Save");
-        ModLoader.setInGameHook(this, true, true);
     }
 
     @Override
     public void clientConnect(NetClientHandler var1)
     {
-        justLoadedWorld = true;
+        if(mc.isSingleplayer())
+        {
+            justLoadedWorld = true;
+            ModLoader.setInGameHook(this, true, true);
+        }
     }
 
     @Override
     public void clientDisconnect(NetClientHandler var1)
     {
-
+        if(mc.isSingleplayer())
+            ModLoader.setInGameHook(this, false, true);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package bspkrs.worldstatecheckpoints;
 
 public class GuiReplaceCheckpoint extends GuiLoadCheckpoint
-{    
+{
     public GuiReplaceCheckpoint(CheckpointManager cpm)
     {
         this.cpm = cpm;

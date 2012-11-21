@@ -10,12 +10,12 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiConfigureAutoSave extends GuiScreen
 {
-    String                    guiTitle    = "Configure Checkpoint Auto-Save";
-    final static String       ENABLE_TEXT = "Auto-Save Checkpoints: ";
-    private CheckpointManager cpm;
-    private GuiButton         back, save, enable, periodUnit;
-    private GuiTextField      periodValue;
-    private Properties        localConfig;
+    String                          guiTitle    = "Configure Checkpoint Auto-Save";
+    final static String             ENABLE_TEXT = "Auto-Save Checkpoints: ";
+    private final CheckpointManager cpm;
+    private GuiButton               back, save, enable, periodUnit;
+    private GuiTextField            periodValue;
+    private final Properties        localConfig;
     
     public GuiConfigureAutoSave(CheckpointManager cpm)
     {
@@ -32,8 +32,6 @@ public class GuiConfigureAutoSave extends GuiScreen
     @Override
     public void initGui()
     {
-        // cpm = new CheckpointManager(mc);
-        
         controlList.clear();
         byte byte0 = -16;
         

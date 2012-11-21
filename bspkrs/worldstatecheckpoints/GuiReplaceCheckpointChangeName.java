@@ -8,11 +8,11 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiReplaceCheckpointChangeName extends GuiScreen
 {
-    private GuiTextField      edit;
-    private GuiButton         back, save;
-    private CheckpointManager cpm;
-    private String            dirname_orig, dirname_prefix, name;
-    int                       page = 0;
+    private GuiTextField            edit;
+    private GuiButton               back, save;
+    private final CheckpointManager cpm;
+    private final String            dirname_orig, dirname_prefix, name;
+    int                             page = 0;
     
     public GuiReplaceCheckpointChangeName(CheckpointManager cpm, String dirname, int page)
     {
@@ -30,8 +30,6 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
-        
-        // cpm = new CheckpointManager(mc);
         
         byte byte0 = -16;
         

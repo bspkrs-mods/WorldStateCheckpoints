@@ -8,9 +8,9 @@ import net.minecraft.src.StatCollector;
 public class GuiCheckpointsMenu extends GuiScreen
 {
     /** Counts the number of screen updates. */
-    private int               updateCounter;
+    private int                     updateCounter;
     
-    private CheckpointManager cpm;
+    private final CheckpointManager cpm;
     
     public GuiCheckpointsMenu(CheckpointManager cpm)
     {
@@ -24,8 +24,6 @@ public class GuiCheckpointsMenu extends GuiScreen
     @Override
     public void initGui()
     {
-        // cpm = new CheckpointManager(mc);
-        
         controlList.clear();
         byte byte0 = -16;
         

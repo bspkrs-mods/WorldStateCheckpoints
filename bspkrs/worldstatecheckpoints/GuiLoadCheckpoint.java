@@ -48,9 +48,8 @@ public class GuiLoadCheckpoint extends GuiScreen
     public void initGui()
     {
         controlList.clear();
-        // cpm = new CheckpointManager(mc);
-        byte byte0 = -16;
         
+        byte byte0 = -16;
         int prevX, backX, nextX, switchX;
         
         prevX = width / 2 - 70 - 60 - 3;
@@ -186,7 +185,7 @@ public class GuiLoadCheckpoint extends GuiScreen
     
     protected void delButtonClicked(int index)
     {
-        mc.displayGuiScreen(new GuiDeleteCheckpointYesNo(this, dirNames[index], currentPage, isAutoCheckpointsLoad));
+        mc.displayGuiScreen(new GuiDeleteCheckpointYesNo(cpm, this, dirNames[index], currentPage, isAutoCheckpointsLoad));
     }
     
     protected void backButtonClicked()

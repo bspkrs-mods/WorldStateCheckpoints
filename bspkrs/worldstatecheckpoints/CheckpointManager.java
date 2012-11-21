@@ -19,8 +19,8 @@ import net.minecraft.src.WorldServer;
 
 public class CheckpointManager
 {
-    private Minecraft            mc;
-    private WorldServer          world;
+    private final Minecraft      mc;
+    private final WorldServer    world;
     public Properties            autoSaveConfig;
     private static Properties    autoSaveConfigDefaults = new Properties();
     private File                 autoConfigFile;

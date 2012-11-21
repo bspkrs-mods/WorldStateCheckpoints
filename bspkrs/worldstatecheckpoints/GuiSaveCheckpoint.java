@@ -8,9 +8,9 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiSaveCheckpoint extends GuiScreen
 {
-    private GuiTextField      edit;
-    private GuiButton         back, save;
-    private CheckpointManager cpm;
+    private GuiTextField            edit;
+    private GuiButton               back, save;
+    private final CheckpointManager cpm;
     
     public GuiSaveCheckpoint(CheckpointManager cpm)
     {
@@ -24,8 +24,6 @@ public class GuiSaveCheckpoint extends GuiScreen
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
-        
-        // cpm = new CheckpointManager(mc);
         
         byte byte0 = -16;
         

@@ -1,9 +1,9 @@
 package bspkrs.worldstatecheckpoints;
 
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.MathHelper;
-import net.minecraft.src.StatCollector;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 
 public class GuiCheckpointsMenu extends GuiScreen
 {

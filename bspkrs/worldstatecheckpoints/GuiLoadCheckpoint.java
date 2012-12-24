@@ -2,9 +2,9 @@ package bspkrs.worldstatecheckpoints;
 
 import java.io.File;
 
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiGameOver;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiGameOver;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.src.mod_WorldStateCheckpoints;
 
 public class GuiLoadCheckpoint extends GuiScreen

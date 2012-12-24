@@ -2,7 +2,7 @@
 {
   "modid" : "WorldStateCheckpoints",
   "name" : "WorldStateCheckpoints",
-  "version" : "ML 1.4.5.r01",
+  "version" : "ML 1.4.6.r01",
   "url" : "http://www.minecraftforum.net/topic/1548243-",
   "credits": "Original by MightyPork, forked/reworked by bspkrs",
   "authors": [
@@ -11,7 +11,7 @@
   ],
   "description": "Allows you to create save points in your SP worlds!  Keys are F6 to get the checkpoints menu and F7 to quick-save a checkpoint.",
   "logoFile" : "",
-  "updateUrl" : "https://dl.dropbox.com/u/20748481/Minecraft/1.4.5/worldStateCheckpoints.version",
+  "updateUrl" : "https://dl.dropbox.com/u/20748481/Minecraft/1.4.6/worldStateCheckpoints.version",
   "parent" : "",
   "screenshots": [
   ]

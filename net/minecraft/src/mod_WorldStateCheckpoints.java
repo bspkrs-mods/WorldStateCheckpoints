@@ -60,7 +60,8 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public void load()
     {
-        versionChecker.checkVersionWithLogging();
+        if (allowUpdateCheck)
+            versionChecker.checkVersionWithLogging();
         
         ModLoader.registerKey(this, menuKey, false);
         ModLoader.registerKey(this, saveKey, false);

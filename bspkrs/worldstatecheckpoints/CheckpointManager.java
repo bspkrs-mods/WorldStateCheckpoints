@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.mod_WorldStateCheckpoints;
 import net.minecraft.world.WorldServer;
 
 public class CheckpointManager
 {
-    private final Minecraft      mc;
-    private final WorldServer    world;
+    private Minecraft            mc;
+    private WorldServer          world;
     public Properties            autoSaveConfig;
     private static Properties    autoSaveConfigDefaults = new Properties();
     private File                 autoConfigFile;
@@ -30,8 +31,10 @@ public class CheckpointManager
     public int                   tickCount;
     public int                   maxTickCount;
     public boolean               autoSaveEnabled;
+    public int                   maxAutoSavesToKeep;
     public static final String   ENABLED                = "enabled";
     public static final String   MAX_AUTO_SAVE_ID       = "maxAutoSaveID";
+    public static final String   MAX_AUTO_SAVES_TO_KEEP = "maxAutoSavesToKeep";
     public static final String   AUTO_SAVE_PERIOD       = "autoSavePeriod";
     public static final String   PERIOD_UNIT            = "periodUnit";
     public static final String   UNIT_MINUTES           = "minutes";
@@ -51,19 +54,19 @@ public class CheckpointManager
         mc = minecraft;
         world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.thePlayer.dimension) : null;
         
-        autoSaveConfigDefaults.setProperty(ENABLED, "off");
+        autoSaveConfigDefaults.setProperty(ENABLED, mod_WorldStateCheckpoints.autoSaveEnabledDefault);
         autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVE_ID, "0");
-        autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, "20");
-        autoSaveConfigDefaults.setProperty(PERIOD_UNIT, UNIT_MINUTES);
+        autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVES_TO_KEEP, mod_WorldStateCheckpoints.maxAutoSavesToKeepDefault + "");
+        autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, mod_WorldStateCheckpoints.autoSavePeriodDefault + "");
+        autoSaveConfigDefaults.setProperty(PERIOD_UNIT, mod_WorldStateCheckpoints.periodUnitDefault);
         
         loadAutoConfig();
         
-        tickCount = maxTickCount;
+        tickCount = maxTickCount - 600;
     }
     
     /**
-     * Get this world's current max auto-save ID + 1 and update the max
-     * auto-save ID
+     * Get this world's current max auto-save ID + 1 and update the max auto-save ID
      * 
      * @return the next available auto-save ID for this world
      */
@@ -142,6 +145,14 @@ public class CheckpointManager
             e.printStackTrace();
         }
         
+        if (!autoSaveConfig.containsKey(MAX_AUTO_SAVES_TO_KEEP))
+        {
+            autoSaveConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, "10");
+            saveAutoConfig(autoSaveConfig);
+        }
+        
+        maxAutoSavesToKeep = Integer.valueOf(autoSaveConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
+        
         String unit = autoSaveConfig.getProperty(PERIOD_UNIT);
         
         if (unit.equals(UNIT_SECONDS))
@@ -164,8 +175,7 @@ public class CheckpointManager
     }
     
     /**
-     * Unload the world. You should open menu screen or load different world
-     * afterwards.
+     * Unload the world. You should open menu screen or load different world afterwards.
      */
     public void unloadWorldSilent()
     {
@@ -182,8 +192,7 @@ public class CheckpointManager
     }
     
     /**
-     * Unload the world with info message shown. You should open menu screen or
-     * load different world afterwards.
+     * Unload the world with info message shown. You should open menu screen or load different world afterwards.
      */
     public void unloadWorld(String msg)
     {
@@ -210,6 +219,7 @@ public class CheckpointManager
     public void startWorld(String folder, String name)
     {
         mc.launchIntegratedServer(folder, name, null);
+        mc = null;
     }
     
     public String getWorldSavePath()
@@ -256,8 +266,7 @@ public class CheckpointManager
     }
     
     /**
-     * Get world's save directory + the checkpoint directory + the auto-save
-     * directory
+     * Get world's save directory + the checkpoint directory + the auto-save directory
      * 
      * @return the folder
      */
@@ -267,8 +276,7 @@ public class CheckpointManager
     }
     
     /**
-     * Create a checkpoint (snapshot) of the currently loaded world, using the
-     * given name as suffix after current date and time.
+     * Create a checkpoint (snapshot) of the currently loaded world, using the given name as suffix after current date and time.
      * 
      * @param name
      *            user-provided name
@@ -299,7 +307,11 @@ public class CheckpointManager
             copyDirectory(worldDir, targetDir, IGNORE_COPY);
             
             if (isAutoSave)
+            {
                 mc.thePlayer.addChatMessage("Saved checkpoint as \"" + checkpointName.split("!", 2)[1] + "\".");
+                while (maxAutoSavesToKeep > 0 && getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep)
+                    deleteCheckpoint(getOldestCheckpointFolderName(isAutoSave), isAutoSave);
+            }
         }
         catch (Throwable e)
         {
@@ -318,8 +330,7 @@ public class CheckpointManager
     }
     
     /**
-     * Save checkpoint into already existing folder. Delete the folder and
-     * recreate it with modified name.
+     * Save checkpoint into already existing folder. Delete the folder and recreate it with modified name.
      * 
      * @param dirname_orig
      *            original name
@@ -354,6 +365,25 @@ public class CheckpointManager
     }
     
     /**
+     * Gets the folder name of the oldest checkpoint
+     * 
+     * @param isAutoSave
+     *            whether we want an autosave checkpoint or a named checkpoint directory name
+     * @return the directory name of the oldest named or autosaved checkpoint
+     */
+    public String getOldestCheckpointFolderName(boolean isAutoSave)
+    {
+        File[] files = getCheckpointsPath(isAutoSave).listFiles(new DirFilter());
+        
+        if (files.length > 0)
+            Arrays.sort(files);
+        else
+            return "invalidDirName";
+        
+        return files[0].getName();
+    }
+    
+    /**
      * Load checkpoint with the given directory name
      * 
      * @param checkpointName
@@ -367,6 +397,7 @@ public class CheckpointManager
         File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
         
         unloadWorld("Loading checkpoint...");
+        world = null;
         deleteDirContents(worldDir, IGNORE_DELETE);
         copyDirectory(checkpointDir, worldDir, IGNORE_NULL);
         startWorld(worldDir.getName(), worldName);
@@ -394,9 +425,8 @@ public class CheckpointManager
     }
     
     /**
-     * Copy directory from source to target location recursively, ignoring
-     * strings in the "ignore" array. Target location will be created if needed.
-     * Source directory is not copied, only its contents.
+     * Copy directory from source to target location recursively, ignoring strings in the "ignore" array. Target location will be created if
+     * needed. Source directory is not copied, only its contents.
      * 
      * @param sourceLocation
      *            source
@@ -484,8 +514,7 @@ public class CheckpointManager
     }
     
     /**
-     * Delete directory contents recursively. Ignore files / dirs listed in
-     * "ignore" array.
+     * Delete directory contents recursively. Ignore files / dirs listed in "ignore" array.
      * 
      * @param dir
      *            directory to delete
@@ -524,13 +553,21 @@ public class CheckpointManager
     }
     
     /**
+     * @return count of checkpoints saved
+     */
+    public int getCheckpointsCount(boolean isAutoSave)
+    {
+        File chpdir = getCheckpointsPath(isAutoSave);
+        
+        return (chpdir.listFiles(new DirFilter()) != null ? chpdir.listFiles(new DirFilter()).length : 0);
+    }
+    
+    /**
      * @return true if any checkpoints are stored
      */
     public boolean getHasCheckpoints(boolean isAutoSave)
     {
-        File chpdir = getCheckpointsPath(isAutoSave);
-        
-        return chpdir.listFiles(new DirFilter()) != null && chpdir.listFiles(new DirFilter()).length > 0;
+        return getCheckpointsCount(isAutoSave) > 0;
     }
     
     private class DirFilter implements FileFilter

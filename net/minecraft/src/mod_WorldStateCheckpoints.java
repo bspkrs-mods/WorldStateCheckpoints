@@ -2,11 +2,13 @@ package net.minecraft.src;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGameOver;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
+import bspkrs.util.CommonUtils;
 import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CheckpointManager;
 import bspkrs.worldstatecheckpoints.GuiCheckpointsMenu;
@@ -14,22 +16,30 @@ import bspkrs.worldstatecheckpoints.GuiLoadCheckpoint;
 
 public class mod_WorldStateCheckpoints extends BaseMod
 {
-    @MLProp(info = "Set to true to allow checking for mod updates, false to disable")
-    public static boolean     allowUpdateCheck     = true;
+    @MLProp(info = "Default enabled state of auto-saving when starting a new world.  Valid values are on/off.")
+    public static String      autoSaveEnabledDefault    = "off";
+    @MLProp(info = "Default maximum number of auto-saves to keep per world. This value is used when starting a new world. Use 0 for no limit.", min = 0)
+    public static int         maxAutoSavesToKeepDefault = 10;
+    @MLProp(info = "Default auto-save period to use in a new world's auto-save config.")
+    public static int         autoSavePeriodDefault     = 20;
+    @MLProp(info = "Default auto-save period unit to use in a new world's auto-save config.  Valid values are " +
+            CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + "/" + CheckpointManager.UNIT_TICKS + ".")
+    public static String      periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
     
-    public static String      menuKeyStr           = "F6";
-    public static String      saveKeyStr           = "F7";
+    public static String      menuKeyStr                = "F6";
+    public static String      saveKeyStr                = "F7";
     
-    public static KeyBinding  menuKey              = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
-    public static KeyBinding  saveKey              = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
-    public static boolean     justLoadedCheckpoint = false;
-    public static boolean     justLoadedWorld      = false;
-    public static String      loadMessage          = "";
+    public static KeyBinding  menuKey                   = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
+    public static KeyBinding  saveKey                   = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
+    public static boolean     justLoadedCheckpoint      = false;
+    public static boolean     justLoadedWorld           = false;
+    public static String      loadMessage               = "";
     public CheckpointManager  cpm;
     
     private ModVersionChecker versionChecker;
-    private final String      versionURL           = "https://dl.dropbox.com/u/20748481/Minecraft/1.4.6/worldStateCheckpoints.version";
-    private final String      mcfTopic             = "http://www.minecraftforum.net/topic/1548243-";
+    private boolean           allowUpdateCheck;
+    private final String      versionURL                = "https://dl.dropbox.com/u/20748481/Minecraft/1.4.6/worldStateCheckpoints.version";
+    private final String      mcfTopic                  = "http://www.minecraftforum.net/topic/1548243-";
     
     private final Minecraft   mc;
     
@@ -42,11 +52,18 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.4.6.r01";
+        return "ML 1.4.6.r02";
+    }
+    
+    @Override
+    public String getPriorities()
+    {
+        return "after:mod_bspkrsCore";
     }
     
     public mod_WorldStateCheckpoints()
     {
+        allowUpdateCheck = mod_bspkrsCore.allowUpdateCheck;
         if (allowUpdateCheck)
             versionChecker = new ModVersionChecker(getName(), getVersion(), versionURL, mcfTopic, ModLoader.getLogger());
         
@@ -60,7 +77,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public void load()
     {
-        if (allowUpdateCheck)
+        if (allowUpdateCheck && versionChecker != null)
             versionChecker.checkVersionWithLogging();
         
         ModLoader.registerKey(this, menuKey, false);
@@ -83,13 +100,16 @@ public class mod_WorldStateCheckpoints extends BaseMod
     public void clientDisconnect(NetClientHandler var1)
     {
         if (mc.isSingleplayer())
+        {
             ModLoader.setInGameHook(this, false, true);
+            cpm = null;
+        }
     }
     
     @Override
     public boolean onTickInGame(float f, Minecraft mc)
     {
-        if (allowUpdateCheck)
+        if (allowUpdateCheck && versionChecker != null)
         {
             if (!versionChecker.isCurrentVersion())
                 for (String msg : versionChecker.getInGameMessage())
@@ -104,9 +124,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
         }
         
         if (cpm == null)
-        {
             cpm = new CheckpointManager(mc);
-        }
         
         if (justLoadedCheckpoint)
         {
@@ -119,7 +137,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
             justLoadedCheckpoint = false;
         }
         
-        if (cpm.autoSaveEnabled)
+        if (cpm.autoSaveEnabled && !CommonUtils.isGamePaused(mc))
             cpm.incrementTickCount();
         
         return true;
@@ -137,7 +155,8 @@ public class mod_WorldStateCheckpoints extends BaseMod
             else
                 mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
         }
-        else if (event.equals(saveKey) && mc.isSingleplayer())
+        else if (event.equals(saveKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
+                !(mc.currentScreen instanceof GuiIngameMenu))
             cpm.setCheckpoint("", true);
     }
 }

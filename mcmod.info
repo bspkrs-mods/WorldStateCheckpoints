@@ -2,7 +2,7 @@
 {
   "modid" : "WorldStateCheckpoints",
   "name" : "WorldStateCheckpoints",
-  "version" : "ML 1.4.6.r01",
+  "version" : "ML 1.4.6.r02",
   "url" : "http://www.minecraftforum.net/topic/1548243-",
   "credits": "Original by MightyPork, forked/reworked by bspkrs",
   "authors": [

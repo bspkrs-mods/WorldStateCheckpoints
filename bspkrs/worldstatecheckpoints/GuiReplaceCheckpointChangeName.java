@@ -85,7 +85,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
         if (Character.isLetterOrDigit(Character.valueOf(c)) || validChars.contains(String.valueOf(c)) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END)
             edit.textboxKeyTyped(c, i);
         
-        save.enabled = edit.getText().trim().length() > 0;
+        save.enabled = edit.getText().trim().length() > 0 && !edit.getText().trim().endsWith(".");
         
         if (c == '\r')
             actionPerformed((GuiButton) controlList.get(1));

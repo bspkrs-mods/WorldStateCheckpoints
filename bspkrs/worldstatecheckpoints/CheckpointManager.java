@@ -40,7 +40,6 @@ public class CheckpointManager
     public static final String   UNIT_MINUTES           = "minutes";
     public static final String   UNIT_HOURS             = "hours";
     public static final String   UNIT_SECONDS           = "seconds";
-    public static final String   UNIT_TICKS             = "ticks";
     
     public static final String   CHECKPOINT_DIR_NAME    = "checkpoints";
     public static final String   AUTOSAVES_DIR_NAME     = "autosaves";
@@ -157,8 +156,6 @@ public class CheckpointManager
         
         if (unit.equals(UNIT_SECONDS))
             maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20;
-        else if (unit.equals(UNIT_TICKS))
-            maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD));
         else if (unit.equals(UNIT_HOURS))
             maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20 * 60 * 60;
         else
@@ -304,13 +301,12 @@ public class CheckpointManager
             
             targetDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
             
-            copyDirectory(worldDir, targetDir, IGNORE_COPY);
+            new DirectoryCopier(worldDir, targetDir, IGNORE_COPY, isAutoSave);
             
             if (isAutoSave)
             {
-                mc.thePlayer.addChatMessage("Saved checkpoint as \"" + checkpointName.split("!", 2)[1] + "\".");
-                while (maxAutoSavesToKeep > 0 && getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep)
-                    deleteCheckpoint(getOldestCheckpointFolderName(isAutoSave), isAutoSave);
+                if (maxAutoSavesToKeep > 0 && getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep)
+                    new OldAutosaveRemover();
             }
         }
         catch (Throwable e)
@@ -339,7 +335,7 @@ public class CheckpointManager
      */
     public void saveCheckpointInto(String dirname_orig, String dirname_new)
     {
-        deleteDir(chainDirs(getCheckpointsPath(false).toString(), dirname_orig));
+        deleteDirAndContents(chainDirs(getCheckpointsPath(false).toString(), dirname_orig));
         try
         {
             world.saveAllChunks(true, null);
@@ -361,7 +357,7 @@ public class CheckpointManager
      */
     public void deleteCheckpoint(String dirname, boolean isAutoSave)
     {
-        deleteDir(chainDirs(getCheckpointsPath(isAutoSave).toString(), dirname));
+        deleteDirAndContents(chainDirs(getCheckpointsPath(isAutoSave).toString(), dirname));
     }
     
     /**
@@ -371,7 +367,7 @@ public class CheckpointManager
      *            whether we want an autosave checkpoint or a named checkpoint directory name
      * @return the directory name of the oldest named or autosaved checkpoint
      */
-    public String getOldestCheckpointFolderName(boolean isAutoSave)
+    public String getOldestCheckpointDirName(boolean isAutoSave)
     {
         File[] files = getCheckpointsPath(isAutoSave).listFiles(new DirFilter());
         
@@ -493,19 +489,19 @@ public class CheckpointManager
     }
     
     /**
-     * Delete directory recursively.
+     * Delete directory and all contents recursively.
      * 
      * @param dir
      * @return
      */
-    public boolean deleteDir(File dir)
+    public boolean deleteDirAndContents(File dir)
     {
         if (dir.isDirectory())
         {
             String[] children = dir.list();
             for (int i = 0; i < children.length; i++)
             {
-                boolean success = deleteDir(new File(dir, children[i]));
+                boolean success = deleteDirAndContents(new File(dir, children[i]));
                 if (!success)
                     return false;
             }
@@ -514,7 +510,7 @@ public class CheckpointManager
     }
     
     /**
-     * Delete directory contents recursively. Ignore files / dirs listed in "ignore" array.
+     * Delete directory contents recursively. Leaves the specified starting directory empty. Ignores files / dirs listed in "ignore" array.
      * 
      * @param dir
      *            directory to delete
@@ -594,5 +590,58 @@ public class CheckpointManager
         List<File> list = Arrays.asList(files);
         Collections.reverse(list);
         return list.toArray(new File[list.size()]);
+    }
+    
+    private class DirectoryCopier implements Runnable
+    {
+        File     src, tgt;
+        String[] ignoreList;
+        boolean  isAutoSave;
+        Thread   t;
+        
+        DirectoryCopier(File sourceLocation, File targetLocation, String[] ignore, boolean isAutoSave)
+        {
+            src = sourceLocation;
+            tgt = targetLocation;
+            ignoreList = ignore;
+            this.isAutoSave = isAutoSave;
+            t = new Thread(this, "DirectoryCopier");
+            t.start();
+        }
+        
+        @Override
+        public void run()
+        {
+            if (isAutoSave)
+                mc.thePlayer.addChatMessage("Saving checkpoint...");
+            try
+            {
+                copyDirectory(src, tgt, ignoreList);
+                if (isAutoSave)
+                    mc.thePlayer.addChatMessage("Done.");
+            }
+            catch (Throwable e)
+            {
+                mc.thePlayer.addChatMessage("Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid.");
+            }
+        }
+    }
+    
+    private class OldAutosaveRemover implements Runnable
+    {
+        Thread t;
+        
+        OldAutosaveRemover()
+        {
+            t = new Thread(this, "OldAutosaveRemover");
+            t.start();
+        }
+        
+        @Override
+        public void run()
+        {
+            while (maxAutoSavesToKeep > 0 && getCheckpointsCount(true) > maxAutoSavesToKeep)
+                deleteCheckpoint(getOldestCheckpointDirName(true), true);
+        }
     }
 }

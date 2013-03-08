@@ -84,12 +84,7 @@ public class GuiConfigureAutoSave extends GuiScreen
                 break;
             
             case -2:
-                if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_TICKS))
-                {
-                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_HOURS);
-                    periodUnit.displayString = cpm.UNIT_HOURS;
-                }
-                else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_HOURS))
+                if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_HOURS))
                 {
                     localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_MINUTES);
                     periodUnit.displayString = cpm.UNIT_MINUTES;
@@ -101,8 +96,8 @@ public class GuiConfigureAutoSave extends GuiScreen
                 }
                 else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_SECONDS))
                 {
-                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_TICKS);
-                    periodUnit.displayString = cpm.UNIT_TICKS;
+                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_HOURS);
+                    periodUnit.displayString = cpm.UNIT_HOURS;
                 }
                 break;
             

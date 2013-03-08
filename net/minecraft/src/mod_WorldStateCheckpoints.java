@@ -23,7 +23,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @MLProp(info = "Default auto-save period to use in a new world's auto-save config.")
     public static int         autoSavePeriodDefault     = 20;
     @MLProp(info = "Default auto-save period unit to use in a new world's auto-save config.  Valid values are " +
-            CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + "/" + CheckpointManager.UNIT_TICKS + ".")
+            CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + ".")
     public static String      periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
     
     public static String      menuKeyStr                = "F6";
@@ -52,7 +52,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.4.6.r02";
+        return "ML 1.4.6.r03";
     }
     
     @Override
@@ -137,7 +137,8 @@ public class mod_WorldStateCheckpoints extends BaseMod
             justLoadedCheckpoint = false;
         }
         
-        if (cpm.autoSaveEnabled && !CommonUtils.isGamePaused(mc))
+        if (cpm.autoSaveEnabled &&
+                (mc.currentScreen == null || !(mc.currentScreen instanceof GuiGameOver || CommonUtils.isGamePaused(mc))))
             cpm.incrementTickCount();
         
         return true;
@@ -157,6 +158,9 @@ public class mod_WorldStateCheckpoints extends BaseMod
         }
         else if (event.equals(saveKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
                 !(mc.currentScreen instanceof GuiIngameMenu))
+        {
+            cpm.tickCount = 0;
             cpm.setCheckpoint("", true);
+        }
     }
 }

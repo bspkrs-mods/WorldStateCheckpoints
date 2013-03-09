@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.src.mod_WorldStateCheckpoints;
 import net.minecraft.world.WorldServer;
 
@@ -176,16 +177,16 @@ public class CheckpointManager
      */
     public void unloadWorldSilent()
     {
+        world = null;
         mc.theWorld.sendQuittingDisconnectingPacket();
-        mc.loadWorld(null);
-        try
-        {
-            Thread.sleep(2000);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        mc.loadWorld((WorldClient) null);
+        while (mc.isIntegratedServerRunning())
+            try
+            {
+                Thread.sleep(20);
+            }
+            catch (InterruptedException e)
+            {}
     }
     
     /**
@@ -193,16 +194,16 @@ public class CheckpointManager
      */
     public void unloadWorld(String msg)
     {
+        world = null;
         mc.theWorld.sendQuittingDisconnectingPacket();
-        mc.loadWorld(null, msg);
-        try
-        {
-            Thread.sleep(2000);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        mc.loadWorld((WorldClient) null, msg);
+        while (mc.isIntegratedServerRunning())
+            try
+            {
+                Thread.sleep(20);
+            }
+            catch (InterruptedException e)
+            {}
     }
     
     /**
@@ -393,7 +394,6 @@ public class CheckpointManager
         File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
         
         unloadWorld("Loading checkpoint...");
-        world = null;
         deleteDirContents(worldDir, IGNORE_DELETE);
         copyDirectory(checkpointDir, worldDir, IGNORE_NULL);
         startWorld(worldDir.getName(), worldName);

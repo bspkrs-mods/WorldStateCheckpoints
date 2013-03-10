@@ -613,16 +613,17 @@ public class CheckpointManager
         public void run()
         {
             if (isAutoSave)
-                mc.thePlayer.addChatMessage("Saving checkpoint...");
+                mc.thePlayer.addChatMessage("WSC: Saving checkpoint...");
             try
             {
                 copyDirectory(src, tgt, ignoreList);
                 if (isAutoSave)
-                    mc.thePlayer.addChatMessage("Done.");
+                    mc.thePlayer.addChatMessage("WSC: Checkpoint \"" + tgt.getName().split("!")[1] + "\" saved.");
             }
             catch (Throwable e)
             {
-                mc.thePlayer.addChatMessage("Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid.");
+                mc.thePlayer.addChatMessage("Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid! See log for details.");
+                e.printStackTrace();
             }
         }
     }

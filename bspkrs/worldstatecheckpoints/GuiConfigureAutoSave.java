@@ -35,7 +35,7 @@ public class GuiConfigureAutoSave extends GuiScreen
     @Override
     public void initGui()
     {
-        controlList.clear();
+    	buttonList.clear();
         byte byte0 = -16;
         
         int row1, row2, row3, row5;
@@ -54,10 +54,10 @@ public class GuiConfigureAutoSave extends GuiScreen
         save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, "Save");
         back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, "Cancel");
         
-        controlList.add(enable);
-        controlList.add(periodUnit);
-        controlList.add(save);
-        controlList.add(back);
+        buttonList.add(enable);
+        buttonList.add(periodUnit);
+        buttonList.add(save);
+        buttonList.add(back);
     }
     
     /**

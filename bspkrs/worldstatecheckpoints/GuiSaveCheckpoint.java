@@ -23,6 +23,7 @@ public class GuiSaveCheckpoint extends GuiScreen
     @Override
     public void initGui()
     {
+    	buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
@@ -36,8 +37,8 @@ public class GuiSaveCheckpoint extends GuiScreen
         edit.setFocused(true);
         save.enabled = false;
         
-        controlList.add(back);
-        controlList.add(save);
+        buttonList.add(back);
+        buttonList.add(save);
     }
     
     @Override
@@ -81,7 +82,7 @@ public class GuiSaveCheckpoint extends GuiScreen
         save.enabled = edit.getText().trim().length() > 0 && !edit.getText().trim().endsWith(".");
         
         if (c == '\r')
-            actionPerformed((GuiButton) controlList.get(1));
+            actionPerformed((GuiButton) buttonList.get(1));
     }
     
     @Override

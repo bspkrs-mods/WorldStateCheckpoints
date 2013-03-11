@@ -24,10 +24,10 @@ public class GuiCheckpointsMenu extends GuiScreen
     @Override
     public void initGui()
     {
-        controlList.clear();
+    	buttonList.clear();
         byte byte0 = -16;
         
-        controlList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, StatCollector.translateToLocal("menu.returnToGame")));
+        buttonList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, StatCollector.translateToLocal("menu.returnToGame")));
         
         GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, 99, 20, "Save new");
         GuiButton replace = new GuiButton(-3, width / 2 + 1, height / 4 + 24 + byte0, 99, 20, "Overwrite");
@@ -43,11 +43,11 @@ public class GuiCheckpointsMenu extends GuiScreen
             loadAuto.enabled = cpm.getHasCheckpoints(true);
         }
         
-        controlList.add(load);
-        controlList.add(loadAuto);
-        controlList.add(save);
-        controlList.add(replace);
-        controlList.add(configAuto);
+        buttonList.add(load);
+        buttonList.add(loadAuto);
+        buttonList.add(save);
+        buttonList.add(replace);
+        buttonList.add(configAuto);
     }
     
     /**

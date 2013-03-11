@@ -29,6 +29,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     @Override
     public void initGui()
     {
+    	buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
@@ -41,8 +42,8 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
         edit.setFocused(true);
         save.enabled = true;
         
-        controlList.add(back);
-        controlList.add(save);
+        buttonList.add(back);
+        buttonList.add(save);
     }
     
     @Override
@@ -88,7 +89,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
         save.enabled = edit.getText().trim().length() > 0 && !edit.getText().trim().endsWith(".");
         
         if (c == '\r')
-            actionPerformed((GuiButton) controlList.get(1));
+            actionPerformed((GuiButton) buttonList.get(1));
     }
     
     @Override

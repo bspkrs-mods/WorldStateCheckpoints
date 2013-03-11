@@ -47,7 +47,7 @@ public class GuiLoadCheckpoint extends GuiScreen
     @Override
     public void initGui()
     {
-        controlList.clear();
+    	buttonList.clear();
         
         byte byte0 = -16;
         int prevX, backX, nextX, switchX;
@@ -73,10 +73,10 @@ public class GuiLoadCheckpoint extends GuiScreen
         back = new GuiButton(-1, backX, height / 4 + 24 + byte0, 70, 20, "Back");
         next = new GuiButton(-3, nextX, height / 4 + 24 + byte0, 60, 20, ">>>");
         
-        controlList.add(back);
-        controlList.add(switchLoad);
-        controlList.add(prev);
-        controlList.add(next);
+        buttonList.add(back);
+        buttonList.add(switchLoad);
+        buttonList.add(prev);
+        buttonList.add(next);
         
         File[] files = cpm.getCheckpoints(isAutoCheckpointsLoad);
         
@@ -115,10 +115,10 @@ public class GuiLoadCheckpoint extends GuiScreen
             }
             
             GuiButton btn = new GuiButton(index, width / 2 - 100, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, label);
-            controlList.add(btn);
+            buttonList.add(btn);
             
             GuiButton delbtn = new GuiButton(index + 1000, width / 2 + 100 + 4, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, 20, 20, "X");
-            controlList.add(delbtn);
+            buttonList.add(delbtn);
             
             dirNames[index] = file.getName();
             pageNums[index] = page;

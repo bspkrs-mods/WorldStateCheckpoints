@@ -32,12 +32,13 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     @Override
     public void initGui()
     {
+    	buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
         
-        controlList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "Yes"));
-        controlList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "No"));
+        buttonList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "Yes"));
+        buttonList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "No"));
     }
     
     @Override

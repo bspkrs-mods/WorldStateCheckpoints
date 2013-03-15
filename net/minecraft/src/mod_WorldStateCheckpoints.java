@@ -38,7 +38,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     
     private ModVersionChecker versionChecker;
     private boolean           allowUpdateCheck;
-    private final String      versionURL                = "https://dl.dropbox.com/u/20748481/Minecraft/1.4.6/worldStateCheckpoints.version";
+    private final String      versionURL                = "https://dl.dropbox.com/u/20748481/Minecraft/1.5.0/worldStateCheckpoints.version";
     private final String      mcfTopic                  = "http://www.minecraftforum.net/topic/1548243-";
     
     private final Minecraft   mc;
@@ -52,13 +52,13 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.4.6.r03";
+        return "ML 1.5.0.r01";
     }
     
     @Override
     public String getPriorities()
     {
-        return "after:mod_bspkrsCore";
+        return "required-after:mod_bspkrsCore";
     }
     
     public mod_WorldStateCheckpoints()

@@ -161,7 +161,7 @@ public class CheckpointManager
             maxTickCount = Integer.valueOf(autoSaveConfig.getProperty(AUTO_SAVE_PERIOD)) * 20 * 60 * 60;
         else
         {
-            if (!autoSaveConfig.getProperty(this.PERIOD_UNIT).equalsIgnoreCase(this.UNIT_MINUTES))
+            if (!autoSaveConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_MINUTES))
             {
                 autoSaveConfig.setProperty(PERIOD_UNIT, UNIT_MINUTES);
                 this.saveAutoConfig(autoSaveConfig);
@@ -209,10 +209,8 @@ public class CheckpointManager
     /**
      * Start world
      * 
-     * @param folder
-     *            save dir name
-     * @param name
-     *            user-entered world name
+     * @param folder save dir name
+     * @param name user-entered world name
      */
     public void startWorld(String folder, String name)
     {
@@ -227,7 +225,7 @@ public class CheckpointManager
     
     public String getWorldSaveRelativePath()
     {
-        return "/saves/" + world.getSaveHandler().getSaveDirectoryName();
+        return "/saves/" + world.getSaveHandler().getWorldDirectoryName();
     }
     
     /**
@@ -276,10 +274,8 @@ public class CheckpointManager
     /**
      * Create a checkpoint (snapshot) of the currently loaded world, using the given name as suffix after current date and time.
      * 
-     * @param name
-     *            user-provided name
-     * @param isAutoSave
-     *            whether or not this is an auto-saved checkpoint
+     * @param name user-provided name
+     * @param isAutoSave whether or not this is an auto-saved checkpoint
      */
     public void setCheckpoint(String name, boolean isAutoSave)
     {
@@ -329,10 +325,8 @@ public class CheckpointManager
     /**
      * Save checkpoint into already existing folder. Delete the folder and recreate it with modified name.
      * 
-     * @param dirname_orig
-     *            original name
-     * @param dirname_new
-     *            new modified name
+     * @param dirname_orig original name
+     * @param dirname_new new modified name
      */
     public void saveCheckpointInto(String dirname_orig, String dirname_new)
     {
@@ -353,8 +347,7 @@ public class CheckpointManager
     /**
      * Delete single checkpoint
      * 
-     * @param dirname
-     *            checkpoint to delete (only dir name)
+     * @param dirname checkpoint to delete (only dir name)
      */
     public void deleteCheckpoint(String dirname, boolean isAutoSave)
     {
@@ -364,8 +357,7 @@ public class CheckpointManager
     /**
      * Gets the folder name of the oldest checkpoint
      * 
-     * @param isAutoSave
-     *            whether we want an autosave checkpoint or a named checkpoint directory name
+     * @param isAutoSave whether we want an autosave checkpoint or a named checkpoint directory name
      * @return the directory name of the oldest named or autosaved checkpoint
      */
     public String getOldestCheckpointDirName(boolean isAutoSave)
@@ -383,8 +375,7 @@ public class CheckpointManager
     /**
      * Load checkpoint with the given directory name
      * 
-     * @param checkpointName
-     *            the directory with checkpoint
+     * @param checkpointName the directory with checkpoint
      */
     public void loadCheckpoint(String checkpointName, boolean isAutoSave)
     {
@@ -402,8 +393,7 @@ public class CheckpointManager
     /**
      * Connect strings using the default OS folder separator to a File object.
      * 
-     * @param files
-     *            strings representing folders or files.
+     * @param files strings representing folders or files.
      * @return the File obtained by joining these strings.
      */
     public File chainDirs(String... files)
@@ -424,12 +414,9 @@ public class CheckpointManager
      * Copy directory from source to target location recursively, ignoring strings in the "ignore" array. Target location will be created if
      * needed. Source directory is not copied, only its contents.
      * 
-     * @param sourceLocation
-     *            source
-     * @param targetLocation
-     *            target
-     * @param ignore
-     *            array of ignored names (strings)
+     * @param sourceLocation source
+     * @param targetLocation target
+     * @param ignore array of ignored names (strings)
      * @throws IOException
      */
     public void copyDirectory(File sourceLocation, File targetLocation, String[] ignore)
@@ -512,10 +499,8 @@ public class CheckpointManager
     /**
      * Delete directory contents recursively. Leaves the specified starting directory empty. Ignores files / dirs listed in "ignore" array.
      * 
-     * @param dir
-     *            directory to delete
-     * @param ignore
-     *            ignored files
+     * @param dir directory to delete
+     * @param ignore ignored files
      * @return true on success
      */
     public boolean deleteDirContents(File dir, String[] ignore)

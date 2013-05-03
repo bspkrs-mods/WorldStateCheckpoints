@@ -9,6 +9,7 @@ import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
 import bspkrs.util.CommonUtils;
+import bspkrs.util.Const;
 import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CheckpointManager;
 import bspkrs.worldstatecheckpoints.GuiCheckpointsMenu;
@@ -38,7 +39,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     
     private ModVersionChecker versionChecker;
     private boolean           allowUpdateCheck;
-    private final String      versionURL                = "http://192.210.150.163/Minecraft/1.5.1/worldStateCheckpoints.version";
+    private final String      versionURL                = "http://bspk.rs/Minecraft/" + Const.MCVERSION + "/worldStateCheckpoints.version";
     private final String      mcfTopic                  = "http://www.minecraftforum.net/topic/1548243-";
     
     private final Minecraft   mc;
@@ -52,7 +53,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML 1.5.1.r01";
+        return "ML " + Const.MCVERSION + ".r01";
     }
     
     @Override

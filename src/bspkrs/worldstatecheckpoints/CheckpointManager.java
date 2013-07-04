@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.src.mod_WorldStateCheckpoints;
 import net.minecraft.world.WorldServer;
+import bspkrs.util.CommonUtils;
 
 public class CheckpointManager
 {
@@ -220,7 +221,7 @@ public class CheckpointManager
     
     public String getWorldSavePath()
     {
-        return Minecraft.getMinecraftDir() + getWorldSaveRelativePath();
+        return getWorldPath().getAbsolutePath();
     }
     
     public String getWorldSaveRelativePath()
@@ -235,7 +236,7 @@ public class CheckpointManager
      */
     public File getWorldPath()
     {
-        return new File(Minecraft.getMinecraftDir() + getWorldSaveRelativePath());
+        return new File(CommonUtils.getMinecraftDir(), getWorldSaveRelativePath());
     }
     
     /**

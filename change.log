@@ -1,0 +1,35 @@
+1.6.1.r02 - 09-Jul-2013
+- update update
+1.6.1.r01 - 05-Jul-2013
+- 1.6.1 update
+1.5.2.r01 - 03-May-2013
+- updated for 1.5.2
+1.5.1.r01 - 23-Mar-2013
+- updated for 1.5.1
+1.5.0.r01 - 15-Mar-2013
+- updated for 1.5
+1.4.6.r03 - 10-Mar-2013
+- added threading for checkpoint saving and removing (improved performance)
+- large worlds will no longer freeze the game while the checkpoint is being copied
+- fixed "leaking worlds" issue reported by Forge (kudos to cpw for having that check)
+1.4.6.r02 - 20-Feb-2013
+- updated to support bspkrsCore
+- added optional limit for the number of auto-saves to keep per world
+- added global default auto-save settings for when you start new worlds
+- use of mod in Forge is a little smoother (less console error spamming)
+1.4.6.r01 (23-Dec-2012)
+- updated for 1.4.6
+1.4.5.r01 (21-Nov-2012)
+- updated for 1.4.5
+1.4.4.r03 et al (16-Nov-2012)
+- fixed null pointer exception caused by joining a multiplayer server
+1.4.4.r02 et al (15-Nov-2012)
+- fixed stupid mistake in GuiReplaceCheckpoint that caused a null pointer exception
+1.4.4.r01 (13-Nov-2012)
+- updated for 1.4.4
+1.4.2.r03 (13-Nov-2012)
+- added auto-save mode
+- added auto-save config GUI
+- added keybinding for quicksave
+1.4.2.r02 (02-Nov-2012)
+- Initial release

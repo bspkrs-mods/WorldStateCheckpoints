@@ -26,10 +26,11 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     /**
      * Adds the buttons (and other controls) to the screen in question.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
-    	buttonList.clear();
+        buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
@@ -53,8 +54,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     }
     
     /**
-     * Fired when a control is clicked. This is the equivalent of
-     * ActionListener.actionPerformed(ActionEvent e).
+     * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
     protected void actionPerformed(GuiButton par1GuiButton)
@@ -74,7 +74,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
                 cpm.saveCheckpointInto(dirname_orig, dirname_prefix + "!" + edit.getText());
                 mc.displayGuiScreen(null);
                 mc.setIngameFocus();
-                mc.thePlayer.addChatMessage("Saved checkpoint as \"" + edit.getText() + "\".");
+                mc.thePlayer.addChatMessage("WSC: Saved checkpoint as \"" + edit.getText() + "\".");
                 return;
         }
     }

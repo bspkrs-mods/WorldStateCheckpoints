@@ -7,8 +7,6 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiDeleteCheckpointYesNo extends GuiScreen
 {
-    private GuiButton               no, yes;
-    
     private final CheckpointManager cpm;
     
     private final GuiLoadCheckpoint parentScreen;
@@ -29,10 +27,11 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     /**
      * Adds the buttons (and other controls) to the screen in question.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
-    	buttonList.clear();
+        buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
@@ -48,8 +47,7 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     }
     
     /**
-     * Fired when a control is clicked. This is the equivalent of
-     * ActionListener.actionPerformed(ActionEvent e).
+     * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
     protected void actionPerformed(GuiButton par1GuiButton)

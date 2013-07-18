@@ -1,5 +1,13 @@
 package bspkrs.worldstatecheckpoints;
 
+import static bspkrs.worldstatecheckpoints.CheckpointManager.AUTO_SAVE_PERIOD;
+import static bspkrs.worldstatecheckpoints.CheckpointManager.ENABLED;
+import static bspkrs.worldstatecheckpoints.CheckpointManager.MAX_AUTO_SAVES_TO_KEEP;
+import static bspkrs.worldstatecheckpoints.CheckpointManager.PERIOD_UNIT;
+import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_HOURS;
+import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_MINUTES;
+import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_SECONDS;
+
 import java.util.Properties;
 
 import net.minecraft.client.gui.GuiButton;
@@ -23,19 +31,20 @@ public class GuiConfigureAutoSave extends GuiScreen
     {
         this.cpm = cpm;
         localConfig = new Properties();
-        localConfig.setProperty(cpm.ENABLED, cpm.autoSaveConfig.getProperty(cpm.ENABLED));
-        localConfig.setProperty(cpm.MAX_AUTO_SAVES_TO_KEEP, cpm.autoSaveConfig.getProperty(cpm.MAX_AUTO_SAVES_TO_KEEP));
-        localConfig.setProperty(cpm.AUTO_SAVE_PERIOD, cpm.autoSaveConfig.getProperty(cpm.AUTO_SAVE_PERIOD));
-        localConfig.setProperty(cpm.PERIOD_UNIT, cpm.autoSaveConfig.getProperty(cpm.PERIOD_UNIT));
+        localConfig.setProperty(ENABLED, cpm.autoSaveConfig.getProperty(ENABLED));
+        localConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, cpm.autoSaveConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
+        localConfig.setProperty(AUTO_SAVE_PERIOD, cpm.autoSaveConfig.getProperty(AUTO_SAVE_PERIOD));
+        localConfig.setProperty(PERIOD_UNIT, cpm.autoSaveConfig.getProperty(PERIOD_UNIT));
     }
     
     /**
      * Adds the buttons (and other controls) to the screen in question.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
-    	buttonList.clear();
+        buttonList.clear();
         byte byte0 = -16;
         
         int row1, row2, row3, row5;
@@ -46,10 +55,10 @@ public class GuiConfigureAutoSave extends GuiScreen
         
         enable = new GuiButton(-1, width / 2 - 100, row1, ENABLE_TEXT + (cpm.autoSaveEnabled ? "On" : "Off"));
         periodValue = new GuiTextField(fontRenderer, width / 2 - 62, row2, 60, 20);
-        periodValue.setText(localConfig.getProperty(cpm.AUTO_SAVE_PERIOD));
+        periodValue.setText(localConfig.getProperty(AUTO_SAVE_PERIOD));
         maxToKeep = new GuiTextField(fontRenderer, width / 2 + 2, row3, 60, 20);
-        maxToKeep.setText(localConfig.getProperty(cpm.MAX_AUTO_SAVES_TO_KEEP));
-        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, localConfig.getProperty(cpm.PERIOD_UNIT));
+        maxToKeep.setText(localConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
+        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, localConfig.getProperty(PERIOD_UNIT));
         periodUnit.enabled = cpm.autoSaveEnabled;
         save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, "Save");
         back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, "Cancel");
@@ -69,43 +78,43 @@ public class GuiConfigureAutoSave extends GuiScreen
         switch (par1GuiButton.id)
         {
             case -1:
-                if (localConfig.getProperty(cpm.ENABLED).equalsIgnoreCase("on"))
+                if (localConfig.getProperty(ENABLED).equalsIgnoreCase("on"))
                 {
-                    localConfig.setProperty(cpm.ENABLED, "off");
+                    localConfig.setProperty(ENABLED, "off");
                     enable.displayString = ENABLE_TEXT + "Off";
                     periodUnit.enabled = false;
                 }
                 else
                 {
-                    localConfig.setProperty(cpm.ENABLED, "on");
+                    localConfig.setProperty(ENABLED, "on");
                     enable.displayString = ENABLE_TEXT + "On";
                     periodUnit.enabled = true;
                 }
                 break;
             
             case -2:
-                if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_HOURS))
+                if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_HOURS))
                 {
-                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_MINUTES);
-                    periodUnit.displayString = cpm.UNIT_MINUTES;
+                    localConfig.setProperty(PERIOD_UNIT, UNIT_MINUTES);
+                    periodUnit.displayString = UNIT_MINUTES;
                 }
-                else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_MINUTES))
+                else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_MINUTES))
                 {
-                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_SECONDS);
-                    periodUnit.displayString = cpm.UNIT_SECONDS;
+                    localConfig.setProperty(PERIOD_UNIT, UNIT_SECONDS);
+                    periodUnit.displayString = UNIT_SECONDS;
                 }
-                else if (localConfig.getProperty(cpm.PERIOD_UNIT).equalsIgnoreCase(cpm.UNIT_SECONDS))
+                else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_SECONDS))
                 {
-                    localConfig.setProperty(cpm.PERIOD_UNIT, cpm.UNIT_HOURS);
-                    periodUnit.displayString = cpm.UNIT_HOURS;
+                    localConfig.setProperty(PERIOD_UNIT, UNIT_HOURS);
+                    periodUnit.displayString = UNIT_HOURS;
                 }
                 break;
             
             case -3:
-                cpm.autoSaveConfig.setProperty(cpm.ENABLED, localConfig.getProperty(cpm.ENABLED));
-                cpm.autoSaveConfig.setProperty(cpm.AUTO_SAVE_PERIOD, localConfig.getProperty(cpm.AUTO_SAVE_PERIOD));
-                cpm.autoSaveConfig.setProperty(cpm.PERIOD_UNIT, localConfig.getProperty(cpm.PERIOD_UNIT));
-                cpm.autoSaveConfig.setProperty(cpm.MAX_AUTO_SAVES_TO_KEEP, localConfig.getProperty(cpm.MAX_AUTO_SAVES_TO_KEEP));
+                cpm.autoSaveConfig.setProperty(ENABLED, localConfig.getProperty(ENABLED));
+                cpm.autoSaveConfig.setProperty(AUTO_SAVE_PERIOD, localConfig.getProperty(AUTO_SAVE_PERIOD));
+                cpm.autoSaveConfig.setProperty(PERIOD_UNIT, localConfig.getProperty(PERIOD_UNIT));
+                cpm.autoSaveConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, localConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
                 cpm.saveAutoConfig(cpm.autoSaveConfig);
                 cpm.loadAutoConfig();
                 mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
@@ -130,8 +139,8 @@ public class GuiConfigureAutoSave extends GuiScreen
         save.enabled = periodValue.getText().trim().length() > 0 && Integer.valueOf(periodValue.getText().trim()) > 0
                 && maxToKeep.getText().trim().length() > 0 && Integer.valueOf(maxToKeep.getText().trim()) >= 0;
         
-        localConfig.setProperty(cpm.AUTO_SAVE_PERIOD, periodValue.getText().trim());
-        localConfig.setProperty(cpm.MAX_AUTO_SAVES_TO_KEEP, maxToKeep.getText().trim());
+        localConfig.setProperty(AUTO_SAVE_PERIOD, periodValue.getText().trim());
+        localConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, maxToKeep.getText().trim());
         
         if (c == '\r' && save.enabled)
             actionPerformed(save);

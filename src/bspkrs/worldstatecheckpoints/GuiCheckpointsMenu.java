@@ -21,10 +21,11 @@ public class GuiCheckpointsMenu extends GuiScreen
     /**
      * Adds the buttons (and other controls) to the screen in question.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
-    	buttonList.clear();
+        buttonList.clear();
         byte byte0 = -16;
         
         buttonList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, StatCollector.translateToLocal("menu.returnToGame")));
@@ -51,8 +52,7 @@ public class GuiCheckpointsMenu extends GuiScreen
     }
     
     /**
-     * Fired when a control is clicked. This is the equivalent of
-     * ActionListener.actionPerformed(ActionEvent e).
+     * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
     protected void actionPerformed(GuiButton par1GuiButton)

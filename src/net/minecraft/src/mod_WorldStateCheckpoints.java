@@ -18,31 +18,31 @@ import bspkrs.worldstatecheckpoints.GuiLoadCheckpoint;
 public class mod_WorldStateCheckpoints extends BaseMod
 {
     @MLProp(info = "Default enabled state of auto-saving when starting a new world.  Valid values are on/off.")
-    public static String      autoSaveEnabledDefault    = "off";
+    public static String            autoSaveEnabledDefault    = "off";
     @MLProp(info = "Default maximum number of auto-saves to keep per world. This value is used when starting a new world. Use 0 for no limit.", min = 0)
-    public static int         maxAutoSavesToKeepDefault = 10;
+    public static int               maxAutoSavesToKeepDefault = 10;
     @MLProp(info = "Default auto-save period to use in a new world's auto-save config.")
-    public static int         autoSavePeriodDefault     = 20;
+    public static int               autoSavePeriodDefault     = 20;
     @MLProp(info = "Default auto-save period unit to use in a new world's auto-save config.  Valid values are " +
             CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + ".")
-    public static String      periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
+    public static String            periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
     
-    public static String      menuKeyStr                = "F6";
-    public static String      saveKeyStr                = "F7";
+    public static String            menuKeyStr                = "F6";
+    public static String            saveKeyStr                = "F7";
     
-    public static KeyBinding  menuKey                   = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
-    public static KeyBinding  saveKey                   = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
-    public static boolean     justLoadedCheckpoint      = false;
-    public static boolean     justLoadedWorld           = false;
-    public static String      loadMessage               = "";
-    public CheckpointManager  cpm;
+    public static KeyBinding        menuKey                   = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
+    public static KeyBinding        saveKey                   = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
+    public static boolean           justLoadedCheckpoint      = false;
+    public static boolean           justLoadedWorld           = false;
+    public static String            loadMessage               = "";
+    public static CheckpointManager cpm;
     
-    private ModVersionChecker versionChecker;
-    private boolean           allowUpdateCheck;
-    private final String      versionURL                = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpoints.version";
-    private final String      mcfTopic                  = "http://www.minecraftforum.net/topic/1548243-";
+    private ModVersionChecker       versionChecker;
+    private boolean                 allowUpdateCheck;
+    private final String            versionURL                = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpoints.version";
+    private final String            mcfTopic                  = "http://www.minecraftforum.net/topic/1548243-";
     
-    private final Minecraft   mc;
+    private final Minecraft         mc;
     
     @Override
     public String getName()
@@ -53,7 +53,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML " + Const.MCVERSION + ".r01";
+        return "ML " + Const.MCVERSION + ".r02";
     }
     
     @Override
@@ -85,6 +85,10 @@ public class mod_WorldStateCheckpoints extends BaseMod
         ModLoader.registerKey(this, saveKey, false);
         ModLoader.addLocalization(menuKey.keyDescription, "Checkpoints Menu");
         ModLoader.addLocalization(saveKey.keyDescription, "Checkpoints Quick Save");
+        //        ModLoader.addCommand(new CommandWSC());
+        //        ModLoader.addLocalization("commands.wsc.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .) | wsc load <checkpoint name>");
+        //        ModLoader.addLocalization("commands.wsc.save.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .)");
+        //        ModLoader.addLocalization("commands.wsc.load.usage", "wsc load <checkpoint name>");
     }
     
     @Override
@@ -160,7 +164,9 @@ public class mod_WorldStateCheckpoints extends BaseMod
         else if (event.equals(saveKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
                 !(mc.currentScreen instanceof GuiIngameMenu))
         {
-            cpm.tickCount = 0;
+            if (!cpm.isSaving)
+                cpm.tickCount = 0;
+            
             cpm.setCheckpoint("", true);
         }
     }

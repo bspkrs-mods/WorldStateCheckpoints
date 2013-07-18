@@ -34,6 +34,7 @@ public class CheckpointManager
     public int                   maxTickCount;
     public boolean               autoSaveEnabled;
     public int                   maxAutoSavesToKeep;
+    public boolean               isSaving               = false;
     public static final String   ENABLED                = "enabled";
     public static final String   MAX_AUTO_SAVE_ID       = "maxAutoSaveID";
     public static final String   MAX_AUTO_SAVES_TO_KEEP = "maxAutoSavesToKeep";
@@ -181,13 +182,7 @@ public class CheckpointManager
         world = null;
         mc.theWorld.sendQuittingDisconnectingPacket();
         mc.loadWorld((WorldClient) null);
-        while (mc.isIntegratedServerRunning())
-            try
-            {
-                Thread.sleep(20);
-            }
-            catch (InterruptedException e)
-            {}
+        waitForIntegratedServerShutdown();
     }
     
     /**
@@ -198,6 +193,11 @@ public class CheckpointManager
         world = null;
         mc.theWorld.sendQuittingDisconnectingPacket();
         mc.loadWorld((WorldClient) null, msg);
+        waitForIntegratedServerShutdown();
+    }
+    
+    private void waitForIntegratedServerShutdown()
+    {
         while (mc.isIntegratedServerRunning())
             try
             {
@@ -280,18 +280,10 @@ public class CheckpointManager
      */
     public void setCheckpoint(String name, boolean isAutoSave)
     {
-        try
+        if (!isSaving)
         {
-            mc.getIntegratedServer().getConfigurationManager().saveAllPlayerData();
-            boolean canNotSave = world.canNotSave;
-            world.canNotSave = false;
-            world.saveAllChunks(true, null);
-            world.canNotSave = canNotSave;
-            
             File targetDir;
             String checkpointName;
-            
-            File worldDir = getWorldPath();
             if (isAutoSave)
                 checkpointName = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + "!" + AUTOSAVES_PREFIX + " " + getNextAutoSaveID();
             else
@@ -299,18 +291,32 @@ public class CheckpointManager
             
             targetDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
             
-            new DirectoryCopier(worldDir, targetDir, IGNORE_COPY, isAutoSave);
-            
-            if (isAutoSave)
+            try
             {
-                if (maxAutoSavesToKeep > 0 && getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep)
-                    new OldAutosaveRemover();
+                mc.getIntegratedServer().getConfigurationManager().saveAllPlayerData();
+                boolean canNotSave = world.canNotSave;
+                world.canNotSave = false;
+                world.saveAllChunks(true, null);
+                world.canNotSave = canNotSave;
+                
+                File worldDir = getWorldPath();
+                
+                new DirectoryCopier(worldDir, targetDir, IGNORE_COPY, isAutoSave);
+                
+                if (isAutoSave)
+                {
+                    if (maxAutoSavesToKeep > 0 && getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep)
+                        new OldAutosaveRemover();
+                }
+            }
+            catch (Throwable e)
+            {
+                e.printStackTrace();
+                mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + targetDir.getName() + "\" may be invalid! See log for details.");
             }
         }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
+        else
+            mc.thePlayer.addChatMessage("WSC: Already saving. Wait until saving is complete to save another checkpoint. If this is from an autosave, consider increasing the save period or disabling auto-saving.");
     }
     
     /**
@@ -331,18 +337,23 @@ public class CheckpointManager
      */
     public void saveCheckpointInto(String dirname_orig, String dirname_new)
     {
-        deleteDirAndContents(chainDirs(getCheckpointsPath(false).toString(), dirname_orig));
-        try
+        if (!isSaving)
         {
-            world.saveAllChunks(true, null);
-            File worldDir = getWorldPath();
-            File targetDir = chainDirs(getCheckpointsPath(false).toString(), dirname_new);
-            copyDirectory(worldDir, targetDir, IGNORE_COPY);
+            deleteDirAndContents(chainDirs(getCheckpointsPath(false).toString(), dirname_orig));
+            try
+            {
+                world.saveAllChunks(true, null);
+                File worldDir = getWorldPath();
+                File targetDir = chainDirs(getCheckpointsPath(false).toString(), dirname_new);
+                copyDirectory(worldDir, targetDir, IGNORE_COPY);
+            }
+            catch (Throwable e)
+            {
+                e.printStackTrace();
+            }
         }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
+        else
+            mc.thePlayer.addChatMessage("WSC: Already saving. Wait until saving is complete to save another checkpoint.");
     }
     
     /**
@@ -377,18 +388,38 @@ public class CheckpointManager
      * Load checkpoint with the given directory name
      * 
      * @param checkpointName the directory with checkpoint
+     * @throws IOException
      */
     public void loadCheckpoint(String checkpointName, boolean isAutoSave)
     {
-        File worldDir = getWorldPath();
-        String worldName = getWorldName();
-        
-        File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
-        
-        unloadWorld("Loading checkpoint...");
-        deleteDirContents(worldDir, IGNORE_DELETE);
-        copyDirectory(checkpointDir, worldDir, IGNORE_NULL);
-        startWorld(worldDir.getName(), worldName);
+        if (!isSaving)
+        {
+            File worldDir = getWorldPath();
+            String worldName = getWorldName();
+            
+            File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
+            
+            //BSLog.info("CODE: unloadWorld(\"Loading world state checkpoint...\");");
+            unloadWorld("Loading world state checkpoint...");
+            
+            //BSLog.info("CODE: deleteDirContents(worldDir, IGNORE_DELETE);");
+            deleteDirContents(worldDir, IGNORE_DELETE);
+            
+            try
+            {
+                //BSLog.info("CODE: copyDirectory(checkpointDir, worldDir, IGNORE_NULL);");
+                copyDirectory(checkpointDir, worldDir, IGNORE_NULL);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            
+            //BSLog.info("CODE: startWorld(worldDir.getName(), worldName);");
+            startWorld(worldDir.getName(), worldName);
+        }
+        else
+            mc.thePlayer.addChatMessage("WSC: Currently saving. Wait until saving is complete to load a checkpoint.");
     }
     
     /**
@@ -420,7 +451,7 @@ public class CheckpointManager
      * @param ignore array of ignored names (strings)
      * @throws IOException
      */
-    public void copyDirectory(File sourceLocation, File targetLocation, String[] ignore)
+    public void copyDirectory(File sourceLocation, File targetLocation, String[] ignore) throws IOException
     {
         if (sourceLocation.isDirectory())
         {
@@ -454,24 +485,17 @@ public class CheckpointManager
             
             if (!ignored)
             {
-                try
-                {
-                    InputStream in = new FileInputStream(sourceLocation);
-                    OutputStream out = new FileOutputStream(targetLocation);
-                    
-                    // Copy the bits from instream to outstream
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = in.read(buf)) > 0)
-                        out.write(buf, 0, len);
-                    
-                    in.close();
-                    out.close();
-                }
-                catch (IOException ioe)
-                {
-                    ioe.printStackTrace();
-                }
+                InputStream in = new FileInputStream(sourceLocation);
+                OutputStream out = new FileOutputStream(targetLocation);
+                
+                // Copy the bits from instream to outstream
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0)
+                    out.write(buf, 0, len);
+                
+                in.close();
+                out.close();
             }
         }
     }
@@ -552,15 +576,6 @@ public class CheckpointManager
         return getCheckpointsCount(isAutoSave) > 0;
     }
     
-    private class DirFilter implements FileFilter
-    {
-        @Override
-        public boolean accept(File pathname)
-        {
-            return pathname.isDirectory();
-        }
-    }
-    
     /**
      * Get all checkpoints stored.
      * 
@@ -578,11 +593,46 @@ public class CheckpointManager
         return list.toArray(new File[list.size()]);
     }
     
+    /**
+     * Accepts the display name of a checkpoint and returns the directory name if found, null otherwise.
+     * 
+     * @param name
+     * @return
+     */
+    public String getCheckpointDirNameFromDisplayName(String name)
+    {
+        List<File> files = Arrays.asList(this.getCheckpoints(false));
+        
+        for (File file : files)
+            if (name.trim().equals(file.getName().split("!", 2)[1]))
+                return file.getName();
+        
+        files = Arrays.asList(this.getCheckpoints(true));
+        
+        for (File file : files)
+            if (name.trim().equals(file.getName().split("!", 2)[1]))
+                return file.getName();
+        
+        return null;
+    }
+    
+    /*
+     * Private classes 
+     */
+    
+    private class DirFilter implements FileFilter
+    {
+        @Override
+        public boolean accept(File pathname)
+        {
+            return pathname.isDirectory();
+        }
+    }
+    
     private class DirectoryCopier implements Runnable
     {
         File     src, tgt;
         String[] ignoreList;
-        boolean  isAutoSave;
         Thread   t;
         
         DirectoryCopier(File sourceLocation, File targetLocation, String[] ignore, boolean isAutoSave)
@@ -590,7 +640,6 @@ public class CheckpointManager
             src = sourceLocation;
             tgt = targetLocation;
             ignoreList = ignore;
-            this.isAutoSave = isAutoSave;
             t = new Thread(this, "DirectoryCopier");
             t.start();
         }
@@ -598,18 +647,26 @@ public class CheckpointManager
         @Override
         public void run()
         {
-            if (isAutoSave)
+            if (!isSaving)
+            {
                 mc.thePlayer.addChatMessage("WSC: Saving checkpoint...");
-            try
-            {
-                copyDirectory(src, tgt, ignoreList);
-                if (isAutoSave)
+                try
+                {
+                    isSaving = true;
+                    copyDirectory(src, tgt, ignoreList);
                     mc.thePlayer.addChatMessage("WSC: Checkpoint \"" + tgt.getName().split("!")[1] + "\" saved.");
-            }
-            catch (Throwable e)
-            {
-                mc.thePlayer.addChatMessage("Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid! See log for details.");
-                e.printStackTrace();
+                    
+                    isSaving = false;
+                }
+                catch (Throwable e)
+                {
+                    mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid! See log for details.");
+                    e.printStackTrace();
+                }
+                finally
+                {
+                    isSaving = false;
+                }
             }
         }
     }

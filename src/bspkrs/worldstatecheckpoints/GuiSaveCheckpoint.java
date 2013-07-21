@@ -67,7 +67,6 @@ public class GuiSaveCheckpoint extends GuiScreen
                 cpm.setCheckpoint(edit.getText(), false);
                 mc.displayGuiScreen(null);
                 mc.setIngameFocus();
-                mc.thePlayer.addChatMessage("WSC: Saved checkpoint as \"" + edit.getText() + "\".");
                 return;
         }
     }

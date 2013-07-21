@@ -30,8 +30,8 @@ public class CommandWSC extends CommandBase
             {
                 String name = "";
                 for (int i = 1; i < args.length; i++)
-                    name += args[i] + " ";
-                if (name.endsWith("!") || name.endsWith("."))
+                    name += " " + args[i];
+                if (name.trim().endsWith("!") || name.trim().endsWith("."))
                 {
                     throw new WrongUsageException("commands.wsc.load.usage");
                 }
@@ -44,13 +44,13 @@ public class CommandWSC extends CommandBase
                 {
                     String name = "";
                     for (int i = 1; i < args.length; i++)
-                        name += args[i] + " ";
+                        name += " " + args[i];
                     
-                    String dirName = mod_WorldStateCheckpoints.cpm.getCheckpointDirNameFromDisplayName(name);
+                    String dirName = mod_WorldStateCheckpoints.cpm.getCheckpointDirNameFromDisplayName(name.trim());
                     if (dirName != null)
-                        mod_WorldStateCheckpoints.cpm.loadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX));
+                        mod_WorldStateCheckpoints.delayedLoadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX), 1);
                     else
-                        Minecraft.getMinecraft().thePlayer.addChatMessage(String.format("WSC: invalid checkpoint name \"%s\" specified in load command.", name));
+                        Minecraft.getMinecraft().thePlayer.addChatMessage(String.format("WSC: invalid checkpoint name \"%s\" specified in load command.", name.trim()));
                     
                     return;
                 }

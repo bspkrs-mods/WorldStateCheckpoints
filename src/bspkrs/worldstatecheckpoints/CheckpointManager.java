@@ -301,7 +301,7 @@ public class CheckpointManager
                 
                 File worldDir = getWorldPath();
                 
-                new DirectoryCopier(worldDir, targetDir, IGNORE_COPY, isAutoSave);
+                new CheckpointSaver(worldDir, targetDir, IGNORE_COPY, isAutoSave);
                 
                 if (isAutoSave)
                 {
@@ -312,7 +312,7 @@ public class CheckpointManager
             catch (Throwable e)
             {
                 e.printStackTrace();
-                mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + targetDir.getName() + "\" may be invalid! See log for details.");
+                mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + targetDir.getName() + "\" may be invalid! See " + CommonUtils.getLogFileName() + " for details.");
             }
         }
         else
@@ -399,15 +399,12 @@ public class CheckpointManager
             
             File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
             
-            //BSLog.info("CODE: unloadWorld(\"Loading world state checkpoint...\");");
             unloadWorld("Loading world state checkpoint...");
             
-            //BSLog.info("CODE: deleteDirContents(worldDir, IGNORE_DELETE);");
             deleteDirContents(worldDir, IGNORE_DELETE);
             
             try
             {
-                //BSLog.info("CODE: copyDirectory(checkpointDir, worldDir, IGNORE_NULL);");
                 copyDirectory(checkpointDir, worldDir, IGNORE_NULL);
             }
             catch (IOException e)
@@ -415,7 +412,6 @@ public class CheckpointManager
                 e.printStackTrace();
             }
             
-            //BSLog.info("CODE: startWorld(worldDir.getName(), worldName);");
             startWorld(worldDir.getName(), worldName);
         }
         else
@@ -629,13 +625,13 @@ public class CheckpointManager
         }
     }
     
-    private class DirectoryCopier implements Runnable
+    private class CheckpointSaver implements Runnable
     {
         File     src, tgt;
         String[] ignoreList;
         Thread   t;
         
-        DirectoryCopier(File sourceLocation, File targetLocation, String[] ignore, boolean isAutoSave)
+        CheckpointSaver(File sourceLocation, File targetLocation, String[] ignore, boolean isAutoSave)
         {
             src = sourceLocation;
             tgt = targetLocation;
@@ -660,7 +656,7 @@ public class CheckpointManager
                 }
                 catch (Throwable e)
                 {
-                    mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid! See log for details.");
+                    mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid! See " + CommonUtils.getLogFileName() + " for details.");
                     e.printStackTrace();
                 }
                 finally

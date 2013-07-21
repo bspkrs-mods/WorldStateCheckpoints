@@ -1,3 +1,6 @@
+1.6.2.r03 - ???
+- removed erroneous confusing chat message
+- added wsc command for saving and loading
 1.6.2.r02 - 18-Jul-2013
 - added code to prevent certain actions while saving in progress
 1.6.2.r01 - 10-Jul-2013

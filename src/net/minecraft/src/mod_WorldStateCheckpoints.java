@@ -12,6 +12,7 @@ import bspkrs.util.CommonUtils;
 import bspkrs.util.Const;
 import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CheckpointManager;
+import bspkrs.worldstatecheckpoints.CommandWSC;
 import bspkrs.worldstatecheckpoints.GuiCheckpointsMenu;
 import bspkrs.worldstatecheckpoints.GuiLoadCheckpoint;
 
@@ -37,6 +38,10 @@ public class mod_WorldStateCheckpoints extends BaseMod
     public static String            loadMessage               = "";
     public static CheckpointManager cpm;
     
+    private static int              delayedLoaderTicks        = 0;
+    private static String           delayedLoadCheckpointName = "";
+    private static boolean          isDelayedLoadAutoSave     = false;
+    
     private ModVersionChecker       versionChecker;
     private boolean                 allowUpdateCheck;
     private final String            versionURL                = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpoints.version";
@@ -53,7 +58,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML " + Const.MCVERSION + ".r02";
+        return "ML " + Const.MCVERSION + ".r03";
     }
     
     @Override
@@ -85,10 +90,10 @@ public class mod_WorldStateCheckpoints extends BaseMod
         ModLoader.registerKey(this, saveKey, false);
         ModLoader.addLocalization(menuKey.keyDescription, "Checkpoints Menu");
         ModLoader.addLocalization(saveKey.keyDescription, "Checkpoints Quick Save");
-        //        ModLoader.addCommand(new CommandWSC());
-        //        ModLoader.addLocalization("commands.wsc.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .) | wsc load <checkpoint name>");
-        //        ModLoader.addLocalization("commands.wsc.save.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .)");
-        //        ModLoader.addLocalization("commands.wsc.load.usage", "wsc load <checkpoint name>");
+        ModLoader.addCommand(new CommandWSC());
+        ModLoader.addLocalization("commands.wsc.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .) | wsc load <checkpoint name>");
+        ModLoader.addLocalization("commands.wsc.save.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .)");
+        ModLoader.addLocalization("commands.wsc.load.usage", "wsc load <checkpoint name>");
     }
     
     @Override
@@ -146,6 +151,15 @@ public class mod_WorldStateCheckpoints extends BaseMod
                 (mc.currentScreen == null || !(mc.currentScreen instanceof GuiGameOver || CommonUtils.isGamePaused(mc))))
             cpm.incrementTickCount();
         
+        if (delayedLoaderTicks > 0)
+        {
+            if (--delayedLoaderTicks == 0)
+            {
+                cpm.loadCheckpoint(delayedLoadCheckpointName, isDelayedLoadAutoSave);
+            }
+            
+        }
+        
         return true;
     }
     
@@ -169,5 +183,12 @@ public class mod_WorldStateCheckpoints extends BaseMod
             
             cpm.setCheckpoint("", true);
         }
+    }
+    
+    public static void delayedLoadCheckpoint(String checkpointName, boolean isAutoSave, int delayTicks)
+    {
+        delayedLoadCheckpointName = checkpointName;
+        isDelayedLoadAutoSave = isAutoSave;
+        delayedLoaderTicks = delayTicks;
     }
 }

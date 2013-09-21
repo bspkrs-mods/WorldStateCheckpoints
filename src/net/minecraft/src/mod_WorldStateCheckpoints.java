@@ -58,7 +58,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML " + Const.MCVERSION + ".r03";
+        return "ML " + Const.MCVERSION + ".r01";
     }
     
     @Override

@@ -1,3 +1,6 @@
+1.6.4.r02 - 03-Oct-2013
+- changed keybinding to be F6 for menu, ALT + F6 for quick save
+- changed code to register the /WSC command
 1.6.4.r01 - 20-Sep-2013
 - 1.6.4 update
 1.6.2.r03 - 22-Jul-2013

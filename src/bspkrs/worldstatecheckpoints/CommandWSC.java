@@ -22,6 +22,19 @@ public class CommandWSC extends CommandBase
     }
     
     @Override
+    public boolean canCommandSenderUseCommand(ICommandSender par1iCommandSender)
+    {
+        try
+        {
+            return Minecraft.getMinecraft().isSingleplayer();
+        }
+        catch (Throwable e)
+        {
+            return false;
+        }
+    }
+    
+    @Override
     public void processCommand(ICommandSender icommandsender, String[] args)
     {
         if (args.length >= 1)

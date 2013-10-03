@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.ClientCommandHandler;
 
 import org.lwjgl.input.Keyboard;
 
@@ -28,11 +29,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
             CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + ".")
     public static String            periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
     
-    public static String            menuKeyStr                = "F6";
-    public static String            saveKeyStr                = "F7";
-    
-    public static KeyBinding        menuKey                   = new KeyBinding("CheckpointsMenu", Keyboard.getKeyIndex(menuKeyStr));
-    public static KeyBinding        saveKey                   = new KeyBinding("CheckpointsSave", Keyboard.getKeyIndex(saveKeyStr));
+    public static KeyBinding        bindKey                   = new KeyBinding("CheckpointsKeybind", Keyboard.KEY_F6);
     public static boolean           justLoadedCheckpoint      = false;
     public static boolean           justLoadedWorld           = false;
     public static String            loadMessage               = "";
@@ -58,7 +55,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML " + Const.MCVERSION + ".r01";
+        return "ML " + Const.MCVERSION + ".r02";
     }
     
     @Override
@@ -74,10 +71,6 @@ public class mod_WorldStateCheckpoints extends BaseMod
             versionChecker = new ModVersionChecker(getName(), getVersion(), versionURL, mcfTopic);
         
         mc = ModLoader.getMinecraftInstance();
-        
-        /*
-         * for (int i = 0; i < Keyboard.getKeyCount(); i++) System.out.println("Key Index " + i + " : " + Keyboard.getKeyName(i));
-         */
     }
     
     @Override
@@ -86,11 +79,18 @@ public class mod_WorldStateCheckpoints extends BaseMod
         if (allowUpdateCheck && versionChecker != null)
             versionChecker.checkVersionWithLogging();
         
-        ModLoader.registerKey(this, menuKey, false);
-        ModLoader.registerKey(this, saveKey, false);
-        ModLoader.addLocalization(menuKey.keyDescription, "Checkpoints Menu");
-        ModLoader.addLocalization(saveKey.keyDescription, "Checkpoints Quick Save");
-        ModLoader.addCommand(new CommandWSC());
+        ModLoader.registerKey(this, bindKey, false);
+        ModLoader.addLocalization(bindKey.keyDescription, "Checkpoints Menu/Quick Save");
+        
+        try
+        {
+            ClientCommandHandler.instance.registerCommand(new CommandWSC());
+        }
+        catch (Throwable e)
+        {
+            ModLoader.addCommand(new CommandWSC());
+        }
+        
         ModLoader.addLocalization("commands.wsc.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .) | wsc load <checkpoint name>");
         ModLoader.addLocalization("commands.wsc.save.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .)");
         ModLoader.addLocalization("commands.wsc.load.usage", "wsc load <checkpoint name>");
@@ -166,7 +166,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public void keyboardEvent(KeyBinding event)
     {
-        if (event.equals(menuKey) && mc.isSingleplayer())
+        if (event.equals(bindKey) && mc.isSingleplayer() && !Keyboard.isKeyDown(Keyboard.KEY_LMENU))
         {
             if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(false))
                 mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, false));
@@ -175,8 +175,8 @@ public class mod_WorldStateCheckpoints extends BaseMod
             else
                 mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
         }
-        else if (event.equals(saveKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
-                !(mc.currentScreen instanceof GuiIngameMenu))
+        else if (event.equals(bindKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
+                !(mc.currentScreen instanceof GuiIngameMenu) && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
         {
             if (!cpm.isSaving)
                 cpm.tickCount = 0;

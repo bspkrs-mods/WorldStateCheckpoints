@@ -13,14 +13,16 @@ import java.util.Properties;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
 public class GuiConfigureAutoSave extends GuiScreen
 {
-    String                          guiTitle     = "Configure Checkpoint Auto-Save";
-    String[]                        maxAutoSaves = { "Max Auto-Saves to Keep", "Use 0 for no limit" };
-    final static String             ENABLE_TEXT  = "Auto-Save Checkpoints: ";
+    String                          guiTitle           = StatCollector.translateToLocal("wsc.configureAutoSave.title");
+    String[]                        maxAutoSaves       = { StatCollector.translateToLocal("wsc.configureAutoSave.maxAutoSavesToKeep"),
+                                                       StatCollector.translateToLocal("wsc.configureAutoSave.use0ForNoLimit") };
+    String                          enableAutosaveText = StatCollector.translateToLocal("wsc.configureAutosave.enableAutoSave") + ": ";
     private final CheckpointManager cpm;
     private GuiButton               back, save, enable, periodUnit;
     private GuiTextField            periodValue;
@@ -53,7 +55,7 @@ public class GuiConfigureAutoSave extends GuiScreen
         row3 = height / 4 + 24 * 3 + byte0;
         row5 = height / 4 + 24 * 5 + byte0;
         
-        enable = new GuiButton(-1, width / 2 - 100, row1, ENABLE_TEXT + (cpm.autoSaveEnabled ? "On" : "Off"));
+        enable = new GuiButton(-1, width / 2 - 100, row1, enableAutosaveText + (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
         periodValue = new GuiTextField(fontRenderer, width / 2 - 62, row2, 60, 20);
         periodValue.setText(localConfig.getProperty(AUTO_SAVE_PERIOD));
         maxToKeep = new GuiTextField(fontRenderer, width / 2 + 2, row3, 60, 20);
@@ -81,13 +83,13 @@ public class GuiConfigureAutoSave extends GuiScreen
                 if (localConfig.getProperty(ENABLED).equalsIgnoreCase("on"))
                 {
                     localConfig.setProperty(ENABLED, "off");
-                    enable.displayString = ENABLE_TEXT + "Off";
+                    enable.displayString = enableAutosaveText + StatCollector.translateToLocal("options.off");
                     periodUnit.enabled = false;
                 }
                 else
                 {
                     localConfig.setProperty(ENABLED, "on");
-                    enable.displayString = ENABLE_TEXT + "On";
+                    enable.displayString = enableAutosaveText + StatCollector.translateToLocal("options.on");
                     periodUnit.enabled = true;
                 }
                 break;
@@ -96,17 +98,17 @@ public class GuiConfigureAutoSave extends GuiScreen
                 if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_HOURS))
                 {
                     localConfig.setProperty(PERIOD_UNIT, UNIT_MINUTES);
-                    periodUnit.displayString = UNIT_MINUTES;
+                    periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period.minutes");
                 }
                 else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_MINUTES))
                 {
                     localConfig.setProperty(PERIOD_UNIT, UNIT_SECONDS);
-                    periodUnit.displayString = UNIT_SECONDS;
+                    periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period.seconds");
                 }
                 else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_SECONDS))
                 {
                     localConfig.setProperty(PERIOD_UNIT, UNIT_HOURS);
-                    periodUnit.displayString = UNIT_HOURS;
+                    periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period.hours");
                 }
                 break;
             

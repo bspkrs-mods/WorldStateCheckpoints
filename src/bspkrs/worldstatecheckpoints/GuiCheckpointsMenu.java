@@ -30,11 +30,12 @@ public class GuiCheckpointsMenu extends GuiScreen
         
         buttonList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, StatCollector.translateToLocal("menu.returnToGame")));
         
-        GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, 99, 20, "Save new");
-        GuiButton replace = new GuiButton(-3, width / 2 + 1, height / 4 + 24 + byte0, 99, 20, "Overwrite");
-        GuiButton load = new GuiButton(-1, width / 2 - 100, height / 4 + 24 * 2 + byte0, 99, 20, "Load Checkpoint");
-        GuiButton loadAuto = new GuiButton(-4, width / 2 + 1, height / 4 + 24 * 2 + byte0, 99, 20, "Load Auto-save");
-        GuiButton configAuto = new GuiButton(-5, width / 2 - 100, height / 4 + 24 * 3 + byte0, "Configure Auto-Save: " + (cpm.autoSaveEnabled ? "On" : "Off"));
+        GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.saveNew"));
+        GuiButton replace = new GuiButton(-3, width / 2 + 1, height / 4 + 24 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.overwrite"));
+        GuiButton load = new GuiButton(-1, width / 2 - 100, height / 4 + 24 * 2 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.loadCheckpoint"));
+        GuiButton loadAuto = new GuiButton(-4, width / 2 + 1, height / 4 + 24 * 2 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.loadAutoSave"));
+        GuiButton configAuto = new GuiButton(-5, width / 2 - 100, height / 4 + 24 * 3 + byte0, StatCollector.translateToLocal("wsc.menu.configureAutoSave") + ": " +
+                (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
         
         if (!mc.isSingleplayer())
             replace.enabled = load.enabled = save.enabled = loadAuto.enabled = configAuto.enabled = false;
@@ -109,7 +110,7 @@ public class GuiCheckpointsMenu extends GuiScreen
             float f = ((updateCounter % 10) + par3) / 10F;
             f = MathHelper.sin(f * (float) Math.PI * 2.0F) * 0.2F + 0.8F;
             int i = (int) (255F * f);
-            drawString(fontRenderer, "Saving level..", 8, height - 16, i << 16 | i << 8 | i);
+            drawString(fontRenderer, StatCollector.translateToLocal("wsc.menu.savingLevel") + "..", 8, height - 16, i << 16 | i << 8 | i);
         }
         
         drawCenteredString(fontRenderer, "World State Checkpoints", width / 2, 40, 0xffffff);
@@ -120,8 +121,8 @@ public class GuiCheckpointsMenu extends GuiScreen
         int g = (int) (0xBA * f);
         int b = (int) (0x00 * f);
         
-        drawCenteredString(fontRenderer, "Original by MightyPork!", width / 2, height / 4 + 24 * 6 + 12 - 16, r << 16 | g << 8 | b);
-        drawCenteredString(fontRenderer, "Forked/reworked by bspkrs with permission", width / 2, height / 4 + 24 * 7 - 16, r << 16 | g << 8 | b);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("wsc.credit.MightyPork"), width / 2, height / 4 + 24 * 6 + 12 - 16, r << 16 | g << 8 | b);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("wsc.credit.bspkrs"), width / 2, height / 4 + 24 * 7 - 16, r << 16 | g << 8 | b);
         
         super.drawScreen(par1, par2, par3);
     }

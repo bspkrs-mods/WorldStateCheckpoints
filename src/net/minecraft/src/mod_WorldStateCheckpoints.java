@@ -1,50 +1,21 @@
 package net.minecraft.src;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.ClientCommandHandler;
-
-import org.lwjgl.input.Keyboard;
-
-import bspkrs.util.CommonUtils;
 import bspkrs.util.Const;
 import bspkrs.util.ModVersionChecker;
-import bspkrs.worldstatecheckpoints.CheckpointManager;
 import bspkrs.worldstatecheckpoints.CommandWSC;
-import bspkrs.worldstatecheckpoints.GuiCheckpointsMenu;
-import bspkrs.worldstatecheckpoints.GuiLoadCheckpoint;
+import bspkrs.worldstatecheckpoints.WSCSettings;
 
 public class mod_WorldStateCheckpoints extends BaseMod
 {
-    @MLProp(info = "Default enabled state of auto-saving when starting a new world.  Valid values are on/off.")
-    public static String            autoSaveEnabledDefault    = "off";
-    @MLProp(info = "Default maximum number of auto-saves to keep per world. This value is used when starting a new world. Use 0 for no limit.", min = 0)
-    public static int               maxAutoSavesToKeepDefault = 10;
-    @MLProp(info = "Default auto-save period to use in a new world's auto-save config.")
-    public static int               autoSavePeriodDefault     = 20;
-    @MLProp(info = "Default auto-save period unit to use in a new world's auto-save config.  Valid values are " +
-            CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + ".")
-    public static String            periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
+    private ModVersionChecker versionChecker;
+    private boolean           allowUpdateCheck;
+    private final String      versionURL = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpoints.version";
+    private final String      mcfTopic   = "http://www.minecraftforum.net/topic/1548243-";
     
-    public static KeyBinding        bindKey                   = new KeyBinding("CheckpointsKeybind", Keyboard.KEY_F6);
-    public static boolean           justLoadedCheckpoint      = false;
-    public static boolean           justLoadedWorld           = false;
-    public static String            loadMessage               = "";
-    public static CheckpointManager cpm;
-    
-    private static int              delayedLoaderTicks        = 0;
-    private static String           delayedLoadCheckpointName = "";
-    private static boolean          isDelayedLoadAutoSave     = false;
-    
-    private ModVersionChecker       versionChecker;
-    private boolean                 allowUpdateCheck;
-    private final String            versionURL                = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpoints.version";
-    private final String            mcfTopic                  = "http://www.minecraftforum.net/topic/1548243-";
-    
-    private final Minecraft         mc;
+    private boolean           enabled    = false;
     
     @Override
     public String getName()
@@ -55,7 +26,7 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public String getVersion()
     {
-        return "ML " + Const.MCVERSION + ".r02";
+        return "ML " + WSCSettings.VERSION_NUMBER;
     }
     
     @Override
@@ -66,42 +37,39 @@ public class mod_WorldStateCheckpoints extends BaseMod
     
     public mod_WorldStateCheckpoints()
     {
-        allowUpdateCheck = mod_bspkrsCore.allowUpdateCheck;
-        if (allowUpdateCheck)
-            versionChecker = new ModVersionChecker(getName(), getVersion(), versionURL, mcfTopic);
+        try
+        {
+            Class.forName("bspkrs.worldstatecheckpoints.fml.WorldStateCheckpointsMod");
+        }
+        catch (ClassNotFoundException e)
+        {
+            enabled = true;
+        }
         
-        mc = ModLoader.getMinecraftInstance();
+        allowUpdateCheck = mod_bspkrsCore.allowUpdateCheck;
+        if (allowUpdateCheck && enabled)
+            versionChecker = new ModVersionChecker(getName(), getVersion(), versionURL, mcfTopic);
     }
     
     @Override
     public void load()
     {
-        if (allowUpdateCheck && versionChecker != null)
-            versionChecker.checkVersionWithLogging();
-        
-        ModLoader.registerKey(this, bindKey, false);
-        ModLoader.addLocalization(bindKey.keyDescription, "Checkpoints Menu/Quick Save");
-        
-        try
+        if (enabled)
         {
-            ClientCommandHandler.instance.registerCommand(new CommandWSC());
-        }
-        catch (Throwable e)
-        {
+            if (allowUpdateCheck && versionChecker != null)
+                versionChecker.checkVersionWithLogging();
+            
+            ModLoader.registerKey(this, WSCSettings.bindKey, false);
             ModLoader.addCommand(new CommandWSC());
         }
-        
-        ModLoader.addLocalization("commands.wsc.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .) | wsc load <checkpoint name>");
-        ModLoader.addLocalization("commands.wsc.save.usage", "wsc save <checkpoint name> (optional, cannot end with ! or .)");
-        ModLoader.addLocalization("commands.wsc.load.usage", "wsc load <checkpoint name>");
     }
     
     @Override
     public void clientConnect(NetClientHandler var1)
     {
-        if (mc.isSingleplayer())
+        if (WSCSettings.mc.isSingleplayer() && enabled)
         {
-            justLoadedWorld = true;
+            WSCSettings.justLoadedWorld = true;
             ModLoader.setInGameHook(this, true, true);
         }
     }
@@ -109,10 +77,10 @@ public class mod_WorldStateCheckpoints extends BaseMod
     @Override
     public void clientDisconnect(NetClientHandler var1)
     {
-        if (mc.isSingleplayer())
+        if (WSCSettings.mc.isSingleplayer() && enabled)
         {
             ModLoader.setInGameHook(this, false, true);
-            cpm = null;
+            WSCSettings.cpm = null;
         }
     }
     
@@ -127,68 +95,13 @@ public class mod_WorldStateCheckpoints extends BaseMod
             allowUpdateCheck = false;
         }
         
-        if (justLoadedWorld)
-        {
-            cpm = null;
-            justLoadedWorld = false;
-        }
-        
-        if (cpm == null)
-            cpm = new CheckpointManager(mc);
-        
-        if (justLoadedCheckpoint)
-        {
-            mc.thePlayer.addChatMessage(loadMessage);
-            loadMessage = "";
-            
-            if (cpm.autoSaveEnabled)
-                cpm.tickCount = 0;
-            
-            justLoadedCheckpoint = false;
-        }
-        
-        if (cpm.autoSaveEnabled &&
-                (mc.currentScreen == null || !(mc.currentScreen instanceof GuiGameOver || CommonUtils.isGamePaused(mc))))
-            cpm.incrementTickCount();
-        
-        if (delayedLoaderTicks > 0)
-        {
-            if (--delayedLoaderTicks == 0)
-            {
-                cpm.loadCheckpoint(delayedLoadCheckpointName, isDelayedLoadAutoSave);
-            }
-            
-        }
-        
-        return true;
+        return WSCSettings.onGameTick();
     }
     
     @Override
     public void keyboardEvent(KeyBinding event)
     {
-        if (event.equals(bindKey) && mc.isSingleplayer() && !Keyboard.isKeyDown(Keyboard.KEY_LMENU))
-        {
-            if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(false))
-                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, false));
-            else if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(true))
-                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, true));
-            else
-                mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
-        }
-        else if (event.equals(bindKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
-                !(mc.currentScreen instanceof GuiIngameMenu) && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
-        {
-            if (!cpm.isSaving)
-                cpm.tickCount = 0;
-            
-            cpm.setCheckpoint("", true);
-        }
-    }
-    
-    public static void delayedLoadCheckpoint(String checkpointName, boolean isAutoSave, int delayTicks)
-    {
-        delayedLoadCheckpointName = checkpointName;
-        isDelayedLoadAutoSave = isAutoSave;
-        delayedLoaderTicks = delayTicks;
+        if (enabled)
+            WSCSettings.keyboardEvent(event);
     }
 }

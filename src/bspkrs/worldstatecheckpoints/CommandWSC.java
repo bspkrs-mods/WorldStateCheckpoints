@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.src.mod_WorldStateCheckpoints;
+import net.minecraft.util.StatCollector;
 
 public class CommandWSC extends CommandBase
 {
@@ -48,7 +48,7 @@ public class CommandWSC extends CommandBase
                 {
                     throw new WrongUsageException("commands.wsc.load.usage");
                 }
-                mod_WorldStateCheckpoints.cpm.setCheckpoint(name.trim(), name.trim().isEmpty() || name.contains(CheckpointManager.AUTOSAVES_PREFIX));
+                WSCSettings.cpm.setCheckpoint(name.trim(), name.trim().isEmpty() || name.contains(CheckpointManager.AUTOSAVES_PREFIX));
                 return;
             }
             else if (args[0].equalsIgnoreCase("load"))
@@ -59,11 +59,11 @@ public class CommandWSC extends CommandBase
                     for (int i = 1; i < args.length; i++)
                         name += " " + args[i];
                     
-                    String dirName = mod_WorldStateCheckpoints.cpm.getCheckpointDirNameFromDisplayName(name.trim());
+                    String dirName = WSCSettings.cpm.getCheckpointDirNameFromDisplayName(name.trim());
                     if (dirName != null)
-                        mod_WorldStateCheckpoints.delayedLoadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX), 1);
+                        WSCSettings.delayedLoadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX), 1);
                     else
-                        Minecraft.getMinecraft().thePlayer.addChatMessage(String.format("WSC: invalid checkpoint name \"%s\" specified in load command.", name.trim()));
+                        WSCSettings.mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.invalidCheckpointNameForLoadCommand", name.trim()));
                     
                     return;
                 }

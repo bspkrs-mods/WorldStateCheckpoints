@@ -3,6 +3,7 @@ package bspkrs.worldstatecheckpoints;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
@@ -35,8 +36,8 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
         
         byte byte0 = -16;
         
-        back = new GuiButton(-1, width / 2 + 1, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "Cancel");
-        save = new GuiButton(-2, width / 2 - 61, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "Save");
+        back = new GuiButton(-1, width / 2 + 1, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
+        save = new GuiButton(-2, width / 2 - 61, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
         
         edit = new GuiTextField(fontRenderer, width / 2 - 100, height / 4 + 24 + 24, 200, 20);
         edit.setText(name);
@@ -74,7 +75,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
                 cpm.saveCheckpointInto(dirname_orig, dirname_prefix + "!" + edit.getText());
                 mc.displayGuiScreen(null);
                 mc.setIngameFocus();
-                mc.thePlayer.addChatMessage("WSC: Saved checkpoint as \"" + edit.getText() + "\".");
+                mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.savedCheckpoint", edit.getText()));
                 return;
         }
     }
@@ -117,7 +118,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     {
         drawDefaultBackground();
         edit.drawTextBox();
-        drawCenteredString(fontRenderer, "Overwrite Checkpoint - edit name", width / 2, 80, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("wsc.overwriteCheckpoint.editName"), width / 2, 80, 0xffffff);
         super.drawScreen(par1, par2, par3);
     }
 }

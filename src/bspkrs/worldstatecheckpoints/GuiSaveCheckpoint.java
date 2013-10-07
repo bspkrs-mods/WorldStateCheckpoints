@@ -3,6 +3,7 @@ package bspkrs.worldstatecheckpoints;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
@@ -29,8 +30,8 @@ public class GuiSaveCheckpoint extends GuiScreen
         
         byte byte0 = -16;
         
-        save = new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "Save");
-        back = new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, "Cancel");
+        save = new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
         
         edit = new GuiTextField(fontRenderer, width / 2 - 100, height / 4 + 24 + 24, 200, 20);
         edit.setText("");
@@ -110,7 +111,7 @@ public class GuiSaveCheckpoint extends GuiScreen
         drawDefaultBackground();
         edit.drawTextBox();
         
-        drawCenteredString(fontRenderer, "Set Checkpoint", width / 2, 80, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("wsc.saveCheckpoint.setCheckpoint"), width / 2, 80, 0xffffff);
         super.drawScreen(par1, par2, par3);
     }
 }

@@ -16,7 +16,7 @@ import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.src.mod_WorldStateCheckpoints;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldServer;
 import bspkrs.util.CommonUtils;
 
@@ -54,13 +54,13 @@ public class CheckpointManager
     public CheckpointManager(Minecraft minecraft)
     {
         mc = minecraft;
-        world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.thePlayer.dimension) : null;
+        world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.theWorld.provider.dimensionId) : null;
         
-        autoSaveConfigDefaults.setProperty(ENABLED, mod_WorldStateCheckpoints.autoSaveEnabledDefault);
+        autoSaveConfigDefaults.setProperty(ENABLED, WSCSettings.autoSaveEnabledDefault);
         autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVE_ID, "0");
-        autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVES_TO_KEEP, mod_WorldStateCheckpoints.maxAutoSavesToKeepDefault + "");
-        autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, mod_WorldStateCheckpoints.autoSavePeriodDefault + "");
-        autoSaveConfigDefaults.setProperty(PERIOD_UNIT, mod_WorldStateCheckpoints.periodUnitDefault);
+        autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVES_TO_KEEP, WSCSettings.maxAutoSavesToKeepDefault + "");
+        autoSaveConfigDefaults.setProperty(AUTO_SAVE_PERIOD, WSCSettings.autoSavePeriodDefault + "");
+        autoSaveConfigDefaults.setProperty(PERIOD_UNIT, WSCSettings.periodUnitDefault);
         
         loadAutoConfig();
         
@@ -312,11 +312,11 @@ public class CheckpointManager
             catch (Throwable e)
             {
                 e.printStackTrace();
-                mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + targetDir.getName() + "\" may be invalid! See " + CommonUtils.getLogFileName() + " for details.");
+                mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError", targetDir.getName(), CommonUtils.getLogFileName()));
             }
         }
         else
-            mc.thePlayer.addChatMessage("WSC: Already saving. Wait until saving is complete to save another checkpoint. If this is from an autosave, consider increasing the save period or disabling auto-saving.");
+            mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning") + " " + StatCollector.translateToLocal("wsc.chatMessage.autoSavePeriodWarning"));
     }
     
     /**
@@ -353,7 +353,7 @@ public class CheckpointManager
             }
         }
         else
-            mc.thePlayer.addChatMessage("WSC: Already saving. Wait until saving is complete to save another checkpoint.");
+            mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning"));
     }
     
     /**
@@ -399,7 +399,7 @@ public class CheckpointManager
             
             File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
             
-            unloadWorld("Loading world state checkpoint...");
+            unloadWorld(StatCollector.translateToLocal("wsc.loadWorld.message"));
             
             deleteDirContents(worldDir, IGNORE_DELETE);
             
@@ -415,7 +415,7 @@ public class CheckpointManager
             startWorld(worldDir.getName(), worldName);
         }
         else
-            mc.thePlayer.addChatMessage("WSC: Currently saving. Wait until saving is complete to load a checkpoint.");
+            mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatmessage.alreadySavingLoadWarning"));
     }
     
     /**
@@ -645,18 +645,18 @@ public class CheckpointManager
         {
             if (!isSaving)
             {
-                mc.thePlayer.addChatMessage("WSC: Saving checkpoint...");
+                mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatMessage.savingCheckpoint"));
                 try
                 {
                     isSaving = true;
                     copyDirectory(src, tgt, ignoreList);
-                    mc.thePlayer.addChatMessage("WSC: Checkpoint \"" + tgt.getName().split("!")[1] + "\" saved.");
+                    mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.checkpointSaved", tgt.getName().split("!")[1]));
                     
                     isSaving = false;
                 }
                 catch (Throwable e)
                 {
-                    mc.thePlayer.addChatMessage("WSC: Error encountered during checkpoint save!  Checkpoint saved in \"" + tgt.getName() + "\" may be invalid! See " + CommonUtils.getLogFileName() + " for details.");
+                    mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError", tgt.getName(), CommonUtils.getLogFileName()));
                     e.printStackTrace();
                 }
                 finally

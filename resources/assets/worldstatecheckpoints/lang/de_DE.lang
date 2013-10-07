@@ -35,6 +35,6 @@ wsc.menu.saveNew=Speichere neu
 wsc.menu.savingLevel=Speichere Level
 wsc.overwriteCheckpoint.editName=Überschreibe Checkpoint - Ändere Namen
 wsc.overwriteCheckpoint.title2=Existierende Checkpoint-Daten werden verloren gehen!
-wsc.overwriteCheckpoint.title=Overwrite Checkpoint
+wsc.overwriteCheckpoint.title=Überschreibe Checkpoint
 wsc.saveCheckpoint.save=Speichern
 wsc.saveCheckpoint.setCheckpoint=Setze Checkpoint

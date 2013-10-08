@@ -24,7 +24,7 @@ public class WSCKeyHandler extends KeyBindingRegistry.KeyHandler
     public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat)
     {
         for (TickType tt : types)
-            if (!isRepeat)
+            if (!isRepeat && tickEnd && tt == TickType.CLIENT)
                 WSCSettings.keyboardEvent(kb);
     }
     

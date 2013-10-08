@@ -2,10 +2,8 @@ package bspkrs.worldstatecheckpoints.fml;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.Minecraft;
 import bspkrs.fml.util.bspkrsCoreProxy;
 import bspkrs.worldstatecheckpoints.WSCSettings;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
@@ -14,28 +12,27 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class WSCTicker implements ITickHandler
 {
-    private Minecraft         mcClient;
-    
     private EnumSet<TickType> tickTypes = EnumSet.noneOf(TickType.class);
+    private boolean           allowUpdateCheck;
     
     public WSCTicker(EnumSet<TickType> tickTypes)
     {
         this.tickTypes = tickTypes;
-        mcClient = FMLClientHandler.instance().getClient();
+        allowUpdateCheck = bspkrsCoreProxy.instance.allowUpdateCheck;
     }
     
     public void addTicks(EnumSet<TickType> tickTypes)
     {
         for (TickType tt : tickTypes)
-            if (!tickTypes.contains(tt))
-                tickTypes.add(tt);
+            if (!this.tickTypes.contains(tt))
+                this.tickTypes.add(tt);
     }
     
     public void removeTicks(EnumSet<TickType> tickTypes)
     {
         for (TickType tt : tickTypes)
-            if (tickTypes.contains(tt))
-                tickTypes.remove(tt);
+            if (this.tickTypes.contains(tt))
+                this.tickTypes.remove(tt);
     }
     
     @Override
@@ -69,12 +66,14 @@ public class WSCTicker implements ITickHandler
             return true;
         }
         
-        if (mcClient != null && mcClient.thePlayer != null)
+        if (allowUpdateCheck && WSCSettings.mc != null && WSCSettings.mc.thePlayer != null)
         {
             if (bspkrsCoreProxy.instance.allowUpdateCheck && WorldStateCheckpointsMod.versionChecker != null)
                 if (!WorldStateCheckpointsMod.versionChecker.isCurrentVersionBySubStringAsFloatNewer(WorldStateCheckpointsMod.metadata.version.length() - 2, WorldStateCheckpointsMod.metadata.version.length()))
                     for (String msg : WorldStateCheckpointsMod.versionChecker.getInGameMessage())
-                        mcClient.thePlayer.addChatMessage(msg);
+                        WSCSettings.mc.thePlayer.addChatMessage(msg);
+            
+            allowUpdateCheck = false;
         }
         
         return WSCSettings.onGameTick();
@@ -83,7 +82,7 @@ public class WSCTicker implements ITickHandler
     @Override
     public EnumSet<TickType> ticks()
     {
-        return tickTypes;
+        return this.tickTypes;
     }
     
     @Override

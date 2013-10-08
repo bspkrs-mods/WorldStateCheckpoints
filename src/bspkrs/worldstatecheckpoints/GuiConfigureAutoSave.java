@@ -60,10 +60,10 @@ public class GuiConfigureAutoSave extends GuiScreen
         periodValue.setText(localConfig.getProperty(AUTO_SAVE_PERIOD));
         maxToKeep = new GuiTextField(fontRenderer, width / 2 + 2, row3, 60, 20);
         maxToKeep.setText(localConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
-        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, localConfig.getProperty(PERIOD_UNIT));
+        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT)));
         periodUnit.enabled = cpm.autoSaveEnabled;
-        save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, "Save");
-        back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, "Cancel");
+        save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, StatCollector.translateToLocal("gui.cancel"));
         
         buttonList.add(enable);
         buttonList.add(periodUnit);
@@ -96,20 +96,13 @@ public class GuiConfigureAutoSave extends GuiScreen
             
             case -2:
                 if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_HOURS))
-                {
                     localConfig.setProperty(PERIOD_UNIT, UNIT_MINUTES);
-                    periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period.minutes");
-                }
                 else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_MINUTES))
-                {
                     localConfig.setProperty(PERIOD_UNIT, UNIT_SECONDS);
-                    periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period.seconds");
-                }
                 else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_SECONDS))
-                {
                     localConfig.setProperty(PERIOD_UNIT, UNIT_HOURS);
-                    periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period.hours");
-                }
+                
+                periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT));
                 break;
             
             case -3:

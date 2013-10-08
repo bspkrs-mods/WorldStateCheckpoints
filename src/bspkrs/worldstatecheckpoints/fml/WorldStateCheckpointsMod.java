@@ -22,11 +22,13 @@ import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.IConnectionHandler;
+import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(name = "WorldStateCheckpoints", modid = "WorldStateCheckpoints", version = "Forge " + WSCSettings.VERSION_NUMBER, dependencies = "required-after:mod_bspkrsCore", useMetadata = true)
+@NetworkMod(connectionHandler = WorldStateCheckpointsMod.class)
 public class WorldStateCheckpointsMod implements IConnectionHandler
 {
     public static ModVersionChecker        versionChecker;
@@ -39,7 +41,7 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
     @Instance(value = "WorldStateCheckpoints")
     public static WorldStateCheckpointsMod instance;
     
-    private WSCTicker                      ticker;
+    private static WSCTicker               ticker;
     
     public WorldStateCheckpointsMod()
     {
@@ -122,8 +124,8 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
      */
     @Override
     public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager)
-    {
-        ticker.addTicks(EnumSet.of(TickType.CLIENT));
+    {   
+        
     }
     
     /**
@@ -137,6 +139,7 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
     public void connectionClosed(INetworkManager manager)
     {
         ticker.removeTicks(EnumSet.of(TickType.CLIENT));
+        WSCSettings.cpm = null;
     }
     
     /**
@@ -150,7 +153,8 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
      */
     @Override
     public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
-    {   
-        
+    {
+        WSCSettings.justLoadedWorld = true;
+        ticker.addTicks(EnumSet.of(TickType.CLIENT));
     }
 }

@@ -154,7 +154,10 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
     @Override
     public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
     {
-        WSCSettings.justLoadedWorld = true;
-        ticker.addTicks(EnumSet.of(TickType.CLIENT));
+        if (WSCSettings.mc.isSingleplayer())
+        {
+            WSCSettings.justLoadedWorld = true;
+            ticker.addTicks(EnumSet.of(TickType.CLIENT));
+        }
     }
 }

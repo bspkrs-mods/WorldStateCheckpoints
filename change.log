@@ -1,3 +1,6 @@
+1.6.4.r03 - 09-Oct-2013
+- refactored for Forge
+- added localization support
 1.6.4.r02 - 03-Oct-2013
 - changed keybinding to be F6 for menu, ALT + F6 for quick save
 - changed code to register the /WSC command

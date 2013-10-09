@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import bspkrs.fml.util.bspkrsCoreProxy;
 import bspkrs.util.Const;
 import bspkrs.util.ModVersionChecker;
+import bspkrs.worldstatecheckpoints.CommandWSC;
 import bspkrs.worldstatecheckpoints.WSCSettings;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -21,6 +22,7 @@ import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.Player;
@@ -70,6 +72,12 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
         
         ticker = new WSCTicker(EnumSet.noneOf(TickType.class));
         TickRegistry.registerTickHandler(ticker, Side.CLIENT);
+    }
+    
+    @EventHandler
+    public void serverStarting(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new CommandWSC());
     }
     
     /**

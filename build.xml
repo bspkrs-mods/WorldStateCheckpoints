@@ -14,7 +14,6 @@
         <property name="mcp.home" location="${dir.mcp}"/>
         <property name="dev.core.home" location="${dir.core.project}"/>
         <property name="release.home" location="${dir.release}"/>
-        <property name="release.ML.zip" value="[${version.minecraft}]${mod.id}.ML.${version}.zip"/>
         <property name="release.Forge.zip" value="[${version.minecraft}]${mod.id}.Forge.${version}.zip"/>
 
         <!-- setup python -->
@@ -98,41 +97,6 @@
         </exec>
     </target>
 
-    <target name="build-ML-zip">
-        <!-- build the zip -->
-        <zip destfile="${release.home}/${release.ML.zip}">
-            <fileset dir="${mcp.bin}" includes="bspkrs/worldstatecheckpoints/*.class"/>
-            <fileset dir="${mcp.bin}" includes="mod_${mod.id}.class"/>
-            <fileset dir="${dev.resources}" excludes="mcmod.template,template.pack.mcmeta"/>
-            <mappedresources>
-                <concat>
-                    <fileset dir="${dev.resources}" includes="mcmod.template"/>
-                    <filterchain>
-                        <replacetokens>
-                            <token key="AUTHORS" value="${mod.authors}"/>
-                            <token key="CREDITS" value="${mod.credits}"/>
-                            <token key="DEPENDANTS" value="${mod.dependants}"/>
-                            <token key="DEPENDENCIES" value="${mod.ML.dependencies}"/>
-                            <token key="DESCRIPTION" value="${mod.description}"/>
-                            <token key="LOGOFILE" value="${mod.logoFile}"/>
-                            <token key="MCVERSION" value="${version.minecraft}"/>
-                            <token key="MODID" value="mod_${mod.id}"/>
-                            <token key="MODNAME" value="${mod.name}"/>
-                            <token key="PARENT" value="${mod.parent}"/>
-                            <token key="REQUIREDMODS" value="${mod.ML.requiredMods}"/>
-                            <token key="SCREENSHOTS" value="${mod.screenshots}"/>
-                            <token key="UPDATEURL" value="${mod.ML.updateUrl}"/>
-                            <token key="URL" value="${mod.url}"/>
-                            <token key="USEDEPENDANCYINFORMATION" value="${mod.useDependencyInformation}"/>
-                            <token key="VERSION" value="ML ${version}"/>
-                        </replacetokens>
-                    </filterchain>
-                </concat>
-                <mergemapper to="mcmod.info"/>
-            </mappedresources>
-        </zip>
-    </target>
-
     <target name="build-Forge-zip">
         <!-- build the zip -->
         <zip destfile="${release.home}/${release.Forge.zip}">
@@ -173,7 +137,6 @@
         <antcall target="merge-source"/>
         <antcall target="recompile"/>
         <antcall target="reobfuscate"/>
-        <antcall target="build-ML-zip"/>
         <antcall target="build-Forge-zip"/>
 
         <antcall target="clean"/>

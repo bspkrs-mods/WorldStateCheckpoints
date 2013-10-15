@@ -8,7 +8,7 @@ import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.server.MinecraftServer;
-import bspkrs.fml.util.bspkrsCoreProxy;
+import bspkrs.bspkrscore.fml.bspkrsCoreMod;
 import bspkrs.util.Const;
 import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CommandWSC;
@@ -29,13 +29,13 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(name = "WorldStateCheckpoints", modid = "WorldStateCheckpoints", version = "Forge " + WSCSettings.VERSION_NUMBER, dependencies = "required-after:mod_bspkrsCore", useMetadata = true)
+@Mod(name = "WorldStateCheckpoints", modid = "WorldStateCheckpoints", version = "Forge " + WSCSettings.VERSION_NUMBER, dependencies = "required-after:bspkrsCore", useMetadata = true)
 @NetworkMod(connectionHandler = WorldStateCheckpointsMod.class)
 public class WorldStateCheckpointsMod implements IConnectionHandler
 {
     public static ModVersionChecker        versionChecker;
     private String                         versionURL = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpointsForge.version";
-    private String                         mcfTopic   = "http://www.minecraftforum.net/topic/1009577-";
+    private String                         mcfTopic   = "http://www.minecraftforum.net/topic/1548243-";
     
     @Metadata(value = "WorldStateCheckpoints")
     public static ModMetadata              metadata;
@@ -45,21 +45,16 @@ public class WorldStateCheckpointsMod implements IConnectionHandler
     
     private static WSCTicker               ticker;
     
-    public WorldStateCheckpointsMod()
-    {
-        new bspkrsCoreProxy();
-    }
-    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = event.getModMetadata();
         WSCSettings.loadConfig(event.getSuggestedConfigurationFile());
         
-        if (bspkrsCoreProxy.instance.allowUpdateCheck)
+        if (bspkrsCoreMod.instance.allowUpdateCheck)
         {
             versionChecker = new ModVersionChecker(metadata.name, metadata.version, versionURL, mcfTopic);
-            versionChecker.checkVersionWithLoggingBySubStringAsFloat(metadata.version.length() - 1, metadata.version.length());
+            versionChecker.checkVersionWithLogging();
         }
     }
     

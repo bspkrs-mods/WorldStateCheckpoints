@@ -2,7 +2,7 @@ package bspkrs.worldstatecheckpoints.fml;
 
 import java.util.EnumSet;
 
-import bspkrs.fml.util.bspkrsCoreProxy;
+import bspkrs.bspkrscore.fml.bspkrsCoreMod;
 import bspkrs.worldstatecheckpoints.WSCSettings;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -18,7 +18,7 @@ public class WSCTicker implements ITickHandler
     public WSCTicker(EnumSet<TickType> tickTypes)
     {
         this.tickTypes = tickTypes;
-        allowUpdateCheck = bspkrsCoreProxy.instance.allowUpdateCheck;
+        allowUpdateCheck = bspkrsCoreMod.instance.allowUpdateCheck;
     }
     
     public void addTicks(EnumSet<TickType> tickTypes)
@@ -68,8 +68,8 @@ public class WSCTicker implements ITickHandler
         
         if (allowUpdateCheck && WSCSettings.mc != null && WSCSettings.mc.thePlayer != null)
         {
-            if (bspkrsCoreProxy.instance.allowUpdateCheck && WorldStateCheckpointsMod.versionChecker != null)
-                if (!WorldStateCheckpointsMod.versionChecker.isCurrentVersionBySubStringAsFloatNewer(WorldStateCheckpointsMod.metadata.version.length() - 2, WorldStateCheckpointsMod.metadata.version.length()))
+            if (bspkrsCoreMod.instance.allowUpdateCheck && WorldStateCheckpointsMod.versionChecker != null)
+                if (!WorldStateCheckpointsMod.versionChecker.isCurrentVersion())
                     for (String msg : WorldStateCheckpointsMod.versionChecker.getInGameMessage())
                         WSCSettings.mc.thePlayer.addChatMessage(msg);
             

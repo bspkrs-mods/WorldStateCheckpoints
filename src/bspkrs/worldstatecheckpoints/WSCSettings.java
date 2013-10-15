@@ -12,11 +12,10 @@ import org.lwjgl.input.Keyboard;
 import bspkrs.util.CommonUtils;
 import bspkrs.util.Configuration;
 import bspkrs.util.Const;
-import bspkrs.util.ForgeUtils;
 
 public class WSCSettings
 {
-    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r03";
+    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r04";
     
     public static String            autoSaveEnabledDefault    = "off";
     public static int               maxAutoSavesToKeepDefault = 10;
@@ -35,7 +34,6 @@ public class WSCSettings
     
     public static Configuration     config;
     public static boolean           allowDebugLogging         = false;
-    public static boolean           isForgeVersion            = ForgeUtils.isForgeEnv();
     
     public final static Minecraft   mc                        = Minecraft.getMinecraft();
     

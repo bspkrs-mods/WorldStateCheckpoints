@@ -1,3 +1,6 @@
+1.6.4.r04 - 17-Oct-2013
+- changes to support new bspkrsCore classes
+- new localizations
 1.6.4.r03 - 09-Oct-2013
 - refactored for Forge
 - added localization support

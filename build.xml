@@ -102,6 +102,7 @@
         <zip destfile="${release.home}/${release.Forge.zip}">
             <fileset dir="${mcp.bin}" includes="bspkrs/worldstatecheckpoints/**/*.class"/>
             <fileset dir="${dev.resources}" excludes="mcmod.template"/>
+            <fileset dir="${mcp.home}/.." includes="forgeversion.properties"/>
             <mappedresources>
                 <concat>
                     <fileset dir="${dev.resources}" includes="mcmod.template"/>

@@ -1,0 +1,21 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "WorldStateCheckpoints",
+    "name": "WorldStateCheckpoints",
+    "description": "Allows you to create save points in your SP worlds!  Keys are F6 to get the checkpoints menu and ALT + F6 to quick-save a checkpoint.",
+    "version": "${mod_version}",
+    "mcversion": "${minecraft_version}",
+    "url": "http://www.minecraftforum.net/topic/1548243-/",
+    "updateUrl": "",
+    "authorList": [ "MightyPork", "bspkrs" ],
+    "credits": "Original (Checkpoints Backup Mod) by MightyPork",
+    "logoFile": "",
+    "screenshots": [  ],
+    "parent": "",
+    "requiredMods": [ "bspkrsCore" ],
+    "dependencies": [ "bspkrsCore" ],
+    "dependants": [  ],
+    "useDependencyInformation": "true"
+  }]
+}

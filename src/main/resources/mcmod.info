@@ -11,11 +11,11 @@
     "authorList": [ "MightyPork", "bspkrs" ],
     "credits": "Original (Checkpoints Backup Mod) by MightyPork",
     "logoFile": "",
-    "screenshots": [  ],
+    "screenshots": [],
     "parent": "",
     "requiredMods": [ "bspkrsCore" ],
     "dependencies": [ "bspkrsCore" ],
-    "dependants": [  ],
+    "dependants": [],
     "useDependencyInformation": "true"
   }]
 }

@@ -4,7 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
+import bspkrs.helpers.entity.player.EntityPlayerHelper;
 
 public class CommandWSC extends CommandBase
 {
@@ -63,7 +65,8 @@ public class CommandWSC extends CommandBase
                     if (dirName != null)
                         WSCSettings.delayedLoadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX), 1);
                     else
-                        WSCSettings.mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.invalidCheckpointNameForLoadCommand", name.trim()));
+                        EntityPlayerHelper.addChatMessage(WSCSettings.mc.thePlayer,
+                                new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.invalidCheckpointNameForLoadCommand", name.trim())));
                     
                     return;
                 }
@@ -73,5 +76,11 @@ public class CommandWSC extends CommandBase
         }
         
         throw new WrongUsageException("commands.wsc.usage", new Object[0]);
+    }
+    
+    @Override
+    public int compareTo(Object o)
+    {
+        return 0;
     }
 }

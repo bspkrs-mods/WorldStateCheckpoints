@@ -16,8 +16,10 @@ import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldServer;
+import bspkrs.helpers.entity.player.EntityPlayerHelper;
 import bspkrs.util.CommonUtils;
 
 public class CheckpointManager
@@ -312,11 +314,13 @@ public class CheckpointManager
             catch (Throwable e)
             {
                 e.printStackTrace();
-                mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError", targetDir.getName(), CommonUtils.getLogFileName()));
+                EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError",
+                        targetDir.getName(), CommonUtils.getLogFileName())));
             }
         }
         else
-            mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning") + " " + StatCollector.translateToLocal("wsc.chatMessage.autoSavePeriodWarning"));
+            EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning") + " "
+                    + StatCollector.translateToLocal("wsc.chatMessage.autoSavePeriodWarning")));
     }
     
     /**
@@ -353,7 +357,7 @@ public class CheckpointManager
             }
         }
         else
-            mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning"));
+            EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning")));
     }
     
     /**
@@ -415,7 +419,7 @@ public class CheckpointManager
             startWorld(worldDir.getName(), worldName);
         }
         else
-            mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatmessage.alreadySavingLoadWarning"));
+            EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocal("wsc.chatmessage.alreadySavingLoadWarning")));
     }
     
     /**
@@ -645,18 +649,18 @@ public class CheckpointManager
         {
             if (!isSaving)
             {
-                mc.thePlayer.addChatMessage(StatCollector.translateToLocal("wsc.chatMessage.savingCheckpoint"));
+                EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocal("wsc.chatMessage.savingCheckpoint")));
                 try
                 {
                     isSaving = true;
                     copyDirectory(src, tgt, ignoreList);
-                    mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.checkpointSaved", tgt.getName().split("!")[1]));
+                    EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.checkpointSaved", tgt.getName().split("!")[1])));
                     
                     isSaving = false;
                 }
                 catch (Throwable e)
                 {
-                    mc.thePlayer.addChatMessage(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError", tgt.getName(), CommonUtils.getLogFileName()));
+                    EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError", tgt.getName(), CommonUtils.getLogFileName())));
                     e.printStackTrace();
                 }
                 finally

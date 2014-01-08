@@ -1,56 +1,44 @@
 package bspkrs.worldstatecheckpoints.fml;
 
-import java.util.EnumSet;
+import java.util.HashMap;
 
 import net.minecraft.client.settings.KeyBinding;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
+import bspkrs.fml.util.InputEventListener;
 import bspkrs.worldstatecheckpoints.WSCSettings;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public class WSCKeyHandler extends KeyBindingRegistry.KeyHandler
+public class WSCKeyHandler extends InputEventListener
 {
-    public WSCKeyHandler(KeyBinding[] keyBindings, boolean[] repeatings)
+    private static HashMap<KeyBinding, WSCKeyHandler> instances = new HashMap();
+    
+    public WSCKeyHandler(KeyBinding keyBinding, boolean allowRepeats)
     {
-        super(keyBindings, repeatings);
+        super(keyBinding, allowRepeats);
+        instances.put(keyBinding, this);
     }
     
     @Override
-    public String getLabel()
+    public void keyDown(KeyBinding kb, boolean isRepeat)
     {
-        return "WSCKeyHandler";
+        if (!isRepeat)
+            WSCSettings.keyboardEvent(kb);
     }
     
     @Override
-    public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat)
+    public void keyUp(KeyBinding kb)
+    {}
+    
+    public static boolean isRegistered(KeyBinding kb)
     {
-        for (int i = 0; i < keyBindings.length; i++)
+        return instances.containsKey(kb);
+    }
+    
+    public static void unRegister(KeyBinding kb)
+    {
+        if (isRegistered(kb))
         {
-            if (kb.keyCode == keyBindings[i].keyCode)
-            {
-                boolean state = (kb.keyCode < 0 ? Mouse.isButtonDown(kb.keyCode + 100) : Keyboard.isKeyDown(kb.keyCode));
-                
-                for (TickType tt : types)
-                    if (state != keyDown[i] && tickEnd && tt == TickType.CLIENT)
-                        WSCSettings.keyboardEvent(kb);
-            }
-            
+            FMLCommonHandler.instance().bus().unregister(instances.get(kb));
+            instances.remove(kb);
         }
     }
-    
-    @Override
-    public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd)
-    {   
-        
-    }
-    
-    @Override
-    public EnumSet<TickType> ticks()
-    {
-        return EnumSet.of(TickType.CLIENT);
-    }
-    
 }

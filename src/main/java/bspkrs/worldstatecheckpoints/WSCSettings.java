@@ -6,23 +6,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ChatComponentText;
 
 import org.lwjgl.input.Keyboard;
 
+import bspkrs.helpers.client.MinecraftHelper;
+import bspkrs.helpers.entity.player.EntityPlayerHelper;
+import bspkrs.util.BSConfiguration;
 import bspkrs.util.CommonUtils;
-import bspkrs.util.Configuration;
 import bspkrs.util.Const;
 
 public class WSCSettings
 {
-    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r04";
+    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r01";
     
     public static String            autoSaveEnabledDefault    = "off";
     public static int               maxAutoSavesToKeepDefault = 10;
     public static int               autoSavePeriodDefault     = 20;
     public static String            periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
     
-    public static KeyBinding        bindKey                   = new KeyBinding("worldstatecheckpoints.keybind.desc", Keyboard.KEY_F6);
+    public static KeyBinding        bindKey                   = new KeyBinding("worldstatecheckpoints.keybind.desc", Keyboard.KEY_F6, "key.categories.misc");
     public static boolean           justLoadedCheckpoint      = false;
     public static boolean           justLoadedWorld           = false;
     public static String            loadMessage               = "";
@@ -32,7 +35,7 @@ public class WSCSettings
     protected static String         delayedLoadCheckpointName = "";
     protected static boolean        isDelayedLoadAutoSave     = false;
     
-    public static Configuration     config;
+    public static BSConfiguration   config;
     public static boolean           allowDebugLogging         = false;
     
     public final static Minecraft   mc                        = Minecraft.getMinecraft();
@@ -47,7 +50,7 @@ public class WSCSettings
           //                file.delete();
         }
         
-        config = new Configuration(file);
+        config = new BSConfiguration(file);
         
         config.load();
         
@@ -73,37 +76,39 @@ public class WSCSettings
     
     public static boolean onGameTick()
     {
-        if (justLoadedWorld)
+        if (mc.theWorld != null && mc.thePlayer != null)
         {
-            cpm = null;
-            justLoadedWorld = false;
-        }
-        
-        if (cpm == null)
-            cpm = new CheckpointManager(mc);
-        
-        if (justLoadedCheckpoint)
-        {
-            mc.thePlayer.addChatMessage(loadMessage);
-            loadMessage = "";
-            
-            if (cpm.autoSaveEnabled)
-                cpm.tickCount = 0;
-            
-            justLoadedCheckpoint = false;
-        }
-        
-        if (cpm.autoSaveEnabled &&
-                (mc.currentScreen == null || !(mc.currentScreen instanceof GuiGameOver || CommonUtils.isGamePaused(mc))))
-            cpm.incrementTickCount();
-        
-        if (delayedLoaderTicks > 0)
-        {
-            if (--delayedLoaderTicks == 0)
+            if (justLoadedWorld)
             {
-                cpm.loadCheckpoint(delayedLoadCheckpointName, isDelayedLoadAutoSave);
+                cpm = null;
+                justLoadedWorld = false;
             }
             
+            if (cpm == null)
+                cpm = new CheckpointManager(mc);
+            
+            if (justLoadedCheckpoint)
+            {
+                EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(loadMessage));
+                loadMessage = "";
+                
+                if (cpm.autoSaveEnabled)
+                    cpm.tickCount = 0;
+                
+                justLoadedCheckpoint = false;
+            }
+            
+            if (cpm.autoSaveEnabled &&
+                    (mc.currentScreen == null || !(mc.currentScreen instanceof GuiGameOver || CommonUtils.isGamePaused(mc))))
+                cpm.incrementTickCount();
+            
+            if (delayedLoaderTicks > 0)
+            {
+                if (--delayedLoaderTicks == 0)
+                {
+                    cpm.loadCheckpoint(delayedLoadCheckpointName, isDelayedLoadAutoSave);
+                }
+            }
         }
         
         return true;
@@ -111,17 +116,17 @@ public class WSCSettings
     
     public static void keyboardEvent(KeyBinding event)
     {
-        if (event.equals(bindKey) && mc.isSingleplayer() && !Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+        if (event.equals(bindKey) && mc.isSingleplayer() && !(Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))
         {
             if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(false))
-                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, false));
+                MinecraftHelper.displayGuiScreen(mc, new GuiLoadCheckpoint(cpm, true, false));
             else if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(true))
-                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, true));
+                MinecraftHelper.displayGuiScreen(mc, new GuiLoadCheckpoint(cpm, true, true));
             else
-                mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
+                MinecraftHelper.displayGuiScreen(mc, new GuiCheckpointsMenu(cpm));
         }
         else if (event.equals(bindKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
-                !(mc.currentScreen instanceof GuiIngameMenu) && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+                !(mc.currentScreen instanceof GuiIngameMenu) && (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))
         {
             if (!cpm.isSaving)
                 cpm.tickCount = 0;

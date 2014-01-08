@@ -4,10 +4,11 @@ import java.io.File;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+import bspkrs.helpers.client.MinecraftHelper;
+import bspkrs.helpers.client.gui.GuiScreenWrapper;
 
-public class GuiLoadCheckpoint extends GuiScreen
+public class GuiLoadCheckpoint extends GuiScreenWrapper
 {
     String                      guiTitle       = StatCollector.translateToLocal("wsc.loadCheckpoint.title");
     String                      guiSubTitle    = StatCollector.translateToLocal("wsc.loadCheckpoint.title2");
@@ -48,36 +49,36 @@ public class GuiLoadCheckpoint extends GuiScreen
     @Override
     public void initGui()
     {
-        buttonList.clear();
+        buttonList().clear();
         
         byte byte0 = -16;
         int prevX, backX, nextX, switchX;
         
-        prevX = width / 2 - 70 - 60 - 3;
-        backX = width / 2 - 70 - 1;
-        switchX = width / 2 + 1;
-        nextX = width / 2 + 70 + 3;
+        prevX = width() / 2 - 70 - 60 - 3;
+        backX = width() / 2 - 70 - 1;
+        switchX = width() / 2 + 1;
+        nextX = width() / 2 + 70 + 3;
         
         if (this.isAutoCheckpointsLoad)
         {
             guiTitle = StatCollector.translateToLocal("wsc.loadCheckpoint.titleAutoSaves");
-            switchLoad = new GuiButton(-4, switchX, height / 4 + 24 + byte0, 70, 20, StatCollector.translateToLocal("wsc.loadCheckpoint.checkpoints"));
+            switchLoad = new GuiButton(-4, switchX, height() / 4 + 24 + byte0, 70, 20, StatCollector.translateToLocal("wsc.loadCheckpoint.checkpoints"));
         }
         else
         {
-            switchLoad = new GuiButton(-4, switchX, height / 4 + 24 + byte0, 70, 20, StatCollector.translateToLocal("wsc.loadCheckpoint.autoSaves"));
+            switchLoad = new GuiButton(-4, switchX, height() / 4 + 24 + byte0, 70, 20, StatCollector.translateToLocal("wsc.loadCheckpoint.autoSaves"));
         }
         
-        switchLoad.enabled = cpm.getHasCheckpoints(!isAutoCheckpointsLoad);
+        switchLoad.field_146124_l = cpm.getHasCheckpoints(!isAutoCheckpointsLoad);
         
-        prev = new GuiButton(-2, prevX, height / 4 + 24 + byte0, 60, 20, "<<<");
-        back = new GuiButton(-1, backX, height / 4 + 24 + byte0, 70, 20, StatCollector.translateToLocal("gui.back"));
-        next = new GuiButton(-3, nextX, height / 4 + 24 + byte0, 60, 20, ">>>");
+        prev = new GuiButton(-2, prevX, height() / 4 + 24 + byte0, 60, 20, "<<<");
+        back = new GuiButton(-1, backX, height() / 4 + 24 + byte0, 70, 20, StatCollector.translateToLocal("gui.back"));
+        next = new GuiButton(-3, nextX, height() / 4 + 24 + byte0, 60, 20, ">>>");
         
-        buttonList.add(back);
-        buttonList.add(switchLoad);
-        buttonList.add(prev);
-        buttonList.add(next);
+        field_146292_n.add(back);
+        field_146292_n.add(switchLoad);
+        field_146292_n.add(prev);
+        field_146292_n.add(next);
         
         File[] files = cpm.getCheckpoints(isAutoCheckpointsLoad);
         
@@ -115,11 +116,11 @@ public class GuiLoadCheckpoint extends GuiScreen
                 pagecounter = 0;
             }
             
-            GuiButton btn = new GuiButton(index, width / 2 - 100, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, label);
-            buttonList.add(btn);
+            GuiButton btn = new GuiButton(index, width() / 2 - 100, height() / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, label);
+            field_146292_n.add(btn);
             
-            GuiButton delbtn = new GuiButton(index + 1000, width / 2 + 100 + 4, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, 20, 20, "X");
-            buttonList.add(delbtn);
+            GuiButton delbtn = new GuiButton(index + 1000, width() / 2 + 100 + 4, height() / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, 20, 20, "X");
+            field_146292_n.add(delbtn);
             
             dirNames[index] = file.getName();
             pageNums[index] = page;
@@ -143,8 +144,8 @@ public class GuiLoadCheckpoint extends GuiScreen
         
         for (int i = 0; i < buttons.length; i++)
         {
-            buttons[i].drawButton = (pageNums[i] == page);
-            delButtons[i].drawButton = (pageNums[i] == page && showDelButtons);
+            buttons[i].field_146125_m = (pageNums[i] == page);
+            delButtons[i].field_146125_m = (pageNums[i] == page && showDelButtons);
         }
         
         prevNextDisableIfNeeded();
@@ -152,8 +153,8 @@ public class GuiLoadCheckpoint extends GuiScreen
     
     private void prevNextDisableIfNeeded()
     {
-        prev.enabled = currentPage > 0;
-        next.enabled = currentPage < pages;
+        prev.field_146124_l = currentPage > 0;
+        next.field_146124_l = currentPage < pages;
     }
     
     private void goPrev()
@@ -178,37 +179,37 @@ public class GuiLoadCheckpoint extends GuiScreen
     {
         String dirname = dirNames[index];
         cpm.loadCheckpoint(dirname, isAutoCheckpointsLoad);
-        mc.displayGuiScreen(null);
-        mc.setIngameFocus();
+        MinecraftHelper.displayGuiScreen(WSCSettings.mc, null);
+        WSCSettings.mc.setIngameFocus();
         WSCSettings.justLoadedCheckpoint = true;
         WSCSettings.loadMessage = StatCollector.translateToLocalFormatted("wsc.chatMessage.loadedCheckpoint", dirname.split("!", 2)[1]);
     }
     
     protected void delButtonClicked(int index)
     {
-        mc.displayGuiScreen(new GuiDeleteCheckpointYesNo(cpm, this, dirNames[index], currentPage, isAutoCheckpointsLoad));
+        MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiDeleteCheckpointYesNo(cpm, this, dirNames[index], currentPage, isAutoCheckpointsLoad));
     }
     
     protected void backButtonClicked()
     {
-        mc.displayGuiScreen(gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu(cpm));
+        MinecraftHelper.displayGuiScreen(WSCSettings.mc, gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu(cpm));
     }
     
     protected void switchButtonClicked()
     {
-        mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, gameOverScreen, !isAutoCheckpointsLoad));
+        MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiLoadCheckpoint(cpm, gameOverScreen, !isAutoCheckpointsLoad));
     }
     
     /**
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
-    protected void actionPerformed(GuiButton guibutton)
+    protected void func_146284_a(GuiButton guibutton)
     {
-        if (!guibutton.enabled)
+        if (!guibutton.field_146124_l)
             return;
         
-        switch (guibutton.id)
+        switch (guibutton.field_146127_k)
         {
             case -1:
                 backButtonClicked();
@@ -227,10 +228,10 @@ public class GuiLoadCheckpoint extends GuiScreen
                 return;
                 
             default:
-                if (guibutton.id >= 1000)
-                    delButtonClicked(guibutton.id - 1000);
+                if (guibutton.field_146127_k >= 1000)
+                    delButtonClicked(guibutton.field_146127_k - 1000);
                 else
-                    checkpointButtonClicked(guibutton.id);
+                    checkpointButtonClicked(guibutton.field_146127_k);
                 
                 break;
         }
@@ -252,12 +253,12 @@ public class GuiLoadCheckpoint extends GuiScreen
     public void drawScreen(int par1, int par2, float par3)
     {
         drawDefaultBackground();
-        if (guiSubTitle == null || (gameOverScreen && mc.theWorld.getWorldInfo().isHardcoreModeEnabled()))
-            drawCenteredString(fontRenderer, guiTitle, width / 2, 50 + 5, 0xffffff);
+        if (guiSubTitle == null || (gameOverScreen && WSCSettings.mc.theWorld.getWorldInfo().isHardcoreModeEnabled()))
+            drawCenteredString(field_146289_q, guiTitle, width() / 2, 50 + 5, 0xffffff);
         else
         {
-            drawCenteredString(fontRenderer, guiSubTitle, width / 2, 50 + 5, 0xee0000);
-            drawCenteredString(fontRenderer, guiTitle, width / 2, 50 + 5 - 16, 0xffffff);
+            drawCenteredString(field_146289_q, guiSubTitle, width() / 2, 50 + 5, 0xee0000);
+            drawCenteredString(field_146289_q, guiTitle, width() / 2, 50 + 5 - 16, 0xffffff);
         }
         super.drawScreen(par1, par2, par3);
     }

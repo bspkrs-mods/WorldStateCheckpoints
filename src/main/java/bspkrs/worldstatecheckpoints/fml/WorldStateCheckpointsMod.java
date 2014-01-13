@@ -17,7 +17,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-@Mod(name = "WorldStateCheckpoints", modid = "WorldStateCheckpoints", version = "Forge " + WSCSettings.VERSION_NUMBER, dependencies = "required-after:bspkrsCore", useMetadata = true)
+@Mod(name = "WorldStateCheckpoints", modid = "WorldStateCheckpoints", version = WSCSettings.VERSION_NUMBER, dependencies = "required-after:bspkrsCore", useMetadata = true)
 public class WorldStateCheckpointsMod
 {
     public ModVersionChecker               versionChecker;

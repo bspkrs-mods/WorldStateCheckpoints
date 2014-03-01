@@ -296,10 +296,10 @@ public class CheckpointManager
             try
             {
                 mc.getIntegratedServer().getConfigurationManager().saveAllPlayerData();
-                boolean canNotSave = world.canNotSave;
-                world.canNotSave = false;
+                boolean levelSaving = world.levelSaving;
+                world.levelSaving = false;
                 world.saveAllChunks(true, null);
-                world.canNotSave = canNotSave;
+                world.levelSaving = levelSaving;
                 
                 File worldDir = getWorldPath();
                 

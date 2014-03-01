@@ -1,14 +1,14 @@
 package bspkrs.worldstatecheckpoints;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
 import bspkrs.helpers.client.MinecraftHelper;
-import bspkrs.helpers.client.gui.GuiScreenWrapper;
 
-public class GuiDeleteCheckpointYesNo extends GuiScreenWrapper
+public class GuiDeleteCheckpointYesNo extends GuiScreen
 {
     private final CheckpointManager cpm;
     
@@ -34,17 +34,17 @@ public class GuiDeleteCheckpointYesNo extends GuiScreenWrapper
     @Override
     public void initGui()
     {
-        field_146292_n.clear();
+        buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
         
-        field_146292_n.add(new GuiButton(-2, width() / 2 - 62, height() / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.yes")));
-        field_146292_n.add(new GuiButton(-1, width() / 2 + 2, height() / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.no")));
+        buttonList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.yes")));
+        buttonList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.no")));
     }
     
     @Override
-    public void func_146281_b()
+    public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
     }
@@ -53,14 +53,14 @@ public class GuiDeleteCheckpointYesNo extends GuiScreenWrapper
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
-    protected void func_146284_a(GuiButton par1GuiButton)
+    protected void actionPerformed(GuiButton par1GuiButton)
     {
-        if (!par1GuiButton.field_146124_l)
+        if (!par1GuiButton.enabled)
         {
             return;
         }
         
-        switch (par1GuiButton.field_146127_k)
+        switch (par1GuiButton.id)
         {
             case -1:
                 MinecraftHelper.displayGuiScreen(WSCSettings.mc, parentScreen);
@@ -84,8 +84,8 @@ public class GuiDeleteCheckpointYesNo extends GuiScreenWrapper
     {
         drawDefaultBackground();
         
-        drawCenteredString(field_146289_q, StatCollector.translateToLocal("wsc.deleteCheckpoint"), width() / 2, 100, 0xffffff);
-        drawCenteredString(field_146289_q, "\"" + name + "\"", width() / 2, 100 + 20, 0xffff00);
+        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("wsc.deleteCheckpoint"), width / 2, 100, 0xffffff);
+        drawCenteredString(fontRendererObj, "\"" + name + "\"", width / 2, 100 + 20, 0xffff00);
         super.drawScreen(par1, par2, par3);
     }
 }

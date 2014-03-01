@@ -11,15 +11,15 @@ import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_SECONDS;
 import java.util.Properties;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
 import bspkrs.helpers.client.MinecraftHelper;
-import bspkrs.helpers.client.gui.GuiScreenWrapper;
-import bspkrs.helpers.client.gui.GuiTextFieldWrapper;
 
-public class GuiConfigureAutoSave extends GuiScreenWrapper
+public class GuiConfigureAutoSave extends GuiScreen
 {
     String                          guiTitle           = StatCollector.translateToLocal("wsc.configureAutoSave.title");
     String[]                        maxAutoSaves       = { StatCollector.translateToLocal("wsc.configureAutoSave.maxAutoSavesToKeep"),
@@ -27,8 +27,8 @@ public class GuiConfigureAutoSave extends GuiScreenWrapper
     String                          enableAutosaveText = StatCollector.translateToLocal("wsc.configureAutosave.enableAutoSave") + ": ";
     private final CheckpointManager cpm;
     private GuiButton               back, save, enable, periodUnit;
-    private GuiTextFieldWrapper     periodValue;
-    private GuiTextFieldWrapper     maxToKeep;
+    private GuiTextField            periodValue;
+    private GuiTextField            maxToKeep;
     private final Properties        localConfig;
     
     public GuiConfigureAutoSave(CheckpointManager cpm)
@@ -48,51 +48,51 @@ public class GuiConfigureAutoSave extends GuiScreenWrapper
     @Override
     public void initGui()
     {
-        buttonList().clear();
+        buttonList.clear();
         byte byte0 = -16;
         
         int row1, row2, row3, row5;
-        row1 = height() / 4 + 24 + byte0;
-        row2 = height() / 4 + 24 * 2 + byte0;
-        row3 = height() / 4 + 24 * 3 + byte0;
-        row5 = height() / 4 + 24 * 5 + byte0;
+        row1 = height / 4 + 24 + byte0;
+        row2 = height / 4 + 24 * 2 + byte0;
+        row3 = height / 4 + 24 * 3 + byte0;
+        row5 = height / 4 + 24 * 5 + byte0;
         
-        enable = new GuiButton(-1, width() / 2 - 100, row1, enableAutosaveText + (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
-        periodValue = new GuiTextFieldWrapper(field_146289_q, width() / 2 - 62, row2, 60, 20);
+        enable = new GuiButton(-1, width / 2 - 100, row1, enableAutosaveText + (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
+        periodValue = new GuiTextField(fontRendererObj, width / 2 - 62, row2, 60, 20);
         periodValue.setText(localConfig.getProperty(AUTO_SAVE_PERIOD));
-        maxToKeep = new GuiTextFieldWrapper(field_146289_q, width() / 2 + 2, row3, 60, 20);
+        maxToKeep = new GuiTextField(fontRendererObj, width / 2 + 2, row3, 60, 20);
         maxToKeep.setText(localConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
-        periodUnit = new GuiButton(-2, width() / 2 + 2, row2, 60, 20, StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT)));
-        periodUnit.field_146124_l = cpm.autoSaveEnabled;
-        save = new GuiButton(-3, width() / 2 - 62, row5, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
-        back = new GuiButton(-4, width() / 2 + 2, row5, 60, 20, StatCollector.translateToLocal("gui.cancel"));
+        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT)));
+        periodUnit.enabled = cpm.autoSaveEnabled;
+        save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, StatCollector.translateToLocal("gui.cancel"));
         
-        buttonList().add(enable);
-        buttonList().add(periodUnit);
-        buttonList().add(save);
-        buttonList().add(back);
+        buttonList.add(enable);
+        buttonList.add(periodUnit);
+        buttonList.add(save);
+        buttonList.add(back);
     }
     
     /**
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
-    protected void func_146284_a(GuiButton par1GuiButton)
+    protected void actionPerformed(GuiButton par1GuiButton)
     {
-        switch (par1GuiButton.field_146127_k)
+        switch (par1GuiButton.id)
         {
             case -1:
                 if (localConfig.getProperty(ENABLED).equalsIgnoreCase("on"))
                 {
                     localConfig.setProperty(ENABLED, "off");
-                    enable.field_146126_j = enableAutosaveText + StatCollector.translateToLocal("options.off");
-                    periodUnit.field_146124_l = false;
+                    enable.displayString = enableAutosaveText + StatCollector.translateToLocal("options.off");
+                    periodUnit.enabled = false;
                 }
                 else
                 {
                     localConfig.setProperty(ENABLED, "on");
-                    enable.field_146126_j = enableAutosaveText + StatCollector.translateToLocal("options.on");
-                    periodUnit.field_146124_l = true;
+                    enable.displayString = enableAutosaveText + StatCollector.translateToLocal("options.on");
+                    periodUnit.enabled = true;
                 }
                 break;
             
@@ -104,7 +104,7 @@ public class GuiConfigureAutoSave extends GuiScreenWrapper
                 else if (localConfig.getProperty(PERIOD_UNIT).equalsIgnoreCase(UNIT_SECONDS))
                     localConfig.setProperty(PERIOD_UNIT, UNIT_HOURS);
                 
-                periodUnit.field_146126_j = StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT));
+                periodUnit.displayString = StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT));
                 break;
             
             case -3:
@@ -133,13 +133,13 @@ public class GuiConfigureAutoSave extends GuiScreenWrapper
             else if (periodValue.isFocused())
                 periodValue.textboxKeyTyped(c, i);
         
-        save.field_146124_l = periodValue.getText().trim().length() > 0 && Integer.valueOf(periodValue.getText().trim()) > 0
+        save.enabled = periodValue.getText().trim().length() > 0 && Integer.valueOf(periodValue.getText().trim()) > 0
                 && maxToKeep.getText().trim().length() > 0 && Integer.valueOf(maxToKeep.getText().trim()) >= 0;
         
         localConfig.setProperty(AUTO_SAVE_PERIOD, periodValue.getText().trim());
         localConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, maxToKeep.getText().trim());
         
-        if (c == '\r' && save.field_146124_l)
+        if (c == '\r' && save.enabled)
             actionPerformed(save);
     }
     
@@ -172,9 +172,9 @@ public class GuiConfigureAutoSave extends GuiScreenWrapper
         periodValue.drawTextBox();
         maxToKeep.drawTextBox();
         
-        drawCenteredString(field_146289_q, guiTitle, width() / 2, 80, 0xffffff);
-        drawString(field_146289_q, maxAutoSaves[0], width() / 2 - 3 - field_146289_q.getStringWidth(maxAutoSaves[0]), height() / 4 + 24 * 3 - 16 + 1, 0xffffff);
-        drawString(field_146289_q, maxAutoSaves[1], width() / 2 - 3 - field_146289_q.getStringWidth(maxAutoSaves[1]), height() / 4 + 24 * 3 - 16 + 11, 0xffffff);
+        drawCenteredString(fontRendererObj, guiTitle, width / 2, 80, 0xffffff);
+        drawString(fontRendererObj, maxAutoSaves[0], width / 2 - 3 - fontRendererObj.getStringWidth(maxAutoSaves[0]), height / 4 + 24 * 3 - 16 + 1, 0xffffff);
+        drawString(fontRendererObj, maxAutoSaves[1], width / 2 - 3 - fontRendererObj.getStringWidth(maxAutoSaves[1]), height / 4 + 24 * 3 - 16 + 11, 0xffffff);
         super.drawScreen(par1, par2, par3);
     }
 }

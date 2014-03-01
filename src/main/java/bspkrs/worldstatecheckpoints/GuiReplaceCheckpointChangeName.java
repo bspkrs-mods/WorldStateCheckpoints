@@ -1,19 +1,19 @@
 package bspkrs.worldstatecheckpoints;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
 import bspkrs.helpers.client.MinecraftHelper;
-import bspkrs.helpers.client.gui.GuiScreenWrapper;
-import bspkrs.helpers.client.gui.GuiTextFieldWrapper;
 import bspkrs.helpers.entity.player.EntityPlayerHelper;
 
-public class GuiReplaceCheckpointChangeName extends GuiScreenWrapper
+public class GuiReplaceCheckpointChangeName extends GuiScreen
 {
-    private GuiTextFieldWrapper     edit;
+    private GuiTextField            edit;
     private GuiButton               back, save;
     private final CheckpointManager cpm;
     private final String            dirname_orig, dirname_prefix, name;
@@ -35,25 +35,25 @@ public class GuiReplaceCheckpointChangeName extends GuiScreenWrapper
     @Override
     public void initGui()
     {
-        field_146292_n.clear();
+        buttonList.clear();
         Keyboard.enableRepeatEvents(true);
         
         byte byte0 = -16;
         
-        back = new GuiButton(-1, width() / 2 + 1, height() / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
-        save = new GuiButton(-2, width() / 2 - 61, height() / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-1, width / 2 + 1, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
+        save = new GuiButton(-2, width / 2 - 61, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
         
-        edit = new GuiTextFieldWrapper(field_146289_q, width() / 2 - 100, height() / 4 + 24 + 24, 200, 20);
+        edit = new GuiTextField(fontRendererObj, width / 2 - 100, height / 4 + 24 + 24, 200, 20);
         edit.setText(name);
         edit.setFocused(true);
-        save.field_146124_l = true;
+        save.enabled = true;
         
-        field_146292_n.add(back);
-        field_146292_n.add(save);
+        buttonList.add(back);
+        buttonList.add(save);
     }
     
     @Override
-    public void func_146281_b()
+    public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
     }
@@ -62,14 +62,14 @@ public class GuiReplaceCheckpointChangeName extends GuiScreenWrapper
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     @Override
-    protected void func_146284_a(GuiButton par1GuiButton)
+    protected void actionPerformed(GuiButton par1GuiButton)
     {
-        if (!par1GuiButton.field_146124_l)
+        if (!par1GuiButton.enabled)
         {
             return;
         }
         
-        switch (par1GuiButton.field_146127_k)
+        switch (par1GuiButton.id)
         {
             case -1:
                 MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiReplaceCheckpoint(cpm, page));
@@ -91,10 +91,10 @@ public class GuiReplaceCheckpointChangeName extends GuiScreenWrapper
         if (Character.isLetterOrDigit(Character.valueOf(c)) || validChars.contains(String.valueOf(c)) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END)
             edit.textboxKeyTyped(c, i);
         
-        save.field_146124_l = edit.getText().trim().length() > 0 && !edit.getText().trim().endsWith(".");
+        save.enabled = edit.getText().trim().length() > 0 && !edit.getText().trim().endsWith(".");
         
         if (c == '\r')
-            actionPerformed((GuiButton) field_146292_n.get(1));
+            actionPerformed((GuiButton) buttonList.get(1));
     }
     
     @Override
@@ -122,7 +122,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreenWrapper
     {
         drawDefaultBackground();
         edit.drawTextBox();
-        drawCenteredString(field_146289_q, StatCollector.translateToLocal("wsc.overwriteCheckpoint.editName"), width() / 2, 80, 0xffffff);
+        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("wsc.overwriteCheckpoint.editName"), width / 2, 80, 0xffffff);
         super.drawScreen(par1, par2, par3);
     }
 }

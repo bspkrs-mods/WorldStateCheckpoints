@@ -12,13 +12,13 @@ import org.lwjgl.input.Keyboard;
 
 import bspkrs.helpers.client.MinecraftHelper;
 import bspkrs.helpers.entity.player.EntityPlayerHelper;
-import bspkrs.util.BSConfiguration;
 import bspkrs.util.CommonUtils;
 import bspkrs.util.Const;
+import bspkrs.util.config.Configuration;
 
 public class WSCSettings
 {
-    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r01";
+    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r02";
     
     public static String            autoSaveEnabledDefault    = "off";
     public static int               maxAutoSavesToKeepDefault = 10;
@@ -35,7 +35,7 @@ public class WSCSettings
     protected static String         delayedLoadCheckpointName = "";
     protected static boolean        isDelayedLoadAutoSave     = false;
     
-    public static BSConfiguration   config;
+    public static Configuration     config;
     public static boolean           allowDebugLogging         = false;
     
     public final static Minecraft   mc                        = Minecraft.getMinecraft();
@@ -50,7 +50,7 @@ public class WSCSettings
           //                file.delete();
         }
         
-        config = new BSConfiguration(file);
+        config = new Configuration(file);
         
         config.load();
         

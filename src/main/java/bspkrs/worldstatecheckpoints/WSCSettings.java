@@ -13,58 +13,64 @@ import org.lwjgl.input.Keyboard;
 import bspkrs.helpers.client.MinecraftHelper;
 import bspkrs.helpers.entity.player.EntityPlayerHelper;
 import bspkrs.util.CommonUtils;
-import bspkrs.util.Const;
 import bspkrs.util.config.Configuration;
+import bspkrs.worldstatecheckpoints.fml.Reference;
 
 public class WSCSettings
 {
-    public static final String      VERSION_NUMBER            = Const.MCVERSION + ".r02";
+    private final static String     autoSaveEnabledDefaultDefault    = "off";
+    public static String            autoSaveEnabledDefault           = autoSaveEnabledDefaultDefault;
+    private final static int        maxAutoSavesToKeepDefaultDefault = 10;
+    public static int               maxAutoSavesToKeepDefault        = maxAutoSavesToKeepDefaultDefault;
+    private final static int        autoSavePeriodDefaultDefault     = 20;
+    public static int               autoSavePeriodDefault            = autoSavePeriodDefaultDefault;
+    private final static String     periodUnitDefaultDefault         = CheckpointManager.UNIT_MINUTES;
+    public static String            periodUnitDefault                = periodUnitDefaultDefault;
     
-    public static String            autoSaveEnabledDefault    = "off";
-    public static int               maxAutoSavesToKeepDefault = 10;
-    public static int               autoSavePeriodDefault     = 20;
-    public static String            periodUnitDefault         = CheckpointManager.UNIT_MINUTES;
-    
-    public static KeyBinding        bindKey                   = new KeyBinding("worldstatecheckpoints.keybind.desc", Keyboard.KEY_F6, "key.categories.misc");
-    public static boolean           justLoadedCheckpoint      = false;
-    public static boolean           justLoadedWorld           = false;
-    public static String            loadMessage               = "";
+    public static KeyBinding        bindKey                          = new KeyBinding("worldstatecheckpoints.keybind.desc", Keyboard.KEY_F6, "key.categories.misc");
+    public static boolean           justLoadedCheckpoint             = false;
+    public static boolean           justLoadedWorld                  = false;
+    public static String            loadMessage                      = "";
     public static CheckpointManager cpm;
     
-    protected static int            delayedLoaderTicks        = 0;
-    protected static String         delayedLoadCheckpointName = "";
-    protected static boolean        isDelayedLoadAutoSave     = false;
+    protected static int            delayedLoaderTicks               = 0;
+    protected static String         delayedLoadCheckpointName        = "";
+    protected static boolean        isDelayedLoadAutoSave            = false;
     
-    public static Configuration     config;
-    public static boolean           allowDebugLogging         = false;
+    public static boolean           allowDebugLogging                = false;
     
-    public final static Minecraft   mc                        = Minecraft.getMinecraft();
+    public final static Minecraft   mc                               = Minecraft.getMinecraft();
     
-    public static void loadConfig(File file)
+    public static void initConfig(File file)
     {
-        final String ctgyGen = "autosave_new_world_defaults";
-        
         if (!CommonUtils.isObfuscatedEnv())
         { // debug settings for deobfuscated execution
           //            if (file.exists())
           //                file.delete();
         }
         
-        config = new Configuration(file);
+        Reference.config = new Configuration(file);
+    }
+    
+    public static void syncConfig()
+    {
+        final String ctgyGen = Reference.CTGY;
         
-        config.load();
+        Reference.config.load();
         
-        autoSaveEnabledDefault = config.getString("autoSaveEnabledDefault", ctgyGen, autoSaveEnabledDefault,
-                "Default enabled state of auto-saving when starting a new world.  Valid values are on/off.");
-        maxAutoSavesToKeepDefault = config.getInt("maxAutoSavesToKeepDefault", ctgyGen, maxAutoSavesToKeepDefault, 0, 100,
-                "Default maximum number of auto-saves to keep per world. This value is used when starting a new world. Use 0 for no limit.");
-        autoSavePeriodDefault = config.getInt("autoSavePeriodDefault", ctgyGen, autoSavePeriodDefault, 1, Integer.MAX_VALUE,
+        autoSaveEnabledDefault = Reference.config.getString("autoSaveEnabledDefault", ctgyGen, autoSaveEnabledDefaultDefault,
+                "Default enabled state of auto-saving when starting a new world.  Valid values are on/off.",
+                new String[] { "off", "on" }, "wsc.configureAutosave.enableAutoSave");
+        maxAutoSavesToKeepDefault = Reference.config.getInt("maxAutoSavesToKeepDefault", ctgyGen, maxAutoSavesToKeepDefaultDefault, 0, 100,
+                "Default maximum number of auto-saves to keep per world. This value is used when starting a new world. Use 0 for no limit.",
+                "wsc.configureAutoSave.maxAutoSavesToKeep");
+        autoSavePeriodDefault = Reference.config.getInt("autoSavePeriodDefault", ctgyGen, autoSavePeriodDefaultDefault, 1, Integer.MAX_VALUE,
                 "Default auto-save period to use in a new world's auto-save config.");
-        periodUnitDefault = config.getString("periodUnitDefault", ctgyGen, periodUnitDefault,
+        periodUnitDefault = Reference.config.getString("periodUnitDefault", ctgyGen, periodUnitDefaultDefault,
                 "Default auto-save period unit to use in a new world's auto-save config.  Valid values are " +
                         CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + ".");
         
-        config.save();
+        Reference.config.save();
     }
     
     public static void delayedLoadCheckpoint(String checkpointName, boolean isAutoSave, int delayTicks)

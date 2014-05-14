@@ -119,7 +119,7 @@ public class GuiLoadCheckpoint extends GuiScreen
             GuiButton btn = new GuiButton(index, width / 2 - 100, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, label);
             buttonList.add(btn);
             
-            GuiButton delbtn = new GuiButton(index + 1000, width / 2 + 100 + 4, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, 20, 20, "X");
+            GuiButton delbtn = new GuiButton(index + 100000, width / 2 + 100 + 4, height / 4 + 24 * 2 + 6 + 23 * pagecounter + byte0, 20, 20, "X");
             buttonList.add(delbtn);
             
             dirNames[index] = file.getName();

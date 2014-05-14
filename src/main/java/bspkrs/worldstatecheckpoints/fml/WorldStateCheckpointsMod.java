@@ -17,20 +17,21 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
-@Mod(name = "WorldStateCheckpoints", modid = "WorldStateCheckpoints", version = WSCSettings.VERSION_NUMBER, dependencies = "required-after:bspkrsCore", useMetadata = true)
+@Mod(modid = Reference.MODID, name = Reference.NAME, version = "@MOD_VERSION@", dependencies = "required-after:bspkrsCore@[@BSCORE_VERSION@,)",
+        useMetadata = true, guiFactory = Reference.GUI_FACTORY)
 public class WorldStateCheckpointsMod
 {
     public ModVersionChecker               versionChecker;
     private String                         versionURL = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpointsForge.version";
     private String                         mcfTopic   = "http://www.minecraftforum.net/topic/1548243-";
     
-    @SidedProxy(clientSide = "bspkrs.worldstatecheckpoints.fml.ClientProxy", serverSide = "bspkrs.worldstatecheckpoints.fml.CommonProxy")
+    @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_COMMON)
     public static CommonProxy              proxy;
     
-    @Metadata(value = "WorldStateCheckpoints")
+    @Metadata(value = Reference.MODID)
     public static ModMetadata              metadata;
     
-    @Instance(value = "WorldStateCheckpoints")
+    @Instance(value = Reference.MODID)
     public static WorldStateCheckpointsMod instance;
     
     protected WSCServerTicker              ticker;
@@ -39,19 +40,19 @@ public class WorldStateCheckpointsMod
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = event.getModMetadata();
-        WSCSettings.loadConfig(event.getSuggestedConfigurationFile());
-        
-        if (bspkrsCoreMod.instance.allowUpdateCheck)
-        {
-            versionChecker = new ModVersionChecker(metadata.name, metadata.version, versionURL, mcfTopic);
-            versionChecker.checkVersionWithLogging();
-        }
+        WSCSettings.initConfig(event.getSuggestedConfigurationFile());
     }
     
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
         proxy.registerClientTicker();
+        
+        if (bspkrsCoreMod.instance.allowUpdateCheck)
+        {
+            versionChecker = new ModVersionChecker(metadata.name, metadata.version, versionURL, mcfTopic);
+            versionChecker.checkVersionWithLogging();
+        }
     }
     
     @EventHandler

@@ -29,17 +29,13 @@ public class WSCClientTicker
         
         boolean keepTicking = !(WSCSettings.mc != null && WSCSettings.mc.thePlayer != null && WSCSettings.mc.theWorld != null);
         
-        if (bspkrsCoreMod.instance.allowUpdateCheck && !keepTicking)
+        if (!keepTicking && isRegistered)
         {
             if (bspkrsCoreMod.instance.allowUpdateCheck && WorldStateCheckpointsMod.instance.versionChecker != null)
                 if (!WorldStateCheckpointsMod.instance.versionChecker.isCurrentVersion())
                     for (String msg : WorldStateCheckpointsMod.instance.versionChecker.getInGameMessage())
                         EntityPlayerHelper.addChatMessage(WSCSettings.mc.thePlayer, new ChatComponentText(msg));
             
-        }
-        
-        if (!keepTicking)
-        {
             FMLCommonHandler.instance().bus().unregister(this);
             isRegistered = false;
         }

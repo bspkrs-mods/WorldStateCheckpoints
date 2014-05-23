@@ -8,9 +8,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
-import bspkrs.helpers.client.MinecraftHelper;
-import bspkrs.helpers.entity.player.EntityPlayerHelper;
-
 public class GuiReplaceCheckpointChangeName extends GuiScreen
 {
     private GuiTextField            edit;
@@ -72,14 +69,14 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
         switch (par1GuiButton.id)
         {
             case -1:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiReplaceCheckpoint(cpm, page));
+                WSCSettings.mc.displayGuiScreen(new GuiReplaceCheckpoint(cpm, page));
                 return;
                 
             case -2:
                 cpm.saveCheckpointInto(dirname_orig, dirname_prefix + "!" + edit.getText());
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, null);
+                WSCSettings.mc.displayGuiScreen(null);
                 WSCSettings.mc.setIngameFocus();
-                EntityPlayerHelper.addChatMessage(WSCSettings.mc.thePlayer, new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.savedCheckpoint", edit.getText())));
+                WSCSettings.mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.savedCheckpoint", edit.getText())));
                 return;
         }
     }

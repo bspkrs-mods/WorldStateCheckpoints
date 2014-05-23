@@ -6,7 +6,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
-import bspkrs.helpers.entity.player.EntityPlayerHelper;
 
 public class CommandWSC extends CommandBase
 {
@@ -65,7 +64,7 @@ public class CommandWSC extends CommandBase
                     if (dirName != null)
                         WSCSettings.delayedLoadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX), 1);
                     else
-                        EntityPlayerHelper.addChatMessage(WSCSettings.mc.thePlayer,
+                        WSCSettings.mc.thePlayer.addChatMessage(
                                 new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.invalidCheckpointNameForLoadCommand", name.trim())));
                     
                     return;

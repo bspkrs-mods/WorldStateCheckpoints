@@ -10,8 +10,6 @@ import net.minecraft.util.ChatComponentText;
 
 import org.lwjgl.input.Keyboard;
 
-import bspkrs.helpers.client.MinecraftHelper;
-import bspkrs.helpers.entity.player.EntityPlayerHelper;
 import bspkrs.util.CommonUtils;
 import bspkrs.util.config.Configuration;
 import bspkrs.worldstatecheckpoints.fml.Reference;
@@ -95,7 +93,7 @@ public class WSCSettings
             
             if (justLoadedCheckpoint)
             {
-                EntityPlayerHelper.addChatMessage(mc.thePlayer, new ChatComponentText(loadMessage));
+                mc.thePlayer.addChatMessage(new ChatComponentText(loadMessage));
                 loadMessage = "";
                 
                 if (cpm.autoSaveEnabled)
@@ -125,11 +123,11 @@ public class WSCSettings
         if (event.equals(bindKey) && mc.isSingleplayer() && !(Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))
         {
             if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(false))
-                MinecraftHelper.displayGuiScreen(mc, new GuiLoadCheckpoint(cpm, true, false));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, false));
             else if (mc.currentScreen instanceof GuiGameOver && cpm.getHasCheckpoints(true))
-                MinecraftHelper.displayGuiScreen(mc, new GuiLoadCheckpoint(cpm, true, true));
+                mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, true, true));
             else
-                MinecraftHelper.displayGuiScreen(mc, new GuiCheckpointsMenu(cpm));
+                mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
         }
         else if (event.equals(bindKey) && mc.isSingleplayer() && !(mc.currentScreen instanceof GuiGameOver) &&
                 !(mc.currentScreen instanceof GuiIngameMenu) && (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))

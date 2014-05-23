@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
-import bspkrs.helpers.client.MinecraftHelper;
 
 public class GuiLoadCheckpoint extends GuiScreen
 {
@@ -179,7 +178,7 @@ public class GuiLoadCheckpoint extends GuiScreen
     {
         String dirname = dirNames[index];
         cpm.loadCheckpoint(dirname, isAutoCheckpointsLoad);
-        MinecraftHelper.displayGuiScreen(WSCSettings.mc, null);
+        WSCSettings.mc.displayGuiScreen(null);
         WSCSettings.mc.setIngameFocus();
         WSCSettings.justLoadedCheckpoint = true;
         WSCSettings.loadMessage = StatCollector.translateToLocalFormatted("wsc.chatMessage.loadedCheckpoint", dirname.split("!", 2)[1]);
@@ -187,17 +186,17 @@ public class GuiLoadCheckpoint extends GuiScreen
     
     protected void delButtonClicked(int index)
     {
-        MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiDeleteCheckpointYesNo(cpm, this, dirNames[index], currentPage, isAutoCheckpointsLoad));
+        WSCSettings.mc.displayGuiScreen(new GuiDeleteCheckpointYesNo(cpm, this, dirNames[index], currentPage, isAutoCheckpointsLoad));
     }
     
     protected void backButtonClicked()
     {
-        MinecraftHelper.displayGuiScreen(WSCSettings.mc, gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu(cpm));
+        WSCSettings.mc.displayGuiScreen(gameOverScreen ? new GuiGameOver() : new GuiCheckpointsMenu(cpm));
     }
     
     protected void switchButtonClicked()
     {
-        MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiLoadCheckpoint(cpm, gameOverScreen, !isAutoCheckpointsLoad));
+        WSCSettings.mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, gameOverScreen, !isAutoCheckpointsLoad));
     }
     
     /**

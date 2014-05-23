@@ -4,7 +4,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
-import bspkrs.helpers.client.MinecraftHelper;
 
 public class GuiCheckpointsMenu extends GuiScreen
 {
@@ -62,28 +61,28 @@ public class GuiCheckpointsMenu extends GuiScreen
         switch (par1GuiButton.id)
         {
             case 4:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, null);
+                WSCSettings.mc.displayGuiScreen(null);
                 WSCSettings.mc.setIngameFocus();
                 break;
             
             case -3:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiReplaceCheckpoint(cpm));
+                WSCSettings.mc.displayGuiScreen(new GuiReplaceCheckpoint(cpm));
                 break;
             
             case -2:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiSaveCheckpoint(cpm));
+                WSCSettings.mc.displayGuiScreen(new GuiSaveCheckpoint(cpm));
                 break;
             
             case -1:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiLoadCheckpoint(cpm, false, false));
+                WSCSettings.mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, false, false));
                 break;
             
             case -4:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiLoadCheckpoint(cpm, false, true));
+                WSCSettings.mc.displayGuiScreen(new GuiLoadCheckpoint(cpm, false, true));
                 break;
             
             case -5:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiConfigureAutoSave(cpm));
+                WSCSettings.mc.displayGuiScreen(new GuiConfigureAutoSave(cpm));
                 break;
         }
     }

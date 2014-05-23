@@ -7,8 +7,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
-import bspkrs.helpers.client.MinecraftHelper;
-
 public class GuiSaveCheckpoint extends GuiScreen
 {
     private GuiTextField            edit;
@@ -63,12 +61,12 @@ public class GuiSaveCheckpoint extends GuiScreen
         switch (par1GuiButton.id)
         {
             case -1:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiCheckpointsMenu(cpm));
+                WSCSettings.mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
                 return;
                 
             case -2:
                 cpm.setCheckpoint(edit.getText(), false);
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, null);
+                WSCSettings.mc.displayGuiScreen(null);
                 WSCSettings.mc.setIngameFocus();
                 return;
         }

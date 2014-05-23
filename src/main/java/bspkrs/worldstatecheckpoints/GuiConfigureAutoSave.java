@@ -17,8 +17,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
-import bspkrs.helpers.client.MinecraftHelper;
-
 public class GuiConfigureAutoSave extends GuiScreen
 {
     String                          guiTitle           = StatCollector.translateToLocal("wsc.configureAutoSave.title");
@@ -114,11 +112,11 @@ public class GuiConfigureAutoSave extends GuiScreen
                 cpm.autoSaveConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, localConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
                 cpm.saveAutoConfig(cpm.autoSaveConfig);
                 cpm.loadAutoConfig();
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiCheckpointsMenu(cpm));
+                WSCSettings.mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
                 break;
             
             case -4:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiCheckpointsMenu(cpm));
+                WSCSettings.mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
                 break;
         }
     }

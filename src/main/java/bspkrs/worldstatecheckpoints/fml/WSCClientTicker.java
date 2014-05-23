@@ -2,7 +2,6 @@ package bspkrs.worldstatecheckpoints.fml;
 
 import net.minecraft.util.ChatComponentText;
 import bspkrs.bspkrscore.fml.bspkrsCoreMod;
-import bspkrs.helpers.entity.player.EntityPlayerHelper;
 import bspkrs.worldstatecheckpoints.WSCSettings;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -34,7 +33,7 @@ public class WSCClientTicker
             if (bspkrsCoreMod.instance.allowUpdateCheck && WorldStateCheckpointsMod.instance.versionChecker != null)
                 if (!WorldStateCheckpointsMod.instance.versionChecker.isCurrentVersion())
                     for (String msg : WorldStateCheckpointsMod.instance.versionChecker.getInGameMessage())
-                        EntityPlayerHelper.addChatMessage(WSCSettings.mc.thePlayer, new ChatComponentText(msg));
+                        WSCSettings.mc.thePlayer.addChatMessage(new ChatComponentText(msg));
             
             FMLCommonHandler.instance().bus().unregister(this);
             isRegistered = false;

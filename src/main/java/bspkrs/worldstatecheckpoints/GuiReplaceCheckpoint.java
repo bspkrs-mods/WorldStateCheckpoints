@@ -1,7 +1,6 @@
 package bspkrs.worldstatecheckpoints;
 
 import net.minecraft.util.StatCollector;
-import bspkrs.helpers.client.MinecraftHelper;
 
 public class GuiReplaceCheckpoint extends GuiLoadCheckpoint
 {
@@ -23,12 +22,12 @@ public class GuiReplaceCheckpoint extends GuiLoadCheckpoint
     protected void checkpointButtonClicked(int index)
     {
         String dirname = dirNames[index];
-        MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiReplaceCheckpointChangeName(cpm, dirname, currentPage));
+        WSCSettings.mc.displayGuiScreen(new GuiReplaceCheckpointChangeName(cpm, dirname, currentPage));
     }
     
     @Override
     protected void backButtonClicked()
     {
-        MinecraftHelper.displayGuiScreen(WSCSettings.mc, new GuiCheckpointsMenu(cpm));
+        WSCSettings.mc.displayGuiScreen(new GuiCheckpointsMenu(cpm));
     }
 }

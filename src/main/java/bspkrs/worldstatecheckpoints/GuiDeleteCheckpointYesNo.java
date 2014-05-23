@@ -6,8 +6,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
-import bspkrs.helpers.client.MinecraftHelper;
-
 public class GuiDeleteCheckpointYesNo extends GuiScreen
 {
     private final CheckpointManager cpm;
@@ -63,13 +61,13 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
         switch (par1GuiButton.id)
         {
             case -1:
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, parentScreen);
+                WSCSettings.mc.displayGuiScreen(parentScreen);
                 return;
                 
             case -2:
                 cpm.deleteCheckpoint(dirname, isAutoCheckpoint);
                 
-                MinecraftHelper.displayGuiScreen(WSCSettings.mc, parentScreen);
+                WSCSettings.mc.displayGuiScreen(parentScreen);
                 parentScreen.showPage(page);
                 
                 return;

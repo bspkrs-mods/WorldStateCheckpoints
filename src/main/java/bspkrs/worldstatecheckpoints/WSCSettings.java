@@ -7,11 +7,11 @@ import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.config.Configuration;
 
 import org.lwjgl.input.Keyboard;
 
 import bspkrs.util.CommonUtils;
-import bspkrs.util.config.Configuration;
 import bspkrs.worldstatecheckpoints.fml.Reference;
 
 public class WSCSettings
@@ -48,6 +48,7 @@ public class WSCSettings
         }
         
         Reference.config = new Configuration(file);
+        syncConfig();
     }
     
     public static void syncConfig()

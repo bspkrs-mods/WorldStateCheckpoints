@@ -5,6 +5,7 @@ import bspkrs.util.Const;
 import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CommandWSC;
 import bspkrs.worldstatecheckpoints.WSCSettings;
+import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -16,6 +17,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = "@MOD_VERSION@", dependencies = "required-after:bspkrsCore@[@BSCORE_VERSION@,)",
         useMetadata = true, guiFactory = Reference.GUI_FACTORY)
@@ -77,5 +79,15 @@ public class WorldStateCheckpointsMod
         }
         
         WSCSettings.cpm = null;
+    }
+    
+    @SubscribeEvent
+    public void onConfigChanged(OnConfigChangedEvent event)
+    {
+        if (event.modID.equals(Reference.MODID))
+        {
+            Reference.config.save();
+            WSCSettings.syncConfig();
+        }
     }
 }

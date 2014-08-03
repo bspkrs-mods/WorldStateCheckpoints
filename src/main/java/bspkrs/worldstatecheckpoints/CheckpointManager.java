@@ -36,6 +36,7 @@ public class CheckpointManager
     public boolean               autoSaveEnabled;
     public int                   maxAutoSavesToKeep;
     public boolean               isSaving               = false;
+    private String               saveDir                = null;
     public static final String   ENABLED                = "enabled";
     public static final String   MAX_AUTO_SAVE_ID       = "maxAutoSaveID";
     public static final String   MAX_AUTO_SAVES_TO_KEEP = "maxAutoSavesToKeep";
@@ -227,7 +228,13 @@ public class CheckpointManager
     
     public String getWorldSaveRelativePath()
     {
-        return "/saves/" + world.getSaveHandler().getWorldDirectoryName();
+        if (saveDir == null)
+            if (world != null && world.getSaveHandler() != null)
+                saveDir = "/saves/" + world.getSaveHandler().getWorldDirectoryName();
+            else
+                return "";
+        
+        return saveDir;
     }
     
     /**

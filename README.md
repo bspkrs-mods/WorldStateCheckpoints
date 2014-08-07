@@ -6,8 +6,8 @@ This repo contains source files for Forge (dependant on bspkrsCore).
 ## Links of Interest
  - [Official Minecraft Forum Thread](http://www.minecraftforum.net/topic/1548243-)
  - [Old ModLoader Downloads](http://bspk.rs/MC/WorldStateCheckpoints/index.html)
- - [Forge Player Downloads](http://bspk.rs/MC/WorldStateCheckpoints_Forge/index.html) - for Minecraft players to use
- - [Developer Downloads](http://bspk.rs/MC/WorldStateCheckpoints_Forge/deobf/index.html) - for developers to use in an IDE such as Eclipse
+ - [Forge Player Downloads](http://bspk.rs/MC/WorldStateCheckpoints/index.html) - for Minecraft players to use
+ - [Developer Downloads](http://bspk.rs/MC/WorldStateCheckpoints/deobf/index.html) - for developers to use in an IDE such as Eclipse
  - [Issue Tracking System](https://github.com/bspkrs/WorldStateCheckpoints/issues)
  - [Contributing](#contributing) - for those that want to help out  
  - [License](https://raw.github.com/bspkrs/WorldStateCheckpoints/master/src/main/resources/LICENSE)
@@ -71,7 +71,7 @@ This section assumes that you're using the command-line version of Git.
 
 1. Open up your command line.
 2. Navigate to a place where you want to download WorldStateCheckpoints's source (eg `C:\Development\Github\Minecraft\`) by executing `cd [folder location]`. This location is known as `mcdev` from now on.
-3. Execute `git clone git@github.com:Lunatrius/WorldStateCheckpoints.git`. This will download WorldStateCheckpoints's source into `mcdev`.
+3. Execute `git clone git@github.com:bspkrs/WorldStateCheckpoints.git`. This will download WorldStateCheckpoints's source into `mcdev`.
 4. Right now, you should have a directory that looks something like:
 
 ***
@@ -81,7 +81,7 @@ This section assumes that you're using the command-line version of Git.
 ***
 
 #### Compile WorldStateCheckpoints
-1. Execute `gradle setupDevWorkspace`. This sets up Forge and downloads the necessary libraries to build WorldStateCheckpoints. This might take some time, be patient.
+1. Execute `gradle setupDecompWorkspace`. This sets up Forge and downloads the necessary libraries to build WorldStateCheckpoints. This might take some time, be patient.
     * You will generally only have to do this once until the Forge version in `build.properties` changes.
 2. Execute `gradle build`. If you did everything right, `BUILD SUCCESSFUL` will be displayed after it finishes. This should be relatively quick.
     * If you see `BUILD FAILED`, check the error output (it should be right around `BUILD FAILED`), fix everything (if possible), and try again.

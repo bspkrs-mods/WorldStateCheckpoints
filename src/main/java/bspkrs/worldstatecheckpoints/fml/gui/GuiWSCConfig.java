@@ -7,6 +7,7 @@ import cpw.mods.fml.client.config.GuiConfig;
 
 public class GuiWSCConfig extends GuiConfig
 {
+    @SuppressWarnings("rawtypes")
     public GuiWSCConfig(GuiScreen parent)
     {
         super(parent, (new ConfigElement(Reference.config.getCategory(Reference.CTGY))).getChildElements(),

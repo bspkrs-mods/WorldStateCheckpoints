@@ -24,21 +24,21 @@ public class WSCSettings
     public static int               autoSavePeriodDefault            = autoSavePeriodDefaultDefault;
     private final static String     periodUnitDefaultDefault         = CheckpointManager.UNIT_MINUTES;
     public static String            periodUnitDefault                = periodUnitDefaultDefault;
-    
+
     public static KeyBinding        bindKey                          = new KeyBinding("worldstatecheckpoints.keybind.desc", Keyboard.KEY_F6, "key.categories.misc");
     public static boolean           justLoadedCheckpoint             = false;
     public static boolean           justLoadedWorld                  = false;
     public static String            loadMessage                      = "";
     public static CheckpointManager cpm;
-    
+
     protected static int            delayedLoaderTicks               = 0;
     protected static String         delayedLoadCheckpointName        = "";
     protected static boolean        isDelayedLoadAutoSave            = false;
-    
+
     public static boolean           allowDebugLogging                = false;
-    
+
     public final static Minecraft   mc                               = Minecraft.getMinecraft();
-    
+
     public static void initConfig(File file)
     {
         if (!CommonUtils.isObfuscatedEnv())
@@ -46,17 +46,17 @@ public class WSCSettings
           //            if (file.exists())
           //                file.delete();
         }
-        
+
         Reference.config = new Configuration(file);
         syncConfig();
     }
-    
+
     public static void syncConfig()
     {
         final String ctgyGen = Reference.CTGY;
-        
+
         Reference.config.load();
-        
+
         autoSaveEnabledDefault = Reference.config.getString("autoSaveEnabledDefault", ctgyGen, autoSaveEnabledDefaultDefault,
                 "Default enabled state of auto-saving when starting a new world.  Valid values are on/off.",
                 new String[] { "off", "on" }, "wsc.configureAutosave.enableAutoSave");
@@ -68,17 +68,17 @@ public class WSCSettings
         periodUnitDefault = Reference.config.getString("periodUnitDefault", ctgyGen, periodUnitDefaultDefault,
                 "Default auto-save period unit to use in a new world's auto-save config.  Valid values are " +
                         CheckpointManager.UNIT_HOURS + "/" + CheckpointManager.UNIT_MINUTES + "/" + CheckpointManager.UNIT_SECONDS + ".");
-        
+
         Reference.config.save();
     }
-    
+
     public static void delayedLoadCheckpoint(String checkpointName, boolean isAutoSave, int delayTicks)
     {
         delayedLoadCheckpointName = checkpointName;
         isDelayedLoadAutoSave = isAutoSave;
         delayedLoaderTicks = delayTicks;
     }
-    
+
     public static boolean onGameTick()
     {
         if (mc.theWorld != null && mc.thePlayer != null)
@@ -88,25 +88,25 @@ public class WSCSettings
                 cpm = null;
                 justLoadedWorld = false;
             }
-            
+
             if (cpm == null)
                 cpm = new CheckpointManager(mc);
-            
+
             if (justLoadedCheckpoint)
             {
                 mc.thePlayer.addChatMessage(new ChatComponentText(loadMessage));
                 loadMessage = "";
-                
+
                 if (cpm.autoSaveEnabled)
                     cpm.tickCount = 0;
-                
+
                 justLoadedCheckpoint = false;
             }
-            
+
             if (cpm.autoSaveEnabled &&
                     (mc.currentScreen == null || !(mc.currentScreen instanceof GuiGameOver || CommonUtils.isGamePaused(mc))))
                 cpm.incrementTickCount();
-            
+
             if (delayedLoaderTicks > 0)
             {
                 if (--delayedLoaderTicks == 0)
@@ -115,10 +115,10 @@ public class WSCSettings
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     public static void keyboardEvent(KeyBinding event)
     {
         if (event.equals(bindKey) && mc.isSingleplayer() && !(Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))
@@ -135,7 +135,7 @@ public class WSCSettings
         {
             if (!cpm.isSaving)
                 cpm.tickCount = 0;
-            
+
             cpm.setCheckpoint("", true);
         }
     }

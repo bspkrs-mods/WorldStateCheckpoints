@@ -26,50 +26,50 @@ public class WorldStateCheckpointsMod
     public ModVersionChecker               versionChecker;
     private String                         versionURL = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpointsForge.version";
     private String                         mcfTopic   = "http://www.minecraftforum.net/topic/1548243-";
-    
+
     @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_COMMON)
     public static CommonProxy              proxy;
-    
+
     @Metadata(value = Reference.MODID)
     public static ModMetadata              metadata;
-    
+
     @Instance(value = Reference.MODID)
     public static WorldStateCheckpointsMod instance;
-    
+
     protected WSCServerTicker              ticker;
-    
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = event.getModMetadata();
         WSCSettings.initConfig(event.getSuggestedConfigurationFile());
     }
-    
+
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
         proxy.registerClientTicker();
-        
+
         if (bspkrsCoreMod.instance.allowUpdateCheck)
         {
             versionChecker = new ModVersionChecker(metadata.name, metadata.version, versionURL, mcfTopic);
             versionChecker.checkVersionWithLogging();
         }
     }
-    
+
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandWSC());
     }
-    
+
     @EventHandler
     public void serverStarted(FMLServerStartedEvent event)
     {
         WSCSettings.justLoadedWorld = true;
         WorldStateCheckpointsMod.proxy.registerEventHandlers();
     }
-    
+
     public void serverStopping(FMLServerStoppingEvent event)
     {
         if (ticker != null)
@@ -77,10 +77,10 @@ public class WorldStateCheckpointsMod
             ticker.unregister();
             ticker = null;
         }
-        
+
         WSCSettings.cpm = null;
     }
-    
+
     @SubscribeEvent
     public void onConfigChanged(OnConfigChangedEvent event)
     {

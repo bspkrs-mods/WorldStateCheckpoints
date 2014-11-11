@@ -10,21 +10,21 @@ public class GuiReplaceCheckpoint extends GuiLoadCheckpoint
         guiTitle = StatCollector.translateToLocal("wsc.overwriteCheckpoint.title");
         guiSubTitle = StatCollector.translateToLocal("wsc.overwriteCheckpoint.title2");
     }
-    
+
     public GuiReplaceCheckpoint(CheckpointManager cpm, int page)
     {
         this(cpm);
         startPage = page;
         isAutoCheckpointsLoad = false;
     }
-    
+
     @Override
     protected void checkpointButtonClicked(int index)
     {
         String dirname = dirNames[index];
         WSCSettings.mc.displayGuiScreen(new GuiReplaceCheckpointChangeName(cpm, dirname, currentPage));
     }
-    
+
     @Override
     protected void backButtonClicked()
     {

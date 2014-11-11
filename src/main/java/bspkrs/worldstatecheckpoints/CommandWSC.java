@@ -9,19 +9,19 @@ import net.minecraft.util.StatCollector;
 
 public class CommandWSC extends CommandBase
 {
-    
+
     @Override
     public String getCommandName()
     {
         return "wsc";
     }
-    
+
     @Override
     public String getCommandUsage(ICommandSender icommandsender)
     {
         return "commands.wsc.usage";
     }
-    
+
     @Override
     public boolean canCommandSenderUseCommand(ICommandSender par1iCommandSender)
     {
@@ -34,7 +34,7 @@ public class CommandWSC extends CommandBase
             return false;
         }
     }
-    
+
     @Override
     public void processCommand(ICommandSender icommandsender, String[] args)
     {
@@ -59,24 +59,24 @@ public class CommandWSC extends CommandBase
                     String name = "";
                     for (int i = 1; i < args.length; i++)
                         name += " " + args[i];
-                    
+
                     String dirName = WSCSettings.cpm.getCheckpointDirNameFromDisplayName(name.trim());
                     if (dirName != null)
                         WSCSettings.delayedLoadCheckpoint(dirName, dirName.contains(CheckpointManager.AUTOSAVES_PREFIX), 1);
                     else
                         WSCSettings.mc.thePlayer.addChatMessage(
                                 new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.invalidCheckpointNameForLoadCommand", name.trim())));
-                    
+
                     return;
                 }
                 else
                     throw new WrongUsageException("commands.wsc.load.usage");
             }
         }
-        
+
         throw new WrongUsageException("commands.wsc.usage", new Object[0]);
     }
-    
+
     @Override
     public int compareTo(Object o)
     {

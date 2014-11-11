@@ -1,6 +1,5 @@
 package bspkrs.worldstatecheckpoints.fml;
 
-
 public class CommonProxy
 {
     public void registerEventHandlers()
@@ -8,7 +7,7 @@ public class CommonProxy
         if (!WSCServerTicker.isRegistered())
             WorldStateCheckpointsMod.instance.ticker = new WSCServerTicker();
     }
-    
+
     public void registerClientTicker()
     {}
 }

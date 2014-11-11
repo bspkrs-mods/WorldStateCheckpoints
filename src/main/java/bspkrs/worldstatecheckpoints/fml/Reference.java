@@ -10,6 +10,6 @@ public class Reference
     public static final String  PROXY_CLIENT = "bspkrs.worldstatecheckpoints.fml.ClientProxy";
     public static final String  GUI_FACTORY  = "bspkrs.worldstatecheckpoints.fml.gui.ModGuiFactoryHandler";
     public static final String  CTGY         = "autosave_new_world_defaults";
-    
+
     public static Configuration config       = null;
 }

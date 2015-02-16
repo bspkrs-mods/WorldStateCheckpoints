@@ -8,6 +8,7 @@ import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_HOURS;
 import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_MINUTES;
 import static bspkrs.worldstatecheckpoints.CheckpointManager.UNIT_SECONDS;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import net.minecraft.client.gui.GuiButton;
@@ -50,20 +51,20 @@ public class GuiConfigureAutoSave extends GuiScreen
         byte byte0 = -16;
 
         int row1, row2, row3, row5;
-        row1 = height / 4 + 24 + byte0;
-        row2 = height / 4 + 24 * 2 + byte0;
-        row3 = height / 4 + 24 * 3 + byte0;
-        row5 = height / 4 + 24 * 5 + byte0;
+        row1 = (height / 4) + 24 + byte0;
+        row2 = (height / 4) + (24 * 2) + byte0;
+        row3 = (height / 4) + (24 * 3) + byte0;
+        row5 = (height / 4) + (24 * 5) + byte0;
 
-        enable = new GuiButton(-1, width / 2 - 100, row1, enableAutosaveText + (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
-        periodValue = new GuiTextField(fontRendererObj, width / 2 - 62, row2, 60, 20);
+        enable = new GuiButton(-1, (width / 2) - 100, row1, enableAutosaveText + (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
+        periodValue = new GuiTextField(1, fontRendererObj, (width / 2) - 62, row2, 60, 20);
         periodValue.setText(localConfig.getProperty(AUTO_SAVE_PERIOD));
-        maxToKeep = new GuiTextField(fontRendererObj, width / 2 + 2, row3, 60, 20);
+        maxToKeep = new GuiTextField(2, fontRendererObj, (width / 2) + 2, row3, 60, 20);
         maxToKeep.setText(localConfig.getProperty(MAX_AUTO_SAVES_TO_KEEP));
-        periodUnit = new GuiButton(-2, width / 2 + 2, row2, 60, 20, StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT)));
+        periodUnit = new GuiButton(-2, (width / 2) + 2, row2, 60, 20, StatCollector.translateToLocal("wsc.configureAutosave.period." + localConfig.getProperty(PERIOD_UNIT)));
         periodUnit.enabled = cpm.autoSaveEnabled;
-        save = new GuiButton(-3, width / 2 - 62, row5, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
-        back = new GuiButton(-4, width / 2 + 2, row5, 60, 20, StatCollector.translateToLocal("gui.cancel"));
+        save = new GuiButton(-3, (width / 2) - 62, row5, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-4, (width / 2) + 2, row5, 60, 20, StatCollector.translateToLocal("gui.cancel"));
 
         buttonList.add(enable);
         buttonList.add(periodUnit);
@@ -125,24 +126,24 @@ public class GuiConfigureAutoSave extends GuiScreen
     protected void keyTyped(char c, int i)
     {
         String validChars = "0123456789";
-        if (validChars.contains(String.valueOf(c)) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END)
+        if (validChars.contains(String.valueOf(c)) || (i == Keyboard.KEY_BACK) || (i == Keyboard.KEY_DELETE) || (i == Keyboard.KEY_LEFT) || (i == Keyboard.KEY_RIGHT) || (i == Keyboard.KEY_HOME) || (i == Keyboard.KEY_END))
             if (maxToKeep.isFocused())
                 maxToKeep.textboxKeyTyped(c, i);
             else if (periodValue.isFocused())
                 periodValue.textboxKeyTyped(c, i);
 
-        save.enabled = periodValue.getText().trim().length() > 0 && Integer.valueOf(periodValue.getText().trim()) > 0
-                && maxToKeep.getText().trim().length() > 0 && Integer.valueOf(maxToKeep.getText().trim()) >= 0;
+        save.enabled = (periodValue.getText().trim().length() > 0) && (Integer.valueOf(periodValue.getText().trim()) > 0)
+                && (maxToKeep.getText().trim().length() > 0) && (Integer.valueOf(maxToKeep.getText().trim()) >= 0);
 
         localConfig.setProperty(AUTO_SAVE_PERIOD, periodValue.getText().trim());
         localConfig.setProperty(MAX_AUTO_SAVES_TO_KEEP, maxToKeep.getText().trim());
 
-        if (c == '\r' && save.enabled)
+        if ((c == '\r') && save.enabled)
             actionPerformed(save);
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3)
+    protected void mouseClicked(int par1, int par2, int par3) throws IOException
     {
         super.mouseClicked(par1, par2, par3);
         periodValue.mouseClicked(par1, par2, par3);
@@ -171,8 +172,8 @@ public class GuiConfigureAutoSave extends GuiScreen
         maxToKeep.drawTextBox();
 
         drawCenteredString(fontRendererObj, guiTitle, width / 2, 80, 0xffffff);
-        drawString(fontRendererObj, maxAutoSaves[0], width / 2 - 3 - fontRendererObj.getStringWidth(maxAutoSaves[0]), height / 4 + 24 * 3 - 16 + 1, 0xffffff);
-        drawString(fontRendererObj, maxAutoSaves[1], width / 2 - 3 - fontRendererObj.getStringWidth(maxAutoSaves[1]), height / 4 + 24 * 3 - 16 + 11, 0xffffff);
+        drawString(fontRendererObj, maxAutoSaves[0], (width / 2) - 3 - fontRendererObj.getStringWidth(maxAutoSaves[0]), (((height / 4) + (24 * 3)) - 16) + 1, 0xffffff);
+        drawString(fontRendererObj, maxAutoSaves[1], (width / 2) - 3 - fontRendererObj.getStringWidth(maxAutoSaves[1]), (((height / 4) + (24 * 3)) - 16) + 11, 0xffffff);
         super.drawScreen(par1, par2, par3);
     }
 }

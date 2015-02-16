@@ -56,7 +56,7 @@ public class CheckpointManager
     public CheckpointManager(Minecraft minecraft)
     {
         mc = minecraft;
-        world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.theWorld.provider.dimensionId) : null;
+        world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.theWorld.provider.getDimensionId()) : null;
 
         autoSaveConfigDefaults.setProperty(ENABLED, WSCSettings.autoSaveEnabledDefault);
         autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVE_ID, "0");
@@ -229,7 +229,7 @@ public class CheckpointManager
     public String getWorldSaveRelativePath()
     {
         if (saveDir == null)
-            if (world != null && world.getSaveHandler() != null)
+            if ((world != null) && (world.getSaveHandler() != null))
                 saveDir = "/saves/" + world.getSaveHandler().getWorldDirectoryName();
             else
                 return "";
@@ -313,7 +313,7 @@ public class CheckpointManager
 
                 if (isAutoSave)
                 {
-                    if (maxAutoSavesToKeep > 0 && getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep)
+                    if ((maxAutoSavesToKeep > 0) && (getCheckpointsCount(isAutoSave) > maxAutoSavesToKeep))
                         new OldAutosaveRemover();
                 }
             }
@@ -690,7 +690,7 @@ public class CheckpointManager
         @Override
         public void run()
         {
-            while (maxAutoSavesToKeep > 0 && getCheckpointsCount(true) > maxAutoSavesToKeep)
+            while ((maxAutoSavesToKeep > 0) && (getCheckpointsCount(true) > maxAutoSavesToKeep))
                 deleteCheckpoint(getOldestCheckpointDirName(true), true);
         }
     }

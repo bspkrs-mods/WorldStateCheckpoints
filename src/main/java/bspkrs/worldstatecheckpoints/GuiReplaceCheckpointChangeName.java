@@ -1,5 +1,7 @@
 package bspkrs.worldstatecheckpoints;
 
+import java.io.IOException;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -37,10 +39,10 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
 
         byte byte0 = -16;
 
-        back = new GuiButton(-1, width / 2 + 1, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
-        save = new GuiButton(-2, width / 2 - 61, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-1, (width / 2) + 1, (height / 4) + 24 + (24 * 3) + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
+        save = new GuiButton(-2, (width / 2) - 61, (height / 4) + 24 + (24 * 3) + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
 
-        edit = new GuiTextField(fontRendererObj, width / 2 - 100, height / 4 + 24 + 24, 200, 20);
+        edit = new GuiTextField(1, fontRendererObj, (width / 2) - 100, (height / 4) + 24 + 24, 200, 20);
         edit.setText(name);
         edit.setFocused(true);
         save.enabled = true;
@@ -85,17 +87,17 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     protected void keyTyped(char c, int i)
     {
         String validChars = " !.,+_-";
-        if (Character.isLetterOrDigit(Character.valueOf(c)) || validChars.contains(String.valueOf(c)) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_HOME || i == Keyboard.KEY_END)
+        if (Character.isLetterOrDigit(Character.valueOf(c)) || validChars.contains(String.valueOf(c)) || (i == Keyboard.KEY_BACK) || (i == Keyboard.KEY_DELETE) || (i == Keyboard.KEY_LEFT) || (i == Keyboard.KEY_RIGHT) || (i == Keyboard.KEY_HOME) || (i == Keyboard.KEY_END))
             edit.textboxKeyTyped(c, i);
 
-        save.enabled = edit.getText().trim().length() > 0 && !edit.getText().trim().endsWith(".");
+        save.enabled = (edit.getText().trim().length() > 0) && !edit.getText().trim().endsWith(".");
 
         if (c == '\r')
             actionPerformed((GuiButton) buttonList.get(1));
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3)
+    protected void mouseClicked(int par1, int par2, int par3) throws IOException
     {
         super.mouseClicked(par1, par2, par3);
         edit.mouseClicked(par1, par2, par3);

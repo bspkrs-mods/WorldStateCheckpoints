@@ -3,7 +3,7 @@ package bspkrs.worldstatecheckpoints.fml.gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import bspkrs.worldstatecheckpoints.fml.Reference;
-import cpw.mods.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfig;
 
 public class GuiWSCConfig extends GuiConfig
 {

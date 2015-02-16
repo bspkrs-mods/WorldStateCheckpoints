@@ -1,7 +1,7 @@
 package bspkrs.worldstatecheckpoints.fml;
 
 import bspkrs.worldstatecheckpoints.WSCSettings;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ClientProxy extends CommonProxy
 {

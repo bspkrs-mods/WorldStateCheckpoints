@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -597,6 +598,29 @@ public class CheckpointManager
         List<File> list = Arrays.asList(files);
         Collections.reverse(list);
         return list.toArray(new File[list.size()]);
+    }
+
+    public List<String> getCheckpointNames(boolean isAutoSave)
+    {
+        List<String> list = new ArrayList<String>();
+        for (File file : WSCSettings.cpm.getCheckpoints(isAutoSave))
+        {
+            if (!file.isDirectory())
+                continue;
+
+            String label;
+
+            try
+            {
+                label = file.getName().split("!", 2)[1];
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                label = file.getName();
+            }
+            list.add(label);
+        }
+        return list;
     }
 
     /**

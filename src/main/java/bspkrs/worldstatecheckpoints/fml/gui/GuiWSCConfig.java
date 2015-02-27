@@ -2,12 +2,11 @@ package bspkrs.worldstatecheckpoints.fml.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
-import bspkrs.worldstatecheckpoints.fml.Reference;
 import net.minecraftforge.fml.client.config.GuiConfig;
+import bspkrs.worldstatecheckpoints.fml.Reference;
 
 public class GuiWSCConfig extends GuiConfig
 {
-    @SuppressWarnings("rawtypes")
     public GuiWSCConfig(GuiScreen parent)
     {
         super(parent, (new ConfigElement(Reference.config.getCategory(Reference.CTGY))).getChildElements(),

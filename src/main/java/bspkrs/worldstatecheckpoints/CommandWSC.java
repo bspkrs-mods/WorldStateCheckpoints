@@ -1,9 +1,13 @@
 package bspkrs.worldstatecheckpoints;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 
@@ -36,7 +40,7 @@ public class CommandWSC extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] args)
+    public void processCommand(ICommandSender icommandsender, String[] args) throws WrongUsageException
     {
         if (args.length >= 1)
         {
@@ -75,6 +79,22 @@ public class CommandWSC extends CommandBase
         }
 
         throw new WrongUsageException("commands.wsc.usage", new Object[0]);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    {
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, new String[] { "load", "save" });
+        else if ((args.length == 2) && args[0].equalsIgnoreCase("load"))
+        {
+            List<String> list = new ArrayList<String>();
+            list.addAll(WSCSettings.cpm.getCheckpointNames(true));
+            list.addAll(WSCSettings.cpm.getCheckpointNames(false));
+            return getListOfStringsMatchingLastWord(args, list.toArray(new String[] {}));
+        }
+        return new ArrayList<String>();
     }
 
     @Override

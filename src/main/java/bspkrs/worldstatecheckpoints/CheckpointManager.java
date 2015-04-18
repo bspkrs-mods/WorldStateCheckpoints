@@ -353,7 +353,11 @@ public class CheckpointManager
             deleteDirAndContents(chainDirs(getCheckpointsPath(false).toString(), dirname_orig));
             try
             {
+                mc.getIntegratedServer().getConfigurationManager().saveAllPlayerData();
+                boolean levelSaving = world.disableLevelSaving;
+                world.disableLevelSaving = false;
                 world.saveAllChunks(true, null);
+                world.disableLevelSaving = levelSaving;
                 File worldDir = getWorldPath();
                 File targetDir = chainDirs(getCheckpointsPath(false).toString(), dirname_new);
                 copyDirectory(worldDir, targetDir, IGNORE_COPY);

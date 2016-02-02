@@ -1,8 +1,6 @@
 package bspkrs.worldstatecheckpoints.fml;
 
-import bspkrs.bspkrscore.fml.bspkrsCoreMod;
 import bspkrs.util.Const;
-import bspkrs.util.ModVersionChecker;
 import bspkrs.worldstatecheckpoints.CommandWSC;
 import bspkrs.worldstatecheckpoints.WSCSettings;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
@@ -20,13 +18,9 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = "@MOD_VERSION@", dependencies = "required-after:bspkrsCore@[@BSCORE_VERSION@,)",
-        useMetadata = true, guiFactory = Reference.GUI_FACTORY)
+        useMetadata = true, guiFactory = Reference.GUI_FACTORY, updateJSON = Const.VERSION_URL_BASE + Reference.MODID + Const.VERSION_URL_EXT)
 public class WorldStateCheckpointsMod
 {
-    public ModVersionChecker               versionChecker;
-    private String                         versionURL = Const.VERSION_URL + "/Minecraft/" + Const.MCVERSION + "/worldStateCheckpointsForge.version";
-    private String                         mcfTopic   = "http://www.minecraftforum.net/topic/1548243-";
-
     @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_COMMON)
     public static CommonProxy              proxy;
 
@@ -41,7 +35,6 @@ public class WorldStateCheckpointsMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        metadata = event.getModMetadata();
         WSCSettings.initConfig(event.getSuggestedConfigurationFile());
     }
 
@@ -49,12 +42,6 @@ public class WorldStateCheckpointsMod
     public void init(FMLInitializationEvent event)
     {
         proxy.registerClientTicker();
-
-        if (bspkrsCoreMod.instance.allowUpdateCheck)
-        {
-            versionChecker = new ModVersionChecker(metadata.name, metadata.version, versionURL, mcfTopic);
-            versionChecker.checkVersionWithLogging();
-        }
     }
 
     @EventHandler

@@ -84,7 +84,7 @@ public class GuiSaveCheckpoint extends GuiScreen
         save.enabled = (edit.getText().trim().length() > 0) && !edit.getText().trim().endsWith(".");
 
         if (c == '\r')
-            actionPerformed((GuiButton) buttonList.get(1));
+            actionPerformed(buttonList.get(1));
     }
 
     @Override

@@ -78,28 +78,21 @@ public class CommandWSC extends CommandBase
             }
         }
 
-        throw new WrongUsageException("commands.wsc.usage", new Object[0]);
+        throw new WrongUsageException("commands.wsc.usage");
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, new String[] { "load", "save" });
+            return getListOfStringsMatchingLastWord(args, "load", "save");
         else if ((args.length == 2) && args[0].equalsIgnoreCase("load"))
         {
             List<String> list = new ArrayList<String>();
             list.addAll(WSCSettings.cpm.getCheckpointNames(true));
             list.addAll(WSCSettings.cpm.getCheckpointNames(false));
-            return getListOfStringsMatchingLastWord(args, list.toArray(new String[] {}));
+            return getListOfStringsMatchingLastWord(args, list.toArray(new String[list.size()]));
         }
         return new ArrayList<String>();
-    }
-
-    @Override
-    public int compareTo(Object o)
-    {
-        return 0;
     }
 }

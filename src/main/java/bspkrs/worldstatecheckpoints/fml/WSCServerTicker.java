@@ -1,7 +1,7 @@
 package bspkrs.worldstatecheckpoints.fml;
 
 import bspkrs.worldstatecheckpoints.WSCSettings;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -12,7 +12,7 @@ public class WSCServerTicker
 
     public WSCServerTicker()
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         isRegistered = true;
     }
 
@@ -28,7 +28,7 @@ public class WSCServerTicker
 
     public void unregister()
     {
-        FMLCommonHandler.instance().bus().unregister(this);
+        MinecraftForge.EVENT_BUS.unregister(this);
         isRegistered = false;
     }
 

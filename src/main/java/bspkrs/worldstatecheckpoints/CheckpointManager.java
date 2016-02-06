@@ -184,7 +184,7 @@ public class CheckpointManager
     {
         world = null;
         mc.theWorld.sendQuittingDisconnectingPacket();
-        mc.loadWorld((WorldClient) null);
+        mc.loadWorld(null);
         waitForIntegratedServerShutdown();
     }
 
@@ -195,7 +195,7 @@ public class CheckpointManager
     {
         world = null;
         mc.theWorld.sendQuittingDisconnectingPacket();
-        mc.loadWorld((WorldClient) null, msg);
+        mc.loadWorld(null, msg);
         waitForIntegratedServerShutdown();
     }
 

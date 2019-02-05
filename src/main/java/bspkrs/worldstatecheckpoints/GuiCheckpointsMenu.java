@@ -2,8 +2,8 @@ package bspkrs.worldstatecheckpoints;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.MathHelper;
 
 public class GuiCheckpointsMenu extends GuiScreen
 {
@@ -28,14 +28,14 @@ public class GuiCheckpointsMenu extends GuiScreen
         buttonList.clear();
         byte byte0 = -16;
 
-        buttonList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, StatCollector.translateToLocal("menu.returnToGame")));
+        buttonList.add(new GuiButton(4, width / 2 - 100, height / 4 + 24 * 5 + byte0, I18n.format("menu.returnToGame")));
 
-        GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.saveNew"));
-        GuiButton replace = new GuiButton(-3, width / 2 + 1, height / 4 + 24 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.overwrite"));
-        GuiButton load = new GuiButton(-1, width / 2 - 100, height / 4 + 24 * 2 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.loadCheckpoint"));
-        GuiButton loadAuto = new GuiButton(-4, width / 2 + 1, height / 4 + 24 * 2 + byte0, 99, 20, StatCollector.translateToLocal("wsc.menu.loadAutoSave"));
-        GuiButton configAuto = new GuiButton(-5, width / 2 - 100, height / 4 + 24 * 3 + byte0, StatCollector.translateToLocal("wsc.menu.configureAutoSave") + ": " +
-                (cpm.autoSaveEnabled ? StatCollector.translateToLocal("options.on") : StatCollector.translateToLocal("options.off")));
+        GuiButton save = new GuiButton(-2, width / 2 - 100, height / 4 + 24 + byte0, 99, 20, I18n.format("wsc.menu.saveNew"));
+        GuiButton replace = new GuiButton(-3, width / 2 + 1, height / 4 + 24 + byte0, 99, 20, I18n.format("wsc.menu.overwrite"));
+        GuiButton load = new GuiButton(-1, width / 2 - 100, height / 4 + 24 * 2 + byte0, 99, 20, I18n.format("wsc.menu.loadCheckpoint"));
+        GuiButton loadAuto = new GuiButton(-4, width / 2 + 1, height / 4 + 24 * 2 + byte0, 99, 20, I18n.format("wsc.menu.loadAutoSave"));
+        GuiButton configAuto = new GuiButton(-5, width / 2 - 100, height / 4 + 24 * 3 + byte0, I18n.format("wsc.menu.configureAutoSave") + ": " +
+                (cpm.autoSaveEnabled ? I18n.format("options.on") : I18n.format("options.off")));
 
         if (!WSCSettings.mc.isSingleplayer())
             replace.enabled = load.enabled = save.enabled = loadAuto.enabled = configAuto.enabled = false;
@@ -110,10 +110,10 @@ public class GuiCheckpointsMenu extends GuiScreen
             float f = ((updateCounter % 10) + par3) / 10F;
             f = MathHelper.sin(f * (float) Math.PI * 2.0F) * 0.2F + 0.8F;
             int i = (int) (255F * f);
-            drawString(fontRendererObj, StatCollector.translateToLocal("wsc.menu.savingLevel") + "..", 8, height - 16, i << 16 | i << 8 | i);
+            drawString(fontRenderer, I18n.format("wsc.menu.savingLevel") + "..", 8, height - 16, i << 16 | i << 8 | i);
         }
 
-        drawCenteredString(fontRendererObj, "World State Checkpoints", width / 2, 40, 0xffffff);
+        drawCenteredString(fontRenderer, "World State Checkpoints", width / 2, 40, 0xffffff);
 
         float f = ((updateCounter % 60) + par3) / 60F;
         f = MathHelper.sin(f * (float) Math.PI * 2.0F) * 0.2F + 0.8F;
@@ -121,8 +121,8 @@ public class GuiCheckpointsMenu extends GuiScreen
         int g = (int) (0xBA * f);
         int b = (int) (0x00 * f);
 
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("wsc.credit.MightyPork"), width / 2, height / 4 + 24 * 6 + 12 - 16, r << 16 | g << 8 | b);
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("wsc.credit.bspkrs"), width / 2, height / 4 + 24 * 7 - 16, r << 16 | g << 8 | b);
+        drawCenteredString(fontRenderer, I18n.format("wsc.credit.MightyPork"), width / 2, height / 4 + 24 * 6 + 12 - 16, r << 16 | g << 8 | b);
+        drawCenteredString(fontRenderer, I18n.format("wsc.credit.bspkrs"), width / 2, height / 4 + 24 * 7 - 16, r << 16 | g << 8 | b);
 
         super.drawScreen(par1, par2, par3);
     }

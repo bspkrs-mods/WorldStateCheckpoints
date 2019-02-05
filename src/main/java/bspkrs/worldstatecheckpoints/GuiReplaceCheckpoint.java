@@ -1,14 +1,14 @@
 package bspkrs.worldstatecheckpoints;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
 
 public class GuiReplaceCheckpoint extends GuiLoadCheckpoint
 {
     public GuiReplaceCheckpoint(CheckpointManager cpm)
     {
         this.cpm = cpm;
-        guiTitle = StatCollector.translateToLocal("wsc.overwriteCheckpoint.title");
-        guiSubTitle = StatCollector.translateToLocal("wsc.overwriteCheckpoint.title2");
+        guiTitle = I18n.format("wsc.overwriteCheckpoint.title");
+        guiSubTitle = I18n.format("wsc.overwriteCheckpoint.title2");
     }
 
     public GuiReplaceCheckpoint(CheckpointManager cpm, int page)

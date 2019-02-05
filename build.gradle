@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile name: 'bspkrsCore', version: "${config.bscore_version}", ext: 'jar'
+    compile name: 'bspkrscore', version: "${config.bscore_version}", ext: 'jar'
 }
 
 group = config.group_name
@@ -55,7 +55,7 @@ processResources {
         expand ([
             'mod_version': version,
             'bscore_version': config.bscore_version,
-            'bscore_jar': "[${config.minecraft_version}]bspkrsCore-universal-${config.bscore_version}.jar",
+            'bscore_jar': "[${config.minecraft_version}]bspkrscore-universal-${config.bscore_version}.jar",
             'pattern': "\\\\[.+?\\\\](\\\\w+).*?([\\\\d\\\\.]+)[-\\\\w]*\\\\.[^\\\\d]+",
             'forge_version': config.forge_version,
             'minecraft_version': config.minecraft_version

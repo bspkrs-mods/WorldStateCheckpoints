@@ -1,18 +1,17 @@
 package bspkrs.worldstatecheckpoints;
 
-import java.io.File;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextComponentString;
+
+import java.io.File;
 
 public class GuiLoadCheckpoint extends GuiScreen
 {
-    String                      guiTitle       = StatCollector
-                                                       .translateToLocal("wsc.loadCheckpoint.title");
-    String                      guiSubTitle    = StatCollector
-                                                       .translateToLocal("wsc.loadCheckpoint.title2");
+    String                      guiTitle       = I18n.format("wsc.loadCheckpoint.title");
+    String                      guiSubTitle    = I18n.format("wsc.loadCheckpoint.title2");
 
     protected boolean           showDelButtons = true;
     private boolean             gameOverScreen = false;
@@ -63,26 +62,23 @@ public class GuiLoadCheckpoint extends GuiScreen
 
         if (this.isAutoCheckpointsLoad)
         {
-            guiTitle = StatCollector
-                    .translateToLocal("wsc.loadCheckpoint.titleAutoSaves");
+            guiTitle = I18n.format("wsc.loadCheckpoint.titleAutoSaves");
             switchLoad = new GuiButton(-4, switchX, height / 4 + 24 + byte0,
                     70, 20,
-                    StatCollector
-                            .translateToLocal("wsc.loadCheckpoint.checkpoints"));
+                    I18n.format("wsc.loadCheckpoint.checkpoints"));
         }
         else
         {
             switchLoad = new GuiButton(-4, switchX, height / 4 + 24 + byte0,
                     70, 20,
-                    StatCollector
-                            .translateToLocal("wsc.loadCheckpoint.autoSaves"));
+                    I18n.format("wsc.loadCheckpoint.autoSaves"));
         }
 
         switchLoad.enabled = cpm.getHasCheckpoints(!isAutoCheckpointsLoad);
 
         prev = new GuiButton(-2, prevX, height / 4 + 24 + byte0, 60, 20, "<<<");
         back = new GuiButton(-1, backX, height / 4 + 24 + byte0, 70, 20,
-                StatCollector.translateToLocal("gui.back"));
+                I18n.format("gui.back"));
         next = new GuiButton(-3, nextX, height / 4 + 24 + byte0, 60, 20, ">>>");
 
         buttonList.add(back);
@@ -195,8 +191,7 @@ public class GuiLoadCheckpoint extends GuiScreen
         WSCSettings.mc.displayGuiScreen(null);
         WSCSettings.mc.setIngameFocus();
         WSCSettings.justLoadedCheckpoint = true;
-        WSCSettings.loadMessage = StatCollector.translateToLocalFormatted(
-                "wsc.chatMessage.loadedCheckpoint", dirname.split("!", 2)[1]);
+        WSCSettings.loadMessage = I18n.format("wsc.chatMessage.loadedCheckpoint", dirname.split("!", 2)[1]);
     }
 
     protected void delButtonClicked(int index)
@@ -207,7 +202,7 @@ public class GuiLoadCheckpoint extends GuiScreen
 
     protected void backButtonClicked()
     {
-        WSCSettings.mc.displayGuiScreen(gameOverScreen ? new GuiGameOver()
+        WSCSettings.mc.displayGuiScreen(gameOverScreen ? new GuiGameOver(new TextComponentString(""))
                 : new GuiCheckpointsMenu(cpm));
     }
 
@@ -271,15 +266,15 @@ public class GuiLoadCheckpoint extends GuiScreen
     {
         drawDefaultBackground();
         if (guiSubTitle == null
-                || (gameOverScreen && WSCSettings.mc.theWorld.getWorldInfo()
+                || (gameOverScreen && WSCSettings.mc.world.getWorldInfo()
                         .isHardcoreModeEnabled()))
-            drawCenteredString(fontRendererObj, guiTitle, width / 2, 50 + 5,
+            drawCenteredString(fontRenderer, guiTitle, width / 2, 50 + 5,
                     0xffffff);
         else
         {
-            drawCenteredString(fontRendererObj, guiSubTitle, width / 2, 50 + 5,
+            drawCenteredString(fontRenderer, guiSubTitle, width / 2, 50 + 5,
                     0xee0000);
-            drawCenteredString(fontRendererObj, guiTitle, width / 2,
+            drawCenteredString(fontRenderer, guiTitle, width / 2,
                     50 + 5 - 16, 0xffffff);
         }
         super.drawScreen(par1, par2, par3);

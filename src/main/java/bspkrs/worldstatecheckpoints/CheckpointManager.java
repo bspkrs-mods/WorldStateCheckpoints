@@ -1,26 +1,14 @@
 package bspkrs.worldstatecheckpoints;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.WorldServer;
 import bspkrs.util.CommonUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.WorldServer;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CheckpointManager
 {
@@ -57,7 +45,7 @@ public class CheckpointManager
     public CheckpointManager(Minecraft minecraft)
     {
         mc = minecraft;
-        world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().worldServerForDimension(mc.theWorld.provider.getDimensionId()) : null;
+        world = mc.isIntegratedServerRunning() ? mc.getIntegratedServer().getWorld(mc.world.provider.getDimension()) : null;
 
         autoSaveConfigDefaults.setProperty(ENABLED, WSCSettings.autoSaveEnabledDefault);
         autoSaveConfigDefaults.setProperty(MAX_AUTO_SAVE_ID, "0");
@@ -183,8 +171,8 @@ public class CheckpointManager
     public void unloadWorldSilent()
     {
         world = null;
-        mc.theWorld.sendQuittingDisconnectingPacket();
-        mc.loadWorld((WorldClient) null);
+        mc.world.sendQuittingDisconnectingPacket();
+        mc.loadWorld(null);
         waitForIntegratedServerShutdown();
     }
 
@@ -194,8 +182,8 @@ public class CheckpointManager
     public void unloadWorld(String msg)
     {
         world = null;
-        mc.theWorld.sendQuittingDisconnectingPacket();
-        mc.loadWorld((WorldClient) null, msg);
+        mc.world.sendQuittingDisconnectingPacket();
+        mc.loadWorld(null, msg);
         waitForIntegratedServerShutdown();
     }
 
@@ -231,7 +219,7 @@ public class CheckpointManager
     {
         if (saveDir == null)
             if ((world != null) && (world.getSaveHandler() != null))
-                saveDir = "/saves/" + world.getSaveHandler().getWorldDirectoryName();
+                saveDir = "/saves/" + world.getSaveHandler().getWorldDirectory().getName();
             else
                 return "";
 
@@ -302,7 +290,7 @@ public class CheckpointManager
 
             try
             {
-                mc.getIntegratedServer().getConfigurationManager().saveAllPlayerData();
+                mc.getIntegratedServer().getPlayerList().saveAllPlayerData();
                 boolean levelSaving = world.disableLevelSaving;
                 world.disableLevelSaving = false;
                 world.saveAllChunks(true, null);
@@ -321,13 +309,13 @@ public class CheckpointManager
             catch (Throwable e)
             {
                 e.printStackTrace();
-                mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError",
+                mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.saveError",
                         targetDir.getName(), CommonUtils.getLogFileName())));
             }
         }
         else
-            mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning") + " "
-                    + StatCollector.translateToLocal("wsc.chatMessage.autoSavePeriodWarning")));
+            mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.alreadySavingSaveWarning") + " "
+                    + I18n.format("wsc.chatMessage.autoSavePeriodWarning")));
     }
 
     /**
@@ -353,7 +341,7 @@ public class CheckpointManager
             deleteDirAndContents(chainDirs(getCheckpointsPath(false).toString(), dirname_orig));
             try
             {
-                mc.getIntegratedServer().getConfigurationManager().saveAllPlayerData();
+                mc.getIntegratedServer().getPlayerList().saveAllPlayerData();
                 boolean levelSaving = world.disableLevelSaving;
                 world.disableLevelSaving = false;
                 world.saveAllChunks(true, null);
@@ -368,7 +356,7 @@ public class CheckpointManager
             }
         }
         else
-            mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("wsc.chatMessage.alreadySavingSaveWarning")));
+            mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.alreadySavingSaveWarning")));
     }
 
     /**
@@ -414,7 +402,7 @@ public class CheckpointManager
 
             File checkpointDir = chainDirs(getCheckpointsPath(isAutoSave).toString(), checkpointName);
 
-            unloadWorld(StatCollector.translateToLocal("wsc.loadWorld.message"));
+            unloadWorld(I18n.format("wsc.loadWorld.message"));
 
             deleteDirContents(worldDir, IGNORE_DELETE);
 
@@ -430,7 +418,7 @@ public class CheckpointManager
             startWorld(worldDir.getName(), worldName);
         }
         else
-            mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("wsc.chatmessage.alreadySavingLoadWarning")));
+            mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatmessage.alreadySavingLoadWarning")));
     }
 
     /**
@@ -683,18 +671,18 @@ public class CheckpointManager
         {
             if (!isSaving)
             {
-                mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("wsc.chatMessage.savingCheckpoint")));
+                mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.savingCheckpoint")));
                 try
                 {
                     isSaving = true;
                     copyDirectory(src, tgt, ignoreList);
-                    mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.checkpointSaved", tgt.getName().split("!")[1])));
+                    mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.checkpointSaved", tgt.getName().split("!")[1])));
 
                     isSaving = false;
                 }
                 catch (Throwable e)
                 {
-                    mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.saveError", tgt.getName(), CommonUtils.getLogFileName())));
+                    mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.saveError", tgt.getName(), CommonUtils.getLogFileName())));
                     e.printStackTrace();
                 }
                 finally

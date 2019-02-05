@@ -6,3 +6,5 @@
 /run/
 .project
 .classpath
+.idea/
+.DS_Store

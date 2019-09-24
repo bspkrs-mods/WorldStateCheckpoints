@@ -1,9 +1,9 @@
 package bspkrs.worldstatecheckpoints.fml;
 
-import net.minecraft.util.ChatComponentText;
 import bspkrs.bspkrscore.fml.bspkrsCoreMod;
 import bspkrs.worldstatecheckpoints.WSCSettings;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -26,16 +26,16 @@ public class WSCClientTicker
         if (event.phase.equals(Phase.START))
             return;
 
-        boolean keepTicking = !(WSCSettings.mc != null && WSCSettings.mc.thePlayer != null && WSCSettings.mc.theWorld != null);
+        boolean keepTicking = !(WSCSettings.mc != null && WSCSettings.mc.player != null && WSCSettings.mc.world != null);
 
         if (!keepTicking && isRegistered)
         {
             if (bspkrsCoreMod.instance.allowUpdateCheck && WorldStateCheckpointsMod.instance.versionChecker != null)
                 if (!WorldStateCheckpointsMod.instance.versionChecker.isCurrentVersion())
                     for (String msg : WorldStateCheckpointsMod.instance.versionChecker.getInGameMessage())
-                        WSCSettings.mc.thePlayer.addChatMessage(new ChatComponentText(msg));
+                        WSCSettings.mc.player.sendMessage(new TextComponentString(msg));
 
-            FMLCommonHandler.instance().bus().unregister(this);
+            MinecraftForge.EVENT_BUS.unregister(this);
             isRegistered = false;
         }
     }

@@ -1,18 +1,16 @@
 package bspkrs.worldstatecheckpoints;
 
-import java.io.File;
-
+import bspkrs.util.CommonUtils;
+import bspkrs.worldstatecheckpoints.fml.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Configuration;
-
 import org.lwjgl.input.Keyboard;
 
-import bspkrs.util.CommonUtils;
-import bspkrs.worldstatecheckpoints.fml.Reference;
+import java.io.File;
 
 public class WSCSettings
 {
@@ -81,7 +79,7 @@ public class WSCSettings
 
     public static boolean onGameTick()
     {
-        if (mc.theWorld != null && mc.thePlayer != null)
+        if (mc.world != null && mc.player != null)
         {
             if (justLoadedWorld)
             {
@@ -94,7 +92,7 @@ public class WSCSettings
 
             if (justLoadedCheckpoint)
             {
-                mc.thePlayer.addChatMessage(new ChatComponentText(loadMessage));
+                mc.player.sendMessage(new TextComponentString(loadMessage));
                 loadMessage = "";
 
                 if (cpm.autoSaveEnabled)

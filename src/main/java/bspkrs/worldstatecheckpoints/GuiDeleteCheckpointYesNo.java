@@ -2,8 +2,7 @@ package bspkrs.worldstatecheckpoints;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.StatCollector;
-
+import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
 
 public class GuiDeleteCheckpointYesNo extends GuiScreen
@@ -37,8 +36,8 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
 
         byte byte0 = -16;
 
-        buttonList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.yes")));
-        buttonList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, StatCollector.translateToLocal("gui.no")));
+        buttonList.add(new GuiButton(-2, width / 2 - 62, height / 4 + 24 + 24 * 3 + byte0, 60, 20, I18n.format("gui.yes")));
+        buttonList.add(new GuiButton(-1, width / 2 + 2, height / 4 + 24 + 24 * 3 + byte0, 60, 20, I18n.format("gui.no")));
     }
 
     @Override
@@ -82,8 +81,8 @@ public class GuiDeleteCheckpointYesNo extends GuiScreen
     {
         drawDefaultBackground();
 
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("wsc.deleteCheckpoint"), width / 2, 100, 0xffffff);
-        drawCenteredString(fontRendererObj, "\"" + name + "\"", width / 2, 100 + 20, 0xffff00);
+        drawCenteredString(fontRenderer, I18n.format("wsc.deleteCheckpoint"), width / 2, 100, 0xffffff);
+        drawCenteredString(fontRenderer, "\"" + name + "\"", width / 2, 100 + 20, 0xffff00);
         super.drawScreen(par1, par2, par3);
     }
 }

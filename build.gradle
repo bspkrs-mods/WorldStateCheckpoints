@@ -1,21 +1,13 @@
 buildscript {
     repositories {
-        mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
-
-apply plugin: "forge"
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 // define the properties file
 ext.configFile = file "build.properties"
@@ -29,16 +21,16 @@ configFile.withReader {
 
 repositories {
     ivy {
-        url "http://bspk.rs/MC"
+        url "../bspkrsCore/build/libs"
         layout "pattern", {
             artifact "[module]/deobf/%5B${config.minecraft_version}%5D[module]-deobf-[revision].[ext]"
-            artifact "[module]/deobf/[${config.minecraft_version}][module]-deobf-[revision].[ext]"
+            artifact "[${config.minecraft_version}][module]-deobf-[revision].[ext]"
         }
     }
 }
 
 dependencies {
-    compile name: 'bspkrsCore', version: "${config.bscore_version}", ext: 'jar'
+    compile name: 'bspkrscore', version: "${config.bscore_version}", ext: 'jar'
 }
 
 group = config.group_name
@@ -63,7 +55,7 @@ processResources {
         expand ([
             'mod_version': version,
             'bscore_version': config.bscore_version,
-            'bscore_jar': "[${config.minecraft_version}]bspkrsCore-universal-${config.bscore_version}.jar",
+            'bscore_jar': "[${config.minecraft_version}]bspkrscore-universal-${config.bscore_version}.jar",
             'pattern': "\\\\[.+?\\\\](\\\\w+).*?([\\\\d\\\\.]+)[-\\\\w]*\\\\.[^\\\\d]+",
             'forge_version': config.forge_version,
             'minecraft_version': config.minecraft_version
@@ -82,11 +74,11 @@ jar {
     appendix = config.appendix
 }
 
-// add a source jar
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    appendix = 'src'
-}
+//// add a source jar
+//task sourceJar(type: Jar) {
+//    from sourceSets.main.allSource
+//    appendix = 'src'
+//}
 
 // because the normal output has been made to be obfuscated
 task deobfJar(type: Jar) {

@@ -1,14 +1,13 @@
 package bspkrs.worldstatecheckpoints;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
-
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextComponentString;
 import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
 
 public class GuiReplaceCheckpointChangeName extends GuiScreen
 {
@@ -39,10 +38,10 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
 
         byte byte0 = -16;
 
-        back = new GuiButton(-1, (width / 2) + 1, (height / 4) + 24 + (24 * 3) + byte0, 60, 20, StatCollector.translateToLocal("gui.cancel"));
-        save = new GuiButton(-2, (width / 2) - 61, (height / 4) + 24 + (24 * 3) + byte0, 60, 20, StatCollector.translateToLocal("wsc.saveCheckpoint.save"));
+        back = new GuiButton(-1, (width / 2) + 1, (height / 4) + 24 + (24 * 3) + byte0, 60, 20, I18n.format("gui.cancel"));
+        save = new GuiButton(-2, (width / 2) - 61, (height / 4) + 24 + (24 * 3) + byte0, 60, 20, I18n.format("wsc.saveCheckpoint.save"));
 
-        edit = new GuiTextField(1, fontRendererObj, (width / 2) - 100, (height / 4) + 24 + 24, 200, 20);
+        edit = new GuiTextField(1, fontRenderer, (width / 2) - 100, (height / 4) + 24 + 24, 200, 20);
         edit.setText(name);
         edit.setFocused(true);
         save.enabled = true;
@@ -78,7 +77,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
                 cpm.saveCheckpointInto(dirname_orig, dirname_prefix + "!" + edit.getText());
                 WSCSettings.mc.displayGuiScreen(null);
                 WSCSettings.mc.setIngameFocus();
-                WSCSettings.mc.thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("wsc.chatMessage.savedCheckpoint", edit.getText())));
+                WSCSettings.mc.player.sendMessage(new TextComponentString(I18n.format("wsc.chatMessage.savedCheckpoint", edit.getText())));
                 return;
         }
     }
@@ -121,7 +120,7 @@ public class GuiReplaceCheckpointChangeName extends GuiScreen
     {
         drawDefaultBackground();
         edit.drawTextBox();
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("wsc.overwriteCheckpoint.editName"), width / 2, 80, 0xffffff);
+        drawCenteredString(fontRenderer, I18n.format("wsc.overwriteCheckpoint.editName"), width / 2, 80, 0xffffff);
         super.drawScreen(par1, par2, par3);
     }
 }

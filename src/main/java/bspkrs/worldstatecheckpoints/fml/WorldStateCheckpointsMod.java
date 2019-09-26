@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = Reference.MODID, name = Reference.NAME, version = "@MOD_VERSION@", dependencies = "required-after:bspkrscore@[@BSCORE_VERSION@,)",
+@Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.MOD_VERSION, dependencies = Reference.DEPENDENCIES,
         useMetadata = true, guiFactory = Reference.GUI_FACTORY)
 public class WorldStateCheckpointsMod
 {

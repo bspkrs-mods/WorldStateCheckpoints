@@ -42,7 +42,6 @@ minecraft {
     mappings = config.mappings_version
     runDir = "run"
     replace '@MOD_VERSION@', "${config.minecraft_version}.${config.mod_version}"
-    replace '@BSCORE_VERSION@', config.bscore_version
 }
 
 processResources {

@@ -1,6 +1,6 @@
 # WorldStateCheckpoints
 
-<a href="https://www.curseforge.com/minecraft/mc-mods/worldstatecheckpoints"><img src="http://cf.way2muchnoise.eu/full_225570_downloads.svg" /></a><a href="https://www.curseforge.com/minecraft/mc-mods/worldstatecheckpoints"><img src="http://cf.way2muchnoise.eu/versions/225570.svg" /></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/worldstatecheckpoints"><img src="http://cf.way2muchnoise.eu/full_225570_downloads.svg" /></a> <a href="https://www.curseforge.com/minecraft/mc-mods/worldstatecheckpoints"><img src="http://cf.way2muchnoise.eu/versions/225570.svg" /></a>
 
 bspkrs' WorldStateCheckpoints mod for Minecraft (my fork/rework of MightyPork's discontinued Checkpoints Backup Mod).  Allows you to save/load SSP world backups in-game.
 This repo contains source files for Forge (dependant on bspkrsCore).
